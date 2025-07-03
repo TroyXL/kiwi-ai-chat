@@ -1,0 +1,67 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "cancel": "Cancel"
+  },
+  "login": {
+    "title": "Kiwi AI Login",
+    "usernameLabel": "Username",
+    "passwordLabel": "Password",
+    "confirmPasswordLabel": "Confirm Password",
+    "button": "Login",
+    "buttonLoading": "Logging in...",
+    "error": "Failed to login",
+    "errorPasswordsDontMatch": "Passwords do not match.",
+    "registerTitle": "Create Your Account",
+    "registerButton": "Register",
+    "registerButtonLoading": "Registering...",
+    "registerSuccess": "Registration successful! You will now be logged in.",
+    "switch_to_login": "Already have an account? Login",
+    "switch_to_register": "Don't have an account? Register"
+  },
+  "sidebar": {
+    "newApp": "+ New Application",
+    "logout": "Logout",
+    "loading": "Loading...",
+    "noApps": "No applications yet.",
+    "deleteTitle": "Delete Application",
+    "deleteConfirmMessage": "Are you sure you want to permanently delete the application \"{{appName}}\"? This action cannot be undone.",
+    "deleteConfirmButton": "Delete"
+  },
+  "chat": {
+    "placeholderWithApp": "Describe changes for \"{{appName}}\"...",
+    "placeholderNewApp": "Describe the new application you want to create...",
+    "historyLoading": "Loading history..."
+  },
+  "exchange": {
+    "statusLabel": "Overall Status",
+    "stageLabel": "Stage",
+    "attemptLabel": "Attempt",
+    "processComplete": "Process complete!",
+    "visitApp": "Visit Application",
+    "visitManagement": "Visit Management",
+    "generationFailed": "Generation failed: {{error}}",
+    "connectionError": "A connection error occurred.",
+    "cancelAction": "Cancel",
+    "retryAction": "Retry"
+  },
+  "enums": {
+    "status": {
+      "PLANNING": "Planning",
+      "GENERATING": "Generating",
+      "SUCCESSFUL": "Successful",
+      "FAILED": "Failed",
+      "CANCELLED": "Cancelled"
+    },
+    "stageStatus": {
+      "GENERATING": "Generating",
+      "COMMITTING": "Committing",
+      "SUCCESSFUL": "Successful",
+      "FAILED": "Failed"
+    },
+    "stageType": {
+      "BACKEND": "Backend",
+      "FRONTEND": "Frontend"
+    }
+  }
+}

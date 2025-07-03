@@ -1,0 +1,66 @@
+{
+  "common": {
+    "loading": "加载中...",
+    "cancel": "取消"
+  },
+  "login": {
+    "title": "Kiwi AI 登录",
+    "usernameLabel": "用户名",
+    "passwordLabel": "密码",
+    "confirmPasswordLabel": "确认密码",
+    "button": "登录",
+    "buttonLoading": "登录中...",
+    "error": "登录失败",
+    "errorPasswordsDontMatch": "两次输入的密码不匹配。",
+    "registerTitle": "创建您的账户",
+    "registerButton": "注册",
+    "registerButtonLoading": "注册中...",
+    "registerSuccess": "注册成功！将自动为您登录。",
+    "switch_to_login": "已有账户？去登录",
+    "switch_to_register": "没有账户？去注册"
+  },
+  "sidebar": {
+    "newApp": "+ 新建应用",
+    "logout": "登出",
+    "loading": "加载中...",
+    "noApps": "暂无应用",
+    "deleteTitle": "删除应用",
+    "deleteConfirmMessage": "您确定要永久删除应用 “{{appName}}” 吗？此操作无法撤销。",
+    "deleteConfirmButton": "删除"
+  },
+  "chat": {
+    "placeholderWithApp": "描述对 “{{appName}}” 的更改...",
+    "placeholderNewApp": "描述您想创建的新应用..."
+  },
+  "exchange": {
+    "statusLabel": "总体状态",
+    "stageLabel": "阶段",
+    "attemptLabel": "尝试",
+    "processComplete": "处理完成！",
+    "visitApp": "访问应用",
+    "visitManagement": "访问管理后台",
+    "generationFailed": "生成失败: {{error}}",
+    "connectionError": "发生连接错误。",
+    "cancelAction": "取消",
+    "retryAction": "重试"
+  },
+  "enums": {
+    "status": {
+      "PLANNING": "计划中",
+      "GENERATING": "生成中",
+      "SUCCESSFUL": "成功",
+      "FAILED": "失败",
+      "CANCELLED": "已取消"
+    },
+    "stageStatus": {
+      "GENERATING": "生成中",
+      "COMMITTING": "提交中",
+      "SUCCESSFUL": "成功",
+      "FAILED": "失败"
+    },
+    "stageType": {
+      "BACKEND": "后端",
+      "FRONTEND": "前端"
+    }
+  }
+}
