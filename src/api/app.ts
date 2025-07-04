@@ -5,24 +5,24 @@ import { fetchEventSource } from '@microsoft/fetch-event-source';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export const searchApplications = (params: { name?: string; page?: number; pageSize?: number; newlyChangedId?: string }) => {
-  return apiClient<SearchResult<Application>>('/app/v2/search', {
+  return apiClient<SearchResult<Application>>('/app/search', {
     body: params,
   });
 };
 
 export const getApplication = (id: string) => {
-  return apiClient<Application>(`/app/v2/${id}`);
+  return apiClient<Application>(`/app/${id}`);
 };
 
 export const saveApplication = (app: Partial<Application>) => {
-  return apiClient<string>('/app/v2', {
+  return apiClient<string>('/app', {
     method: 'POST',
     body: app,
   });
 };
 
 export const deleteApplication = (id: string) => {
-  return apiClient<void>(`/app/v2/${id}`, {
+  return apiClient<void>(`/app/${id}`, {
     method: 'DELETE',
   });
 };
