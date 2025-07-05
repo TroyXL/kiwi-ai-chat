@@ -30,7 +30,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const register = async (userName: string, password: string) => {
     await authApi.register(userName, password);
-    // After a successful registration, automatically log the user in
     await login(userName, password);
   };
 

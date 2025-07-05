@@ -31,7 +31,8 @@
   "chat": {
     "placeholderWithApp": "Describe changes for \"{{appName}}\"...",
     "placeholderNewApp": "Describe the new application you want to create...",
-    "historyLoading": "Loading history..."
+    "historyLoading": "Loading history...",
+    "generationNote": "Note: Generation can take 5-10 minutes. You can safely close this window; the process will continue."
   },
   "exchange": {
     "statusLabel": "Overall Status",

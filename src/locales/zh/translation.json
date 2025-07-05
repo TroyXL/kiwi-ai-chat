@@ -30,7 +30,8 @@
   },
   "chat": {
     "placeholderWithApp": "描述对 “{{appName}}” 的更改...",
-    "placeholderNewApp": "描述您想创建的新应用..."
+    "placeholderNewApp": "描述您想创建的新应用...",
+    "generationNote": "请注意：生成过程可能需要 5-10 分钟。您可以安全地关闭此窗口，该过程将继续在后台运行。"
   },
   "exchange": {
     "statusLabel": "总体状态",

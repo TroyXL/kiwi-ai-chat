@@ -385,6 +385,7 @@ export const ChatInterface = () => {
             {isGenerating ? <Spinner /> : <SendIcon />}
           </button>
         </div>
+        <p className="generation-note">{t('chat.generationNote')}</p>
       </div>
     </div>
   );

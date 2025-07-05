@@ -73,14 +73,25 @@ const createEventSource = (
     openWhenHidden: true,
 
     onopen: async (response) => {
+      // START MODIFICATION
+      // Prioritize handling auth errors for SSE connections.
+      if (response.status === 401 || response.status === 403) {
+        localStorage.removeItem('authToken');
+        window.location.replace('/login');
+        // Throw an error to ensure the fetchEventSource library stops processing.
+        // The redirect will happen, but this is clean.
+        throw new Error(`Authentication failed with status ${response.status}`);
+      }
+      // END MODIFICATION
+
       if (!response.ok) {
+        // This now correctly handles other non-auth server errors (e.g., 500).
         listeners.onError(new Error(`Failed to connect with status ${response.status}: ${response.statusText}`));
         throw new Error(`Failed to connect with status ${response.status}: ${response.statusText}`);
       }
     },
 
     onmessage: (event) => {
-      // API now sends named events. We only care about the 'generation' event.
       if (event.event !== 'generation' || !event.data) {
         return;
       }
