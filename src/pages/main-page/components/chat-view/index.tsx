@@ -1,27 +1,10 @@
+import { useMemoizedFn } from 'ahooks'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import * as appApi from '../../../api/app'
-import { Attempt, Exchange, Stage } from '../../../api/types'
-import { Spinner } from '../../../components/spinner'
-import { useApps } from '../../../contexts/AppContext'
-
-const SendIcon = () => (
-  <svg
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      d="M7 11L12 6L17 11M12 18V7"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    ></path>
-  </svg>
-)
+import * as appApi from '../../../../api/app'
+import { Attempt, Exchange, Stage } from '../../../../api/types'
+import { useApps } from '../../../../contexts/AppContext'
+import { ChatInput } from './chat-input'
 
 const AttemptView = ({ attempt }: { attempt: Attempt }) => {
   const { t } = useTranslation()
@@ -168,7 +151,6 @@ export const ChatView = () => {
     selectApp,
     selectedApp,
   } = useApps()
-  const [prompt, setPrompt] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
 
   const [activeExchange, setActiveExchange] = useState<Exchange | null>(null)
@@ -340,9 +322,7 @@ export const ChatView = () => {
     )
   }
 
-  const handleSend = useCallback(() => {
-    if (!prompt.trim() || isGenerating) return
-
+  const handleSend = useMemoizedFn((prompt: string) => {
     if (!selectedApp) {
       newAppGenerationInProgressRef.current = true
       renameRefreshPendingRef.current = true
@@ -378,17 +358,7 @@ export const ChatView = () => {
       },
       controller.signal
     )
-
-    setPrompt('')
-  }, [
-    prompt,
-    isGenerating,
-    selectedApp,
-    addApplication,
-    updateApplication,
-    selectApp,
-    t,
-  ])
+  })
 
   const handleCancel = useCallback(
     async (exchangeId: string) => {
@@ -444,9 +414,9 @@ export const ChatView = () => {
   )
 
   return (
-    <div className="chat-container">
-      <div className="chat-messages">
-        <div className="chat-messages-inner-wrapper">
+    <div className="flex flex-col flex-1 h-0">
+      <div className="h-0 flex-1 overflow-auto">
+        <div className="max-w-[720px] m-auto">
           {!historyLoading &&
             exchangeHistory.map(ex => (
               <React.Fragment key={ex.id}>
@@ -497,7 +467,7 @@ export const ChatView = () => {
         </div>
       </div>
 
-      <div className="chat-input-area">
+      {/* <div className="chat-input-area">
         <div className="chat-input-area-inner">
           <textarea
             value={prompt}
@@ -523,7 +493,9 @@ export const ChatView = () => {
           </button>
         </div>
         <p className="generation-note">{t('chat.generationNote')}</p>
-      </div>
+      </div> */}
+
+      <ChatInput loading={isGenerating} onSend={handleSend} />
     </div>
   )
 }
