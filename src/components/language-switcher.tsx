@@ -1,5 +1,6 @@
+import { useMemoizedFn } from 'ahooks'
 import { Check, Languages } from 'lucide-react'
-import { memo, useCallback, useMemo } from 'react'
+import { memo, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from './ui/button'
 import {
@@ -11,22 +12,23 @@ import {
 } from './ui/dropdown-menu'
 
 export const LanguageSwitcher = memo(
-  ({ className }: { className?: string }) => {
+  ({ simple, className }: { simple?: boolean; className?: string }) => {
     const { i18n } = useTranslation()
     const isEn = useMemo(() => i18n.language.startsWith('en'), [i18n.language])
-    const handleSwitchLanguage = useCallback(
-      (lng: string) => {
-        i18n.changeLanguage(lng)
-      },
-      [i18n]
-    )
+    const handleSwitchLanguage = useMemoizedFn((lng: string) => {
+      i18n.changeLanguage(lng)
+    })
 
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className={className}>
+          <Button
+            variant="outline"
+            size={simple ? 'icon' : void 0}
+            className={className}
+          >
             <Languages />
-            <span>{isEn ? 'English' : '中文'}</span>
+            {!simple && <span>{isEn ? 'English' : '中文'}</span>}
           </Button>
         </DropdownMenuTrigger>
 

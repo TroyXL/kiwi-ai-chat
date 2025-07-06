@@ -20,7 +20,8 @@
     "switch_to_register": "Don't have an account? Register"
   },
   "sidebar": {
-    "newApp": "+ New Application",
+    "applications": "Applications",
+    "newApp": "New Application",
     "logout": "Logout",
     "loading": "Loading...",
     "noApps": "No applications yet.",

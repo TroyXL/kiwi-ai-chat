@@ -20,7 +20,8 @@
     "switch_to_register": "没有账户？去注册"
   },
   "sidebar": {
-    "newApp": "+ 新建应用",
+    "applications": "应用列表",
+    "newApp": "新建应用",
     "logout": "登出",
     "loading": "加载中...",
     "noApps": "暂无应用",

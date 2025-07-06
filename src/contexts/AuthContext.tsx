@@ -1,58 +1,68 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
-import * as authApi from '../api/auth';
-import { Spinner } from '../components/Spinner';
+import { Spinner } from '@/components/spinner'
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
+import * as authApi from '../api/auth'
 
 interface AuthContextType {
-  isAuthenticated: boolean;
-  login: (userName: string, pass: string) => Promise<void>;
-  register: (userName: string, pass: string) => Promise<void>;
-  logout: () => Promise<void>;
+  isAuthenticated: boolean
+  login: (userName: string, pass: string) => Promise<void>
+  register: (userName: string, pass: string) => Promise<void>
+  logout: () => Promise<void>
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [loading, setLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('authToken')
     if (token) {
-      setIsAuthenticated(true);
+      setIsAuthenticated(true)
     }
-    setLoading(false);
-  }, []);
+    setLoading(false)
+  }, [])
 
   const login = async (userName: string, password: string) => {
-    await authApi.login(userName, password);
-    setIsAuthenticated(true);
-  };
+    await authApi.login(userName, password)
+    setIsAuthenticated(true)
+  }
 
   const register = async (userName: string, password: string) => {
-    await authApi.register(userName, password);
-    await login(userName, password);
-  };
+    await authApi.register(userName, password)
+    await login(userName, password)
+  }
 
   const logout = async () => {
-    await authApi.logout();
-    setIsAuthenticated(false);
-  };
+    await authApi.logout()
+    setIsAuthenticated(false)
+  }
 
   if (loading) {
-    return <div className="loading-screen"><Spinner /></div>;
+    return (
+      <div className="fixed-center">
+        <Spinner />
+      </div>
+    )
   }
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, register, logout }}>
       {children}
     </AuthContext.Provider>
-  );
-};
+  )
+}
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = useContext(AuthContext)
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth must be used within an AuthProvider')
   }
-  return context;
-};
+  return context
+}

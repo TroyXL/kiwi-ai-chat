@@ -1,4 +1,4 @@
-import { LanguageSwitcher } from '@/components/LanguageSwitcher'
+import { LanguageSwitcher } from '@/components/language-switcher'
 import { Alert, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -8,7 +8,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Navigate } from 'react-router-dom'
 import { toast } from 'sonner'
-import { KiwiLogo } from '../components/KiwiLogo'
+import { KiwiLogo } from '../components/kiwi-logo'
 import { useAuth } from '../contexts/AuthContext'
 
 export const LoginPage = () => {

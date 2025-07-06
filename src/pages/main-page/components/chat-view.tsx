@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import * as appApi from '../api/app'
-import { Attempt, Exchange, Stage } from '../api/types'
-import { useApps } from '../contexts/AppContext'
-import { LanguageSwitcher } from './LanguageSwitcher'
-import { Spinner } from './Spinner'
+import * as appApi from '../../../api/app'
+import { Attempt, Exchange, Stage } from '../../../api/types'
+import { Spinner } from '../../../components/spinner'
+import { useApps } from '../../../contexts/AppContext'
 
 const SendIcon = () => (
   <svg
@@ -160,7 +159,7 @@ const ExchangeView = ({ exchange, onCancel, onRetry }: ExchangeViewProps) => {
   )
 }
 
-export const ChatInterface = () => {
+export const ChatView = () => {
   const { t } = useTranslation()
   const {
     applications,
@@ -446,8 +445,6 @@ export const ChatInterface = () => {
 
   return (
     <div className="chat-container">
-      <LanguageSwitcher className="fixed top-4 right-4" />
-
       <div className="chat-messages">
         <div className="chat-messages-inner-wrapper">
           {!historyLoading &&
