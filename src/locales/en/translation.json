@@ -15,7 +15,7 @@
     "registerTitle": "Create Your Account",
     "registerButton": "Register",
     "registerButtonLoading": "Registering...",
-    "registerSuccess": "Registration successful! You will now be logged in.",
+    "registerSuccess": "Registration successful! You have been logged in.",
     "switch_to_login": "Already have an account? Login",
     "switch_to_register": "Don't have an account? Register"
   },

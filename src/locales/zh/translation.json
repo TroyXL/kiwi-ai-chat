@@ -15,7 +15,7 @@
     "registerTitle": "创建您的账户",
     "registerButton": "注册",
     "registerButtonLoading": "注册中...",
-    "registerSuccess": "注册成功！将自动为您登录。",
+    "registerSuccess": "注册成功！已自动为您登录。",
     "switch_to_login": "已有账户？去登录",
     "switch_to_register": "没有账户？去注册"
   },
