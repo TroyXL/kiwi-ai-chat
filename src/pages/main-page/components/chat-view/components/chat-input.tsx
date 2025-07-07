@@ -2,6 +2,7 @@ import { Spinner } from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { useApps } from '@/contexts/AppContext'
+import { cn } from '@/lib/utils'
 import { useKeyPress, useMemoizedFn } from 'ahooks'
 import { Send } from 'lucide-react'
 import { memo, useRef } from 'react'
@@ -10,9 +11,11 @@ import { useTranslation } from 'react-i18next'
 export const ChatInput = memo(
   ({
     loading,
+    className,
     onSend,
   }: {
     loading: boolean
+    className?: string
     onSend: (message: string) => void
   }) => {
     const { t } = useTranslation()
@@ -33,13 +36,13 @@ export const ChatInput = memo(
     })
 
     return (
-      <div className="p-4">
+      <div className={cn('p-4 pt-0', className)}>
         {/* <Sender
         className=""
         
       ></Sender> */}
 
-        <section className="relative">
+        <section className="relative max-w-[720px] m-auto">
           <Textarea
             ref={$textarea}
             className="h-24 pb-14 resize-none"

@@ -72,7 +72,7 @@ export const LoginPage = () => {
         </section>
 
         <form
-          className="w-[30rem] border p-4 space-y-6 rounded-md bg-card"
+          className="w-[30rem] border p-4 space-y-6 rounded-md bg-card shadow-lg"
           onSubmit={handleSubmit}
         >
           <div className="space-y-3">

@@ -1,148 +1,15 @@
+import { KiwiLogo } from '@/components/kiwi-logo'
 import { useMemoizedFn } from 'ahooks'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as appApi from '../../../../api/app'
-import { Attempt, Exchange, Stage } from '../../../../api/types'
+import { Exchange } from '../../../../api/types'
+import { Loading } from '../../../../components/loading'
 import { useApps } from '../../../../contexts/AppContext'
-import { ChatInput } from './chat-input'
+import { ChatInput } from './components/chat-input'
+import { MessageList } from './components/message-exchange'
 
-const AttemptView = ({ attempt }: { attempt: Attempt }) => {
-  const { t } = useTranslation()
-  let statusIcon = '⏳'
-  if (attempt.status === 'SUCCESSFUL') statusIcon = '✅'
-  if (attempt.status === 'FAILED') statusIcon = '❌'
-
-  return (
-    <div className="attempt-view">
-      <span>
-        {statusIcon} {t('exchange.attemptLabel')}
-      </span>
-      {attempt.errorMessage && (
-        <p className="error-message">{attempt.errorMessage}</p>
-      )}
-    </div>
-  )
-}
-
-const StageView = ({ stage }: { stage: Stage }) => {
-  const { t } = useTranslation()
-  let statusIcon = '⏳'
-  if (stage.status === 'COMMITTING') statusIcon = '📝'
-  if (stage.status === 'SUCCESSFUL') statusIcon = '✅'
-  if (stage.status === 'FAILED') statusIcon = '❌'
-
-  return (
-    <div className="stage-view">
-      <div className="stage-header">
-        <span>
-          {statusIcon} {t('exchange.stageLabel')}:{' '}
-          {t(`enums.stageType.${stage.type}` as const, stage.type)}
-        </span>
-        <span>
-          ({t(`enums.stageStatus.${stage.status}` as const, stage.status)})
-        </span>
-      </div>
-      <div className="stage-attempts">
-        {stage.attempts.map(att => (
-          <AttemptView key={att.id} attempt={att} />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-interface ExchangeViewProps {
-  exchange: Exchange
-  onCancel: (exchangeId: string) => void
-  onRetry: (exchangeId: string) => void
-}
-
-const ExchangeView = ({ exchange, onCancel, onRetry }: ExchangeViewProps) => {
-  const { t } = useTranslation()
-  const isRunning =
-    exchange.status === 'PLANNING' || exchange.status === 'GENERATING'
-  const isFailed = exchange.status === 'FAILED'
-  const hasStages = exchange.stages && exchange.stages.length > 0
-
-  return (
-    <div className={`exchange-view ${hasStages ? 'has-stages' : ''}`}>
-      <div className="exchange-status">
-        <strong>{t('exchange.statusLabel')}:</strong>{' '}
-        {t(`enums.status.${exchange.status}` as const, exchange.status)}
-      </div>
-
-      {hasStages && (
-        <div className="exchange-stages">
-          {exchange.stages.map(stage => (
-            <StageView key={stage.id} stage={stage} />
-          ))}
-        </div>
-      )}
-
-      {(exchange.managementURL || exchange.productURL) && (
-        <div className="exchange-result success">
-          {exchange.status === 'SUCCESSFUL' && (
-            <p>{t('exchange.processComplete')}</p>
-          )}
-          <div className="exchange-links-container">
-            {exchange.managementURL && (
-              <button
-                className="visit-btn"
-                onClick={() => {
-                  if (exchange.managementURL)
-                    window.open(exchange.managementURL, '_blank')
-                }}
-              >
-                {t('exchange.visitManagement')}
-              </button>
-            )}
-            {exchange.productURL && (
-              <button
-                className="visit-btn"
-                onClick={() => {
-                  if (exchange.productURL)
-                    window.open(exchange.productURL, '_blank')
-                }}
-              >
-                {t('exchange.visitApp')}
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-
-      {exchange.status === 'FAILED' && (
-        <div className="exchange-result error">
-          <p>
-            {t('exchange.generationFailed', { error: exchange.errorMessage })}
-          </p>
-        </div>
-      )}
-      {(isRunning || isFailed) && (
-        <div className="exchange-actions">
-          {isRunning && (
-            <button
-              className="exchange-action-btn cancel"
-              onClick={() => onCancel(exchange.id)}
-            >
-              {t('exchange.cancelAction')}
-            </button>
-          )}
-          {isFailed && (
-            <button
-              className="exchange-action-btn retry"
-              onClick={() => onRetry(exchange.id)}
-            >
-              {t('exchange.retryAction')}
-            </button>
-          )}
-        </div>
-      )}
-    </div>
-  )
-}
-
-export const ChatView = () => {
+export const ChatView = memo(() => {
   const { t } = useTranslation()
   const {
     applications,
@@ -238,13 +105,14 @@ export const ChatView = () => {
     }
   }, [applications, appToSelectId, selectApp])
 
-  useEffect(() => {
-    return () => {
+  useEffect(
+    () => () => {
       abortControllerRef.current?.abort()
-    }
-  }, [])
+    },
+    []
+  )
 
-  const handleTerminalMessage = (exchangeData: Exchange) => {
+  const handleTerminalMessage = useMemoizedFn((exchangeData: Exchange) => {
     setExchangeHistory(prevHistory => [...prevHistory, exchangeData])
     setActiveExchange(null)
     setIsGenerating(false)
@@ -253,74 +121,78 @@ export const ChatView = () => {
     renameRefreshPendingRef.current = false
     abortControllerRef.current?.abort()
     abortControllerRef.current = null
-  }
+  })
 
-  const handleSseMessage = (exchangeData: Exchange, sentPrompt?: string) => {
-    if (newAppGenerationInProgressRef.current && exchangeData.appId) {
-      appApi.getApplication(exchangeData.appId).then(newApp => {
-        if (newApp) {
-          addApplication(newApp)
-          setAppToSelectId(newApp.id)
-        }
-      })
-      newAppGenerationInProgressRef.current = false
-    }
-
-    if (renameRefreshPendingRef.current && exchangeData.appId) {
-      const backendStage = exchangeData.stages.find(s => s.type === 'BACKEND')
-      if (
-        backendStage &&
-        backendStage.attempts.some(a => a.status === 'SUCCESSFUL')
-      ) {
-        appApi.getApplication(exchangeData.appId).then(updatedApp => {
-          if (updatedApp) {
-            updateApplication(updatedApp)
+  const handleSseMessage = useMemoizedFn(
+    (exchangeData: Exchange, sentPrompt?: string) => {
+      if (newAppGenerationInProgressRef.current && exchangeData.appId) {
+        appApi.getApplication(exchangeData.appId).then(newApp => {
+          if (newApp) {
+            addApplication(newApp)
+            setAppToSelectId(newApp.id)
           }
         })
-        renameRefreshPendingRef.current = false
+        newAppGenerationInProgressRef.current = false
+      }
+
+      if (renameRefreshPendingRef.current && exchangeData.appId) {
+        const backendStage = exchangeData.stages.find(s => s.type === 'BACKEND')
+        if (
+          backendStage &&
+          backendStage.attempts.some(a => a.status === 'SUCCESSFUL')
+        ) {
+          appApi.getApplication(exchangeData.appId).then(updatedApp => {
+            if (updatedApp) {
+              updateApplication(updatedApp)
+            }
+          })
+          renameRefreshPendingRef.current = false
+        }
+      }
+
+      const finalExchangeData = sentPrompt
+        ? { ...exchangeData, prompt: sentPrompt }
+        : exchangeData
+      setActiveExchange(finalExchangeData)
+
+      if (
+        finalExchangeData.status === 'SUCCESSFUL' ||
+        finalExchangeData.status === 'FAILED' ||
+        finalExchangeData.status === 'CANCELLED'
+      ) {
+        handleTerminalMessage(finalExchangeData)
       }
     }
+  )
 
-    const finalExchangeData = sentPrompt
-      ? { ...exchangeData, prompt: sentPrompt }
-      : exchangeData
-    setActiveExchange(finalExchangeData)
-
-    if (
-      finalExchangeData.status === 'SUCCESSFUL' ||
-      finalExchangeData.status === 'FAILED' ||
-      finalExchangeData.status === 'CANCELLED'
-    ) {
-      handleTerminalMessage(finalExchangeData)
-    }
-  }
-
-  const handleSseClose = () => {
+  const handleSseClose = useMemoizedFn(() => {
     setIsGenerating(false)
     newAppGenerationInProgressRef.current = false
     renameRefreshPendingRef.current = false
     abortControllerRef.current = null
-  }
+  })
 
-  const handleSseError = (err: any, controller: AbortController) => {
-    setIsGenerating(false)
-    newAppGenerationInProgressRef.current = false
-    renameRefreshPendingRef.current = false
-    abortControllerRef.current = null
-    console.error('SSE Error:', err)
-    if (controller.signal.aborted) {
-      return
+  const handleSseError = useMemoizedFn(
+    (err: any, controller: AbortController) => {
+      setIsGenerating(false)
+      newAppGenerationInProgressRef.current = false
+      renameRefreshPendingRef.current = false
+      abortControllerRef.current = null
+      console.error('SSE Error:', err)
+      if (controller.signal.aborted) {
+        return
+      }
+      setActiveExchange(prev =>
+        prev
+          ? {
+              ...prev,
+              status: 'FAILED',
+              errorMessage: t('exchange.connectionError'),
+            }
+          : null
+      )
     }
-    setActiveExchange(prev =>
-      prev
-        ? {
-            ...prev,
-            status: 'FAILED',
-            errorMessage: t('exchange.connectionError'),
-          }
-        : null
-    )
-  }
+  )
 
   const handleSend = useMemoizedFn((prompt: string) => {
     if (!selectedApp) {
@@ -360,142 +232,93 @@ export const ChatView = () => {
     )
   })
 
-  const handleCancel = useCallback(
-    async (exchangeId: string) => {
-      try {
-        await appApi.cancelGeneration(exchangeId)
+  const handleCancel = useMemoizedFn(async (exchangeId: string) => {
+    try {
+      await appApi.cancelGeneration(exchangeId)
 
-        if (activeExchange?.id === exchangeId) {
-          const CanceledExchange = {
-            ...activeExchange,
-            status: 'CANCELLED' as const,
-          }
-          handleTerminalMessage(CanceledExchange)
-        } else {
-          setExchangeHistory(prev =>
-            prev.map(ex =>
-              ex.id === exchangeId
-                ? { ...ex, status: 'CANCELLED' as const }
-                : ex
-            )
-          )
+      if (activeExchange?.id === exchangeId) {
+        const CanceledExchange = {
+          ...activeExchange,
+          status: 'CANCELLED' as const,
         }
-      } catch (error) {
-        console.error('Failed to cancel generation:', error)
+        handleTerminalMessage(CanceledExchange)
+      } else {
+        setExchangeHistory(prev =>
+          prev.map(ex =>
+            ex.id === exchangeId ? { ...ex, status: 'CANCELLED' as const } : ex
+          )
+        )
       }
-    },
-    [activeExchange]
-  )
+    } catch (error) {
+      console.error('Failed to cancel generation:', error)
+    }
+  })
 
-  const handleRetry = useCallback(
-    (exchangeId: string) => {
-      const exchangeToRetry = exchangeHistory.find(ex => ex.id === exchangeId)
-      if (!exchangeToRetry || isGenerating) return
+  const handleRetry = useMemoizedFn((exchangeId: string) => {
+    const exchangeToRetry = exchangeHistory.find(ex => ex.id === exchangeId)
+    if (!exchangeToRetry || isGenerating) return
 
-      setExchangeHistory(prev => prev.filter(ex => ex.id !== exchangeId))
-      setIsGenerating(true)
-      setActiveExchange({ ...exchangeToRetry, status: 'PLANNING' })
+    setExchangeHistory(prev => prev.filter(ex => ex.id !== exchangeId))
+    setIsGenerating(true)
+    setActiveExchange({ ...exchangeToRetry, status: 'PLANNING' })
 
-      const controller = new AbortController()
-      abortControllerRef.current = controller
+    const controller = new AbortController()
+    abortControllerRef.current = controller
 
-      appApi.retryGeneration(
-        { exchangeId },
-        {
-          onMessage: exchangeData =>
-            handleSseMessage(exchangeData, exchangeToRetry.prompt),
-          onClose: () => handleSseClose(),
-          onError: err => handleSseError(err, controller),
-        },
-        controller.signal
-      )
-    },
-    [exchangeHistory, isGenerating, t]
-  )
+    appApi.retryGeneration(
+      { exchangeId },
+      {
+        onMessage: exchangeData =>
+          handleSseMessage(exchangeData, exchangeToRetry.prompt),
+        onClose: () => handleSseClose(),
+        onError: err => handleSseError(err, controller),
+      },
+      controller.signal
+    )
+  })
 
-  return (
-    <div className="flex flex-col flex-1 h-0">
-      <div className="h-0 flex-1 overflow-auto">
+  return selectedApp ? (
+    <>
+      <div className="h-0 flex-1 pb-8 overflow-auto relative">
         <div className="max-w-[720px] m-auto">
-          {!historyLoading &&
-            exchangeHistory.map(ex => (
-              <React.Fragment key={ex.id}>
-                <div className="message user">
-                  <div className="message-bubble">{ex.prompt}</div>
-                </div>
-                <div className="message ai">
-                  <div className="message-bubble">
-                    <ExchangeView
-                      exchange={ex}
-                      onCancel={handleCancel}
-                      onRetry={handleRetry}
-                    />
-                  </div>
-                </div>
-              </React.Fragment>
-            ))}
+          {historyLoading ? (
+            <Loading message={t('chat.historyLoading')} />
+          ) : (
+            <>
+              <MessageList
+                exchanges={exchangeHistory}
+                onCancel={handleCancel}
+                onRetry={handleRetry}
+              />
 
-          {activeExchange && (
-            <React.Fragment>
-              <div className="message user">
-                <div className="message-bubble">{activeExchange.prompt}</div>
-              </div>
-              <div className="message ai">
-                <div className="message-bubble">
-                  <ExchangeView
-                    exchange={activeExchange}
-                    onCancel={handleCancel}
-                    onRetry={handleRetry}
-                  />
-                </div>
-              </div>
-            </React.Fragment>
-          )}
-
-          {historyLoading && (
-            <p
-              style={{
-                textAlign: 'center',
-                color: 'var(--gpt-text-secondary)',
-              }}
-            >
-              {t('chat.historyLoading')}
-            </p>
+              {activeExchange && (
+                <MessageList
+                  exchanges={[activeExchange]}
+                  onCancel={handleCancel}
+                  onRetry={handleRetry}
+                />
+              )}
+            </>
           )}
 
           <div ref={messagesEndRef} />
         </div>
       </div>
 
-      {/* <div className="chat-input-area">
-        <div className="chat-input-area-inner">
-          <textarea
-            value={prompt}
-            onChange={e => setPrompt(e.target.value)}
-            placeholder={
-              selectedApp
-                ? t('chat.placeholderWithApp', { appName: selectedApp.name })
-                : t('chat.placeholderNewApp')
-            }
-            onKeyDown={e => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault()
-                handleSend()
-              }
-            }}
-            disabled={isGenerating}
-          />
-          <button
-            onClick={handleSend}
-            disabled={isGenerating || !prompt.trim()}
-          >
-            {isGenerating ? <Spinner /> : <SendIcon />}
-          </button>
-        </div>
-        <p className="generation-note">{t('chat.generationNote')}</p>
-      </div> */}
-
       <ChatInput loading={isGenerating} onSend={handleSend} />
+    </>
+  ) : (
+    <div className="flex-1 flex flex-col justify-center items-center gap-8">
+      <div className="flex items-center gap-4">
+        <KiwiLogo logoClassName="size-10" />
+        <p className="text-3xl font-bold">Kiwi AI</p>
+      </div>
+
+      <ChatInput
+        className="w-full"
+        loading={isGenerating}
+        onSend={handleSend}
+      />
     </div>
   )
-}
+})

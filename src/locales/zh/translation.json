@@ -35,9 +35,10 @@
     "generationNote": "请注意：生成过程可能需要 5-10 分钟。您可以安全地关闭此窗口，该过程将继续在后台运行。"
   },
   "exchange": {
-    "statusLabel": "总体状态",
-    "stageLabel": "阶段",
+    "statusLabel": "总体状态：",
+    "stageLabel": "阶段：",
     "attemptLabel": "尝试",
+    "processing": "处理中...",
     "processComplete": "处理完成！",
     "visitApp": "访问应用",
     "visitManagement": "访问管理后台",

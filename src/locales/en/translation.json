@@ -36,9 +36,10 @@
     "generationNote": "Note: Generation can take 5-10 minutes. You can safely close this window; the process will continue."
   },
   "exchange": {
-    "statusLabel": "Overall Status",
-    "stageLabel": "Stage",
+    "statusLabel": "Overall Status: ",
+    "stageLabel": "Stage: ",
     "attemptLabel": "Attempt",
+    "processing": "Processing",
     "processComplete": "Process complete!",
     "visitApp": "Visit Application",
     "visitManagement": "Visit Management",
