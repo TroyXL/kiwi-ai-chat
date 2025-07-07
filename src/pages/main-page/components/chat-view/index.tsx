@@ -137,10 +137,7 @@ export const ChatView = memo(() => {
 
       if (renameRefreshPendingRef.current && exchangeData.appId) {
         const backendStage = exchangeData.stages.find(s => s.type === 'BACKEND')
-        if (
-          backendStage &&
-          backendStage.attempts.some(a => a.status === 'SUCCESSFUL')
-        ) {
+        if (backendStage && backendStage.status === 'SUCCESSFUL') {
           appApi.getApplication(exchangeData.appId).then(updatedApp => {
             if (updatedApp) {
               updateApplication(updatedApp)
