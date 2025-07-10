@@ -1,12 +1,14 @@
 import { Attempt, Exchange, Stage } from '@/api/types'
+import { Spinner } from '@/components/spinner'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { cn } from '@/lib/utils'
 import { useCreation } from 'ahooks'
 import {
   ChevronsLeftRightEllipsis,
   CircleCheckBig,
   CircleXIcon,
-  ClockFading,
   Hourglass,
   MonitorCheck,
   MonitorOff,
@@ -60,6 +62,7 @@ const MessageBubble = memo(({ exchange, ...actions }: ExchangeProps) => {
 })
 
 const KiwiResponseView = memo(({ exchange, ...actions }: ExchangeProps) => {
+  const isMobile = useIsMobile()
   const { t } = useTranslation()
   const isSuccess = exchange.status === 'SUCCESSFUL'
   const isFailed = exchange.status === 'FAILED'
@@ -77,7 +80,12 @@ const KiwiResponseView = memo(({ exchange, ...actions }: ExchangeProps) => {
       </ul>
 
       {hasStages && (
-        <div className="border bg-card rounded-md px-4 py-3 gap-4 flex justify-between items-center">
+        <div
+          className={cn(
+            'border bg-card rounded-md px-4 py-3',
+            !isMobile && 'flex justify-between items-center gap-4'
+          )}
+        >
           <p className="font-medium">
             {isSuccess
               ? t('exchange.processComplete')
@@ -88,7 +96,9 @@ const KiwiResponseView = memo(({ exchange, ...actions }: ExchangeProps) => {
               : t('exchange.processing')}
           </p>
 
-          <div className="space-x-2">
+          <div
+            className={isMobile ? ' space-x-3 mt-3 text-right' : 'space-x-2'}
+          >
             {exchange.managementURL && (
               <Button
                 size="xs"
@@ -170,7 +180,7 @@ const KiwiResponseStatus = memo(
 
 const KiwiResponseStage = memo(({ stage }: { stage: Stage }) => {
   const { t } = useTranslation()
-  let icon = <ClockFading size={14} />
+  let icon = <Spinner />
 
   switch (stage.status) {
     case 'COMMITTING':
@@ -215,7 +225,7 @@ const KiwiResponseAttempt = memo(({ attempt }: { attempt: Attempt }) => {
     () => attempt.errorMessage?.split('\n').filter(Boolean) || [],
     [attempt.errorMessage]
   )
-  let icon = <ClockFading />
+  let icon = <Spinner />
 
   switch (attempt.status) {
     case 'SUCCESSFUL':

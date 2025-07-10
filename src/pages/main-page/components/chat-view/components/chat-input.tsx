@@ -10,11 +10,11 @@ import { useTranslation } from 'react-i18next'
 
 export const ChatInput = memo(
   ({
-    loading,
+    generating,
     className,
     onSend,
   }: {
-    loading: boolean
+    generating: boolean
     className?: string
     onSend: (message: string) => void
   }) => {
@@ -22,8 +22,8 @@ export const ChatInput = memo(
     const { selectedApp } = useApps()
     const $textarea = useRef<HTMLTextAreaElement>(null)
 
-    const handleSendMessage = useMemoizedFn(() => {
-      if (!$textarea.current || loading) return
+    const handleSendMessageOrCancelGenerate = useMemoizedFn(() => {
+      if (!$textarea.current || generating) return
       const message = $textarea.current.value.trim()
       if (!message) return
       $textarea.current.value = ''
@@ -31,17 +31,12 @@ export const ChatInput = memo(
     })
 
     useKeyPress(['meta.enter', 'ctrl.enter', 'shift.enter'], () => {
-      if (document.activeElement !== $textarea.current) return
-      handleSendMessage()
+      if (generating || document.activeElement !== $textarea.current) return
+      handleSendMessageOrCancelGenerate()
     })
 
     return (
       <div className={cn('pb-4 px-4', className)}>
-        {/* <Sender
-        className=""
-        
-      ></Sender> */}
-
         <section className="relative max-w-[720px] m-auto">
           <Textarea
             ref={$textarea}
@@ -54,13 +49,12 @@ export const ChatInput = memo(
           />
 
           <Button
-            variant={loading ? 'ghost' : 'default'}
             size="icon"
             className="absolute right-3 bottom-3 size-8"
-            disabled={loading}
-            onClick={handleSendMessage}
+            disabled={generating}
+            onClick={handleSendMessageOrCancelGenerate}
           >
-            {loading ? <Spinner /> : <Send />}
+            {generating ? <Spinner /> : <Send />}
           </Button>
         </section>
 

@@ -302,7 +302,7 @@ export const ChatView = memo(() => {
         </div>
       </div>
 
-      <ChatInput loading={isGenerating} onSend={handleSend} />
+      <ChatInput generating={isGenerating} onSend={handleSend} />
     </>
   ) : (
     <div className="flex-1 flex flex-col justify-center items-center gap-8 pb-48">
@@ -313,7 +313,7 @@ export const ChatView = memo(() => {
 
       <ChatInput
         className="w-full px-8"
-        loading={isGenerating}
+        generating={isGenerating}
         onSend={handleSend}
       />
     </div>
