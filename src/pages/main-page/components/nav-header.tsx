@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dialog'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { useApps } from '@/contexts/AppContext'
+import { cn } from '@/lib/utils'
 import { useBoolean, useRequest } from 'ahooks'
 import { Trash2 } from 'lucide-react'
 import { memo } from 'react'
@@ -48,51 +49,61 @@ export const NavHeader = memo(() => {
     }
   )
 
-  if (!selectedApp) return null
   return (
     <>
-      <header className="h-14 px-4 border-b flex justify-between items-center">
+      <header
+        className={cn(
+          'h-14 px-4 flex justify-between items-center',
+          selectedApp && 'border-b'
+        )}
+      >
         <div className="flex items-center gap-2">
           <SidebarTrigger />
-          <h2 className="text-base font-medium">{selectedApp.name}</h2>
+          {selectedApp && (
+            <h2 className="text-base font-medium">{selectedApp.name}</h2>
+          )}
         </div>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="!text-red-500"
-          onClick={showDeleteDialog}
-        >
-          <Trash2 />
-        </Button>
+        {selectedApp && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="!text-red-500"
+            onClick={showDeleteDialog}
+          >
+            <Trash2 />
+          </Button>
+        )}
       </header>
 
-      <Dialog open={deleteDialogStatus} onOpenChange={setDeleteDialogStatus}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {t('sidebar.deleteTitle', { appName: selectedApp.name })}
-            </DialogTitle>
-          </DialogHeader>
+      {selectedApp && (
+        <Dialog open={deleteDialogStatus} onOpenChange={setDeleteDialogStatus}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {t('sidebar.deleteTitle', { appName: selectedApp.name })}
+              </DialogTitle>
+            </DialogHeader>
 
-          <p>
-            {t('sidebar.deleteConfirmMessage', {
-              appName: selectedApp.name,
-            })}
-          </p>
+            <p>
+              {t('sidebar.deleteConfirmMessage', {
+                appName: selectedApp.name,
+              })}
+            </p>
 
-          <DialogFooter>
-            <Button onClick={hideDeleteDialog}>{t('common.cancel')}</Button>
-            <Button
-              variant="destructive"
-              onClick={handleComfirmDelete}
-              disabled={deleteLoading}
-            >
-              {deleteLoading && <Spinner />}
-              {t('sidebar.deleteConfirmButton')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter>
+              <Button onClick={hideDeleteDialog}>{t('common.cancel')}</Button>
+              <Button
+                variant="destructive"
+                onClick={handleComfirmDelete}
+                disabled={deleteLoading}
+              >
+                {deleteLoading && <Spinner />}
+                {t('sidebar.deleteConfirmButton')}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   )
 })

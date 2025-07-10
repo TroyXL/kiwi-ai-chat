@@ -277,7 +277,7 @@ export const ChatView = memo(() => {
   return selectedApp ? (
     <>
       <div className="h-0 flex-1 pb-8 overflow-auto relative">
-        <div className="max-w-[720px] m-auto">
+        <div className="max-w-[720px] m-auto px-4">
           {historyLoading ? (
             <Loading message={t('chat.historyLoading')} />
           ) : (
@@ -305,14 +305,14 @@ export const ChatView = memo(() => {
       <ChatInput loading={isGenerating} onSend={handleSend} />
     </>
   ) : (
-    <div className="flex-1 flex flex-col justify-center items-center gap-8">
+    <div className="flex-1 flex flex-col justify-center items-center gap-8 pb-48">
       <div className="flex items-center gap-4">
         <KiwiLogo logoClassName="size-10" />
         <p className="text-3xl font-bold">Kiwi AI</p>
       </div>
 
       <ChatInput
-        className="w-full"
+        className="w-full px-8"
         loading={isGenerating}
         onSend={handleSend}
       />

@@ -63,7 +63,7 @@ export const LoginPage = () => {
 
   return (
     <>
-      <div className="fixed-center h-[35rem] space-y-4">
+      <div className="fixed-center h-[35rem] max-w-[30rem] w-5/6 space-y-4">
         <section className="flex items-center gap-4 px-4 pb-2">
           <KiwiLogo />
           <h2 className="text-2xl">
@@ -72,7 +72,7 @@ export const LoginPage = () => {
         </section>
 
         <form
-          className="w-[30rem] border p-4 space-y-6 rounded-md bg-card shadow-lg"
+          className=" border p-4 space-y-6 rounded-md bg-card shadow-lg"
           onSubmit={handleSubmit}
         >
           <div className="space-y-3">

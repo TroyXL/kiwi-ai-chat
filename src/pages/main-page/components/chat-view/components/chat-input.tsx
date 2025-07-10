@@ -36,7 +36,7 @@ export const ChatInput = memo(
     })
 
     return (
-      <div className={cn('p-4 pt-0', className)}>
+      <div className={cn('pb-4 px-4', className)}>
         {/* <Sender
         className=""
         
