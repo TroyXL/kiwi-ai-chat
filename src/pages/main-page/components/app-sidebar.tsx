@@ -13,6 +13,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '../../../components/ui/sidebar'
 import { useApps } from '../../../contexts/AppContext'
 import { useAuth } from '../../../contexts/AuthContext'
@@ -22,6 +23,7 @@ export const AppSidebar = () => {
   const { t } = useTranslation()
   const { applications, selectedApp, selectApp, loading } = useApps()
   const { logout } = useAuth()
+  const { setOpenMobile } = useSidebar()
 
   const hasApplicaitons = applications.length > 0
 
@@ -45,7 +47,13 @@ export const AppSidebar = () => {
                 const selected = selectedApp?.id === app.id
 
                 return (
-                  <SidebarMenuItem key={app.id} onClick={() => selectApp(app)}>
+                  <SidebarMenuItem
+                    key={app.id}
+                    onClick={() => {
+                      selectApp(app)
+                      setOpenMobile(false)
+                    }}
+                  >
                     <SidebarMenuButton
                       className="flex justify-between"
                       isActive={selected}

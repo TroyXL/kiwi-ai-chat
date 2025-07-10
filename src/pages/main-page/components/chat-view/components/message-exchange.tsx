@@ -1,6 +1,7 @@
 import { Attempt, Exchange, Stage } from '@/api/types'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
+import { useCreation } from 'ahooks'
 import {
   ChevronsLeftRightEllipsis,
   CircleCheckBig,
@@ -39,11 +40,17 @@ export const MessageList = memo(
 )
 
 const MessageBubble = memo(({ exchange, ...actions }: ExchangeProps) => {
+  const splitedPrompts = useCreation(
+    () => exchange.prompt?.split('\n').filter(Boolean) || [],
+    [exchange.prompt]
+  )
   return (
     <li>
       <div className="flex justify-end pt-8">
         <section className="px-4 py-3 rounded-md rounded-tr-none bg-blue-600/20 text-foreground">
-          {exchange.prompt}
+          {splitedPrompts.map((prompt, index) => (
+            <p key={index}>{prompt}</p>
+          ))}
         </section>
       </div>
 
@@ -204,6 +211,10 @@ const KiwiResponseStage = memo(({ stage }: { stage: Stage }) => {
 
 const KiwiResponseAttempt = memo(({ attempt }: { attempt: Attempt }) => {
   const { t } = useTranslation()
+  const splitedErrorMessages = useCreation(
+    () => attempt.errorMessage?.split('\n').filter(Boolean) || [],
+    [attempt.errorMessage]
+  )
   let icon = <ClockFading />
 
   switch (attempt.status) {
@@ -220,9 +231,11 @@ const KiwiResponseAttempt = memo(({ attempt }: { attempt: Attempt }) => {
       <Alert variant={attempt.errorMessage ? 'destructive' : 'default'}>
         {icon}
         <AlertTitle>{t('exchange.attemptLabel')}</AlertTitle>
-        {attempt.errorMessage && (
+        {splitedErrorMessages.length && (
           <AlertDescription className="error-message">
-            {attempt.errorMessage}
+            {splitedErrorMessages.map((message, index) => (
+              <p key={index}>{message}</p>
+            ))}
           </AlertDescription>
         )}
       </Alert>
