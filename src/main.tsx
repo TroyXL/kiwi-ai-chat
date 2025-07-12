@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
+import { Spinner } from './components/spinner.tsx'
 import { Toaster } from './components/ui/sonner.tsx'
 import { themeAdaptor } from './lib/theme-adaptor.ts'
 
@@ -12,7 +13,7 @@ themeAdaptor()
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <Suspense fallback="loading...">
+    <Suspense fallback={<Spinner className="fixed-center" />}>
       <App />
     </Suspense>
     <Toaster position="top-right" />

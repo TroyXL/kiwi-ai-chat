@@ -38,7 +38,7 @@ export const AppSidebar = () => {
       </SidebarHeader>
       <SidebarContent className="p-2">
         {loading ? (
-          <Spinner />
+          <Spinner className="m-auto" />
         ) : hasApplicaitons ? (
           <>
             <SidebarGroupLabel>{t('sidebar.applications')}</SidebarGroupLabel>

@@ -2,14 +2,14 @@ import { KiwiLogo } from '@/components/kiwi-logo'
 import { useMemoizedFn } from 'ahooks'
 import { memo, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import * as appApi from '../../../../api/app'
-import { Exchange } from '../../../../api/types'
-import { Loading } from '../../../../components/loading'
-import { useApps } from '../../../../contexts/AppContext'
+import * as appApi from '../../../api/app'
+import { Exchange } from '../../../api/types'
+import { Loading } from '../../../components/loading'
+import { useApps } from '../../../contexts/AppContext'
 import { ChatInput } from './components/chat-input'
 import { MessageList } from './components/message-exchange'
 
-export const ChatView = memo(() => {
+const ChatView = memo(() => {
   const { t } = useTranslation()
   const {
     applications,
@@ -319,3 +319,5 @@ export const ChatView = memo(() => {
     </div>
   )
 })
+
+export default ChatView
