@@ -1,12 +1,6 @@
-import { useMemoizedFn } from 'ahooks'
+import { useCreation, useMemoizedFn } from 'ahooks'
 import { isUndefined } from 'lodash'
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { createContext, ReactNode, useContext, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import * as appApi from '../api/app'
 import { Application } from '../api/types'
@@ -14,7 +8,10 @@ import { Application } from '../api/types'
 interface AppContextType {
   applications: Application[]
   selectedApp: Application | null
-  selectApp: (app: Application | null) => void
+  selectApp: (
+    app: Application | null,
+    { isNewApp }: { isNewApp?: boolean }
+  ) => void
   refreshApplications: (newlyChangedId?: string) => Promise<void>
   addApplication: (app: Application) => void
   removeApplication: (appId: string) => void
@@ -44,7 +41,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       if (appId) {
         const app = pageData.items.find(app => app.id === appId)
         if (app) {
-          selectAppHandler(app)
+          selectApp(app)
         }
       }
     } catch (error) {
@@ -55,38 +52,55 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }
   })
 
-  useEffect(() => {
-    refreshApplications()
-  }, [refreshApplications])
+  const selectApp = useMemoizedFn(
+    (
+      app: Application | null,
+      {
+        isNewApp,
+      }: {
+        isNewApp?: boolean
+      } = {}
+    ) => {
+      setSelectedApp(app)
+      if (isNewApp && app) {
+        sessionStorage.setItem('newAppId', app.id)
+      } else {
+        sessionStorage.removeItem('newAppId')
+      }
+      if (app?.id !== selectedApp?.id) {
+        navigate('/' + (app?.id || ''), {
+          replace: true,
+        })
+      }
+    }
+  )
 
-  const selectAppHandler = (app: Application | null) => {
-    setSelectedApp(app)
-    navigate('/' + (app?.id || ''), {
-      replace: true,
-    })
-  }
-
-  const addApplication = (app: Application) => {
+  const addApplication = useMemoizedFn((app: Application) => {
     setApplications(prevApps => [app, ...prevApps])
-  }
+  })
 
-  const removeApplication = (appId: string) => {
+  const removeApplication = useMemoizedFn((appId: string) => {
     setApplications(prevApps => prevApps.filter(app => app.id !== appId))
-  }
+  })
 
   // MODIFIED: Implement the function to update an application in the list
-  const updateApplication = (updatedApp: Application) => {
+  const updateApplication = useMemoizedFn((updatedApp: Application) => {
     setApplications(prevApps =>
       prevApps.map(app => (app.id === updatedApp.id ? updatedApp : app))
     )
-  }
+    selectApp(updatedApp)
+  })
+
+  useCreation(() => {
+    refreshApplications()
+  }, [])
 
   return (
     <AppContext.Provider
       value={{
         applications,
         selectedApp,
-        selectApp: selectAppHandler,
+        selectApp,
         refreshApplications,
         addApplication,
         removeApplication,

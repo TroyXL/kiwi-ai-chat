@@ -79,49 +79,47 @@ const KiwiResponseView = memo(({ exchange, ...actions }: ExchangeProps) => {
         ))}
       </ul>
 
-      {hasStages && (
-        <div
-          className={cn(
-            'border bg-card rounded-md px-4 py-3',
-            !isMobile && 'flex justify-between items-center gap-4'
-          )}
-        >
-          <p className="font-medium">
-            {isSuccess
-              ? t('exchange.processComplete')
-              : isFailed
-              ? t('exchange.generationFailed', { error: exchange.errorMessage })
-              : isCancelled
-              ? t(`enums.status.${exchange.status}` as const, exchange.status)
-              : t('exchange.processing')}
-          </p>
+      {!hasStages && <div className="border h-4 w-0 ml-12" />}
 
-          <div
-            className={isMobile ? ' space-x-3 mt-3 text-right' : 'space-x-2'}
-          >
-            {exchange.managementURL && (
-              <Button
-                size="xs"
-                onClick={() => {
-                  window.open(exchange.managementURL!, '_blank')
-                }}
-              >
-                {t('exchange.visitManagement')}
-              </Button>
-            )}
-            {exchange.productURL && (
-              <Button
-                size="xs"
-                onClick={() => {
-                  window.open(exchange.productURL!, '_blank')
-                }}
-              >
-                {t('exchange.visitApp')}
-              </Button>
-            )}
-          </div>
+      <div
+        className={cn(
+          'border bg-card rounded-md px-4 py-3',
+          !isMobile && 'flex justify-between items-center gap-4'
+        )}
+      >
+        <p className="font-medium">
+          {isSuccess
+            ? t('exchange.processComplete')
+            : isFailed
+            ? t('exchange.generationFailed', { error: exchange.errorMessage })
+            : isCancelled
+            ? t(`enums.status.${exchange.status}` as const, exchange.status)
+            : t('exchange.processing')}
+        </p>
+
+        <div className={isMobile ? ' space-x-3 mt-3 text-right' : 'space-x-2'}>
+          {exchange.managementURL && (
+            <Button
+              size="xs"
+              onClick={() => {
+                window.open(exchange.managementURL!, '_blank')
+              }}
+            >
+              {t('exchange.visitManagement')}
+            </Button>
+          )}
+          {exchange.productURL && (
+            <Button
+              size="xs"
+              onClick={() => {
+                window.open(exchange.productURL!, '_blank')
+              }}
+            >
+              {t('exchange.visitApp')}
+            </Button>
+          )}
         </div>
-      )}
+      </div>
     </section>
   )
 })
