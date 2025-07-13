@@ -1,5 +1,6 @@
 import { KiwiLogo } from '@/components/kiwi-logo'
-import { useMemoizedFn } from 'ahooks'
+import { sleep } from '@/lib/utils'
+import { useMemoizedFn, useMount, useUnmount } from 'ahooks'
 import { memo, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as appApi from '../../../api/app'
@@ -9,108 +10,87 @@ import { useApps } from '../../../contexts/AppContext'
 import { ChatInput } from './components/chat-input'
 import { MessageList } from './components/message-exchange'
 
+const runningStatuses = ['PLANNING', 'GENERATING']
+
 const ChatView = memo(() => {
   const { t } = useTranslation()
-  const {
-    applications,
-    addApplication,
-    updateApplication,
-    selectApp,
-    selectedApp,
-  } = useApps()
+  const { addApplication, updateApplication, selectApp, selectedApp } =
+    useApps()
   const [isGenerating, setIsGenerating] = useState(false)
 
   const [activeExchange, setActiveExchange] = useState<Exchange | null>(null)
   const [exchangeHistory, setExchangeHistory] = useState<Exchange[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
 
-  const [appToSelectId, setAppToSelectId] = useState<string | null>(null)
-
   const abortControllerRef = useRef<AbortController | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const newAppGenerationInProgressRef = useRef<boolean>(false)
   const renameRefreshPendingRef = useRef<boolean>(false)
-  const isAutoSelectingRef = useRef(false)
 
-  useEffect(() => {
-    if (isAutoSelectingRef.current) {
-      isAutoSelectingRef.current = false
-      return
-    }
-
+  useMount(async () => {
     abortControllerRef.current?.abort()
     setActiveExchange(null)
     setExchangeHistory([])
+    if (!selectedApp) return
 
-    if (selectedApp) {
-      setHistoryLoading(true)
-      appApi
-        .searchExchanges({ appId: selectedApp.id, pageSize: 100 })
-        .then(data => {
-          const runningStatuses = ['PLANNING', 'GENERATING']
-          const exchangeToReconnect = data.items.find(ex =>
-            runningStatuses.includes(ex.status)
+    setHistoryLoading(true)
+    // 新创建的应用会触发 selectApp 导致路由变化
+    // 此时会查询历史数据，存在延迟
+    await sleep(200)
+    appApi
+      .searchExchanges({ appId: selectedApp.id, pageSize: 100 })
+      .then(data => {
+        const exchangeToReconnect = data.items.find(ex =>
+          runningStatuses.includes(ex.status)
+        )
+
+        console.log(
+          '======= history =',
+          data,
+          exchangeToReconnect,
+          runningStatuses
+        )
+        if (exchangeToReconnect) {
+          const backendStage = exchangeToReconnect.stages.find(
+            s => s.type === 'BACKEND'
           )
-
-          if (exchangeToReconnect) {
-            const backendStage = exchangeToReconnect.stages.find(
-              s => s.type === 'BACKEND'
-            )
-            const isBackendSuccessful =
-              backendStage && backendStage.status === 'SUCCESSFUL'
-            if (exchangeToReconnect.first && !isBackendSuccessful) {
-              renameRefreshPendingRef.current = true
-            }
-
-            setIsGenerating(true)
-            setActiveExchange(exchangeToReconnect)
-            const completedHistory = data.items.filter(
-              ex => ex.id !== exchangeToReconnect.id
-            )
-            setExchangeHistory([...completedHistory].reverse())
-
-            const controller = new AbortController()
-            abortControllerRef.current = controller
-
-            appApi.reconnectExchange(
-              { exchangeId: exchangeToReconnect.id },
-              {
-                onMessage: exchangeData => handleSseMessage(exchangeData),
-                onClose: () => handleSseClose(),
-                onError: err => handleSseError(err, controller),
-              },
-              controller.signal
-            )
-          } else {
-            setExchangeHistory([...data.items].reverse())
+          const isBackendSuccessful = backendStage?.status === 'SUCCESSFUL'
+          if (exchangeToReconnect.first && !isBackendSuccessful) {
+            renameRefreshPendingRef.current = true
           }
-        })
-        .catch(err => console.error('Failed to fetch exchange history:', err))
-        .finally(() => setHistoryLoading(false))
-    }
-  }, [selectedApp])
+
+          setIsGenerating(true)
+          setActiveExchange(exchangeToReconnect)
+          const completedHistory = data.items.filter(
+            ex => ex.id !== exchangeToReconnect.id
+          )
+          setExchangeHistory([...completedHistory].reverse())
+
+          const controller = new AbortController()
+          abortControllerRef.current = controller
+
+          appApi.reconnectExchange(
+            { exchangeId: exchangeToReconnect.id },
+            {
+              onMessage: exchangeData => handleSseMessage(exchangeData),
+              onClose: () => handleSseClose(),
+              onError: err => handleSseError(err, controller),
+            },
+            controller.signal
+          )
+        } else {
+          setExchangeHistory([...data.items].reverse())
+        }
+      })
+      .catch(err => console.error('Failed to fetch exchange history:', err))
+      .finally(() => setHistoryLoading(false))
+  })
+
+  useUnmount(() => abortControllerRef.current?.abort())
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    messagesEndRef.current?.scrollIntoView({ behavior: 'instant' })
   }, [activeExchange, exchangeHistory])
-
-  useEffect(() => {
-    if (appToSelectId && applications.length > 0) {
-      const appToSelect = applications.find(app => app.id === appToSelectId)
-      if (appToSelect) {
-        isAutoSelectingRef.current = true
-        selectApp(appToSelect)
-        setAppToSelectId(null)
-      }
-    }
-  }, [applications, appToSelectId, selectApp])
-
-  useEffect(
-    () => () => {
-      abortControllerRef.current?.abort()
-    },
-    []
-  )
 
   const handleTerminalMessage = useMemoizedFn((exchangeData: Exchange) => {
     setExchangeHistory(prevHistory => [...prevHistory, exchangeData])
@@ -124,14 +104,15 @@ const ChatView = memo(() => {
   })
 
   const handleSseMessage = useMemoizedFn(
-    (exchangeData: Exchange, sentPrompt?: string) => {
+    async (exchangeData: Exchange, sentPrompt?: string) => {
       if (newAppGenerationInProgressRef.current && exchangeData.appId) {
-        appApi.getApplication(exchangeData.appId).then(newApp => {
-          if (newApp) {
-            addApplication(newApp)
-            setAppToSelectId(newApp.id)
-          }
-        })
+        const newApp = await appApi.getApplication(exchangeData.appId)
+        if (newApp) {
+          abortControllerRef.current?.abort()
+          addApplication(newApp)
+          selectApp(newApp)
+        }
+
         newAppGenerationInProgressRef.current = false
       }
 

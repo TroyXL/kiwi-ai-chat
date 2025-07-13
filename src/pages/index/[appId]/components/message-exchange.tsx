@@ -1,5 +1,4 @@
 import { Attempt, Exchange, Stage } from '@/api/types'
-import { Spinner } from '@/components/spinner'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { useIsMobile } from '@/hooks/use-mobile'
@@ -9,6 +8,7 @@ import {
   ChevronsLeftRightEllipsis,
   CircleCheckBig,
   CircleXIcon,
+  ClockFading,
   Hourglass,
   MonitorCheck,
   MonitorOff,
@@ -180,7 +180,7 @@ const KiwiResponseStatus = memo(
 
 const KiwiResponseStage = memo(({ stage }: { stage: Stage }) => {
   const { t } = useTranslation()
-  let icon = <Spinner />
+  let icon = <ClockFading size={14} />
 
   switch (stage.status) {
     case 'COMMITTING':
@@ -225,7 +225,7 @@ const KiwiResponseAttempt = memo(({ attempt }: { attempt: Attempt }) => {
     () => attempt.errorMessage?.split('\n').filter(Boolean) || [],
     [attempt.errorMessage]
   )
-  let icon = <Spinner />
+  let icon = <ClockFading size={14} />
 
   switch (attempt.status) {
     case 'SUCCESSFUL':

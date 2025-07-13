@@ -1,7 +1,8 @@
+import { useMemoizedFn } from 'ahooks'
+import { isUndefined } from 'lodash'
 import {
   createContext,
   ReactNode,
-  useCallback,
   useContext,
   useEffect,
   useState,
@@ -31,7 +32,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [selectedApp, setSelectedApp] = useState<Application | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const refreshApplications = useCallback(async (newlyChangedId?: string) => {
+  const refreshApplications = useMemoizedFn(async (newlyChangedId?: string) => {
     setLoading(true)
     try {
       const pageData = await appApi.searchApplications({
@@ -52,7 +53,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setLoading(false)
     }
-  }, [])
+  })
 
   useEffect(() => {
     refreshApplications()
@@ -100,7 +101,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
 export const useApps = () => {
   const context = useContext(AppContext)
-  if (context === undefined) {
+  if (isUndefined(context)) {
     throw new Error('useApps must be used within an AppProvider')
   }
   return context
