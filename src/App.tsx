@@ -3,8 +3,6 @@ import { createBrowserRouter, RouterProvider } from 'react-router'
 import routes from '~react-pages'
 import { AuthProvider } from './contexts/AuthContext'
 
-import './App.css'
-
 const router = createBrowserRouter(routes)
 
 function App() {
