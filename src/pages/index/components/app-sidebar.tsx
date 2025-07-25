@@ -17,6 +17,7 @@ import {
 } from '../../../components/ui/sidebar'
 import { useApps } from '../../../contexts/AppContext'
 import { useAuth } from '../../../contexts/AuthContext'
+import { BetaTip } from './beta-tip'
 import { CreateAppButton } from './create-app-button'
 
 export const AppSidebar = () => {
@@ -30,15 +31,16 @@ export const AppSidebar = () => {
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className="flex items-center gap-4 p-2">
+        <div className="flex items-center p-2">
           <KiwiLogo />
-          <h2 className="text-xl">Kiwi AI</h2>
+          <h2 className="text-xl ml-4">Kiwi AI</h2>
+          <BetaTip />
         </div>
         {hasApplicaitons && <CreateAppButton />}
       </SidebarHeader>
       <SidebarContent className="p-2">
         {loading ? (
-          <Spinner />
+          <Spinner className="m-auto" />
         ) : hasApplicaitons ? (
           <>
             <SidebarGroupLabel>{t('sidebar.applications')}</SidebarGroupLabel>

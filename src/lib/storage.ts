@@ -2,6 +2,7 @@ import { isString, isUndefined } from 'lodash'
 
 export type StorageKey = {
   'kiwi:ui:theme': ThemeMode
+  'kiwi:ui:beta-tip-shown': boolean
 }
 
 export function getStorage(

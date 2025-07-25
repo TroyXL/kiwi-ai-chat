@@ -1,7 +1,8 @@
-import React, { Suspense } from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
+import { createBrowserRouter, RouterProvider } from 'react-router'
+import routes from '~react-pages'
 import { Toaster } from './components/ui/sonner.tsx'
+import { AuthProvider } from './contexts/AuthContext'
 import { themeAdaptor } from './lib/theme-adaptor.ts'
 
 import './i18n' // Import the i18next configuration
@@ -9,12 +10,13 @@ import './styles/global.css'
 import './styles/style.css'
 
 themeAdaptor()
+const router = createBrowserRouter(routes)
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <Suspense fallback="loading...">
-      <App />
-    </Suspense>
+  <>
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
     <Toaster position="top-right" />
-  </React.StrictMode>
+  </>
 )

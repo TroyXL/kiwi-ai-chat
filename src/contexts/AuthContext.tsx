@@ -1,11 +1,6 @@
-import { Spinner } from '@/components/spinner'
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import { useMemoizedFn } from 'ahooks'
+import { isUndefined } from 'lodash'
+import { createContext, ReactNode, useContext, useState } from 'react'
 import * as authApi from '../api/auth'
 
 interface AuthContextType {
@@ -18,39 +13,24 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
-  const [loading, setLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
+    !!localStorage.getItem('authToken')
+  )
 
-  useEffect(() => {
-    const token = localStorage.getItem('authToken')
-    if (token) {
-      setIsAuthenticated(true)
-    }
-    setLoading(false)
-  }, [])
-
-  const login = async (userName: string, password: string) => {
+  const login = useMemoizedFn(async (userName: string, password: string) => {
     await authApi.login(userName, password)
     setIsAuthenticated(true)
-  }
+  })
 
-  const register = async (userName: string, password: string) => {
+  const register = useMemoizedFn(async (userName: string, password: string) => {
     await authApi.register(userName, password)
     await login(userName, password)
-  }
+  })
 
-  const logout = async () => {
+  const logout = useMemoizedFn(async () => {
     await authApi.logout()
     setIsAuthenticated(false)
-  }
-
-  if (loading) {
-    return (
-      <div className="fixed-center">
-        <Spinner />
-      </div>
-    )
-  }
+  })
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, register, logout }}>
@@ -61,7 +41,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const context = useContext(AuthContext)
-  if (context === undefined) {
+  if (isUndefined(context)) {
     throw new Error('useAuth must be used within an AuthProvider')
   }
   return context

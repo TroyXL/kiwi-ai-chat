@@ -1,27 +1,14 @@
 // src/App.tsx
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
-import './App.css'
-import { ProtectedRoute } from './components/ProtectedRoute'
+import { createBrowserRouter, RouterProvider } from 'react-router'
+import routes from '~react-pages'
 import { AuthProvider } from './contexts/AuthContext'
-import { LoginPage } from './pages/login-page'
-import { MainPage } from './pages/main-page'
+
+const router = createBrowserRouter(routes)
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <MainPage />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </Router>
+      <RouterProvider router={router} />
     </AuthProvider>
   )
 }
