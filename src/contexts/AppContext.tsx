@@ -10,7 +10,7 @@ interface AppContextType {
   selectedApp: Application | null
   selectApp: (
     app: Application | null,
-    { isNewApp }: { isNewApp?: boolean }
+    { isNewApp }?: { isNewApp?: boolean }
   ) => void
   refreshApplications: (newlyChangedId?: string) => Promise<void>
   addApplication: (app: Application) => void
