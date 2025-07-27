@@ -3,6 +3,7 @@ import { Alert, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useMemoizedFn } from 'ahooks'
 import { AlertCircleIcon } from 'lucide-react'
 import React, { memo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -22,11 +23,7 @@ export default memo(() => {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  if (isAuthenticated) {
-    return <Navigate to="/" replace />
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useMemoizedFn(async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
@@ -51,14 +48,18 @@ export default memo(() => {
     } finally {
       setLoading(false)
     }
-  }
+  })
 
-  const toggleMode = () => {
+  const toggleMode = useMemoizedFn(() => {
     setIsLoginMode(!isLoginMode)
     setError('')
     setUserName('')
     setPassword('')
     setConfirmPassword('')
+  })
+
+  if (isAuthenticated) {
+    return <Navigate to="/" replace />
   }
 
   return (
@@ -72,7 +73,7 @@ export default memo(() => {
         </section>
 
         <form
-          className=" border p-4 space-y-6 rounded-md bg-card shadow-lg"
+          className="border p-4 space-y-6 rounded-md bg-card shadow-lg"
           onSubmit={handleSubmit}
         >
           <div className="space-y-3">
