@@ -30,8 +30,22 @@ export const ChatInput = memo(
       onSend(message)
     })
 
+    // 使用meta.enter, ctrl.enter, shift.enter进行换行
     useKeyPress(['meta.enter', 'ctrl.enter', 'shift.enter'], () => {
+      if (!$textarea.current || document.activeElement !== $textarea.current)
+        return
+      $textarea.current.value += '\n'
+    })
+
+    // 使用Enter键发送消息
+    useKeyPress(['enter'], e => {
+      // 如果同时按下了修饰键（meta、ctrl、shift），则不处理Enter事件
+      if (e.metaKey || e.ctrlKey || e.shiftKey) return
+
       if (generating || document.activeElement !== $textarea.current) return
+
+      // 阻止默认换行行为并发送消息
+      e.preventDefault()
       handleSendMessageOrCancelGenerate()
     })
 
