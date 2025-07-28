@@ -30,11 +30,24 @@ export const ChatInput = memo(
       onSend(message)
     })
 
-    // 使用meta.enter, ctrl.enter, shift.enter进行换行
+    // 使用meta.enter, ctrl.enter, shift.enter在光标位置插入换行
     useKeyPress(['meta.enter', 'ctrl.enter', 'shift.enter'], () => {
       if (!$textarea.current || document.activeElement !== $textarea.current)
         return
-      $textarea.current.value += '\n'
+
+      const textarea = $textarea.current
+      const { selectionStart, selectionEnd, value } = textarea
+
+      // 在光标位置插入换行符
+      const newValue =
+        value.substring(0, selectionStart) +
+        '\n' +
+        value.substring(selectionEnd)
+      textarea.value = newValue
+
+      // 将光标位置设置到插入的换行符之后
+      const newCursorPosition = selectionStart + 1
+      textarea.setSelectionRange(newCursorPosition, newCursorPosition)
     })
 
     // 使用Enter键发送消息
