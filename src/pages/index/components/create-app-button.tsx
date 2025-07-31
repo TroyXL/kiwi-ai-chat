@@ -1,5 +1,4 @@
-import { useSidebar } from '@/components/ui/sidebar'
-import { useApps } from '@/contexts/AppContext'
+import { useSelectApp } from '@/controllers/appListController'
 import { Plus } from 'lucide-react'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -16,18 +15,14 @@ export const CreateAppButton = memo(
     className?: string
   }) => {
     const { t } = useTranslation()
-    const { selectApp } = useApps()
-    const { setOpenMobile } = useSidebar()
+    const handleSelectApp = useSelectApp()
 
     return (
       <Button
         className={className}
         variant={highlight ? 'default' : 'secondary'}
         size={small ? 'sm' : void 0}
-        onClick={() => {
-          setOpenMobile(false)
-          selectApp(null)
-        }}
+        onClick={() => handleSelectApp(null)}
       >
         <Plus />
         <span>{t('sidebar.newApp')}</span>

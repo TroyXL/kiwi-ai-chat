@@ -1,4 +1,3 @@
-import { deleteApplication } from '@/api/app'
 import { Spinner } from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import {
@@ -9,17 +8,19 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { SidebarTrigger } from '@/components/ui/sidebar'
-import { useApps } from '@/contexts/AppContext'
+import appListController, {
+  useSelectApp,
+} from '@/controllers/appListController'
 import { cn } from '@/lib/utils'
 import { useBoolean, useRequest } from 'ahooks'
 import { Trash2 } from 'lucide-react'
-import { memo } from 'react'
+import { observer } from 'mobx-react-lite'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-export const NavHeader = memo(() => {
+export const NavHeader = observer(() => {
+  const selectedApp = appListController.selectedApp
   const { t } = useTranslation()
-  const { selectedApp, selectApp, removeApplication } = useApps()
   const [
     deleteDialogStatus,
     {
@@ -28,15 +29,15 @@ export const NavHeader = memo(() => {
       set: setDeleteDialogStatus,
     },
   ] = useBoolean(false)
+  const handleSelectApp = useSelectApp()
 
   const { loading: deleteLoading, run: handleComfirmDelete } = useRequest(
     async () => {
       if (!selectedApp) return
 
       try {
-        await deleteApplication(selectedApp.id)
-        removeApplication(selectedApp.id)
-        selectApp(null)
+        await appListController.removeAppById(selectedApp.id)
+        handleSelectApp(null)
       } catch (error) {
         console.error('Failed to delete application:', error)
         toast.error(`Error: ${(error as Error).message}`)

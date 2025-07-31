@@ -1,21 +1,22 @@
 import { KiwiLogo } from '@/components/kiwi-logo'
+import appListController, {
+  useSelectApp,
+} from '@/controllers/appListController'
 import { sleep } from '@/lib/utils'
 import { useMemoizedFn, useRequest, useUnmount } from 'ahooks'
-import { memo, useEffect, useRef, useState } from 'react'
+import { observer } from 'mobx-react-lite'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as appApi from '../../../api/app'
-import { Exchange } from '../../../api/types'
 import { Loading } from '../../../components/loading'
-import { useApps } from '../../../contexts/AppContext'
 import { ChatInput } from './components/chat-input'
 import { MessageList } from './components/message-exchange'
 
 const runningStatuses = ['PLANNING', 'GENERATING']
 
-const ChatView = memo(() => {
+const ChatView = observer(() => {
   const { t } = useTranslation()
-  const { addApplication, updateApplication, selectApp, selectedApp } =
-    useApps()
+
   const [isGenerating, setIsGenerating] = useState(false)
   const [activeExchange, setActiveExchange] = useState<Exchange | null>(null)
   const [exchangeHistory, setExchangeHistory] = useState<Exchange[]>([])
@@ -23,21 +24,26 @@ const ChatView = memo(() => {
   const abortControllerRef = useRef<AbortController | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const renameRefreshPendingRef = useRef<boolean>(
-    !!(selectedApp && sessionStorage.getItem('newAppId') === selectedApp?.id)
+    !!(
+      appListController.selectedApp &&
+      sessionStorage.getItem('newAppId') === appListController.selectedApp.id
+    )
   )
+
+  const handleSelectApp = useSelectApp()
 
   const { loading: historyLoading } = useRequest(
     async () => {
       abortControllerRef.current?.abort()
       setActiveExchange(null)
       setExchangeHistory([])
-      if (!selectedApp) return
+      if (!appListController.selectedApp) return
 
       // 新创建的应用会触发 selectApp 导致路由变化
       // 此时会查询历史数据，存在延迟
       await sleep(200)
       const data = await appApi.searchExchanges({
-        appId: selectedApp.id,
+        appId: appListController.selectedApp.id,
         pageSize: 100,
       })
       const exchangeToReconnect = data.items.find(ex =>
@@ -92,12 +98,12 @@ const ChatView = memo(() => {
 
   const handleSseMessage = useMemoizedFn(
     async (exchangeData: Exchange, sentPrompt?: string) => {
-      if (!selectedApp && exchangeData.appId) {
+      if (!appListController.selectedApp && exchangeData.appId) {
         const newApp = await appApi.getApplication(exchangeData.appId)
         if (newApp) {
           abortControllerRef.current?.abort()
-          addApplication(newApp)
-          selectApp(newApp, { isNewApp: true })
+          appListController.addApp(newApp)
+          handleSelectApp(newApp, true)
         }
       }
 
@@ -106,7 +112,7 @@ const ChatView = memo(() => {
         if (backendStage?.status === 'GENERATING') {
           appApi.getApplication(exchangeData.appId).then(updatedApp => {
             if (updatedApp) {
-              updateApplication(updatedApp)
+              appListController.updateApp(updatedApp)
             }
           })
           renameRefreshPendingRef.current = false
@@ -166,7 +172,7 @@ const ChatView = memo(() => {
     const initialExchange: Omit<Exchange, 'first'> = {
       id: tempId,
       prompt: sentPrompt,
-      appId: selectedApp?.id || '',
+      appId: appListController.selectedApp?.id || '',
       userId: '',
       status: 'PLANNING',
       stages: [],
@@ -177,7 +183,7 @@ const ChatView = memo(() => {
     setActiveExchange(initialExchange as Exchange)
 
     appApi.generateCode(
-      { prompt: sentPrompt, appId: selectedApp?.id },
+      { prompt: sentPrompt, appId: appListController.selectedApp?.id },
       {
         onMessage: exchangeData => handleSseMessage(exchangeData, sentPrompt),
         onClose: () => handleSseClose(),
@@ -232,7 +238,7 @@ const ChatView = memo(() => {
     )
   })
 
-  return selectedApp ? (
+  return appListController.selectedApp ? (
     <>
       <div className="h-0 flex-1 pb-8 overflow-auto relative">
         <div className="max-w-[720px] m-auto px-4">

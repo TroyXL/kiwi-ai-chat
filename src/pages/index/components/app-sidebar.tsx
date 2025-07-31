@@ -1,5 +1,11 @@
+import appListController, {
+  useSelectApp,
+} from '@/controllers/appListController'
+import { useRequest } from 'ahooks'
 import { Archive, LogOut } from 'lucide-react'
+import { observer } from 'mobx-react-lite'
 import { useTranslation } from 'react-i18next'
+import { useParams } from 'react-router'
 import { KiwiLogo } from '../../../components/kiwi-logo'
 import { LanguageSwitcher } from '../../../components/language-switcher'
 import { Spinner } from '../../../components/spinner'
@@ -13,20 +19,24 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from '../../../components/ui/sidebar'
-import { useApps } from '../../../contexts/AppContext'
 import { useAuth } from '../../../contexts/AuthContext'
 import { BetaTip } from './beta-tip'
 import { CreateAppButton } from './create-app-button'
 
-export const AppSidebar = () => {
+export const AppSidebar = observer(() => {
   const { t } = useTranslation()
-  const { applications, selectedApp, selectApp, loading } = useApps()
+  const { appId } = useParams()
   const { logout } = useAuth()
-  const { setOpenMobile } = useSidebar()
+  const handleSelectApp = useSelectApp()
 
+  const { loading } = useRequest(async () => {
+    await appListController.fetchAppList()
+    if (appId) appListController.selectAppById(appId)
+  })
+  const applications = appListController.appList
   const hasApplicaitons = applications.length > 0
+  const selectedApp = appListController.selectedApp
 
   return (
     <Sidebar>
@@ -51,10 +61,7 @@ export const AppSidebar = () => {
                 return (
                   <SidebarMenuItem
                     key={app.id}
-                    onClick={() => {
-                      selectApp(app)
-                      setOpenMobile(false)
-                    }}
+                    onClick={() => handleSelectApp(app)}
                   >
                     <SidebarMenuButton
                       className="flex justify-between"
@@ -84,4 +91,4 @@ export const AppSidebar = () => {
       </SidebarFooter>
     </Sidebar>
   )
-}
+})

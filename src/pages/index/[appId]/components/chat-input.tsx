@@ -1,14 +1,15 @@
 import { Spinner } from '@/components/spinner'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { useApps } from '@/contexts/AppContext'
+import appListController from '@/controllers/appListController'
 import { cn } from '@/lib/utils'
-import { useKeyPress, useMemoizedFn } from 'ahooks'
+import { useCreation, useKeyPress, useMemoizedFn } from 'ahooks'
 import { Send } from 'lucide-react'
-import { memo, useRef } from 'react'
+import { observer } from 'mobx-react-lite'
+import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
-export const ChatInput = memo(
+export const ChatInput = observer(
   ({
     generating,
     className,
@@ -19,8 +20,17 @@ export const ChatInput = memo(
     onSend: (message: string) => void
   }) => {
     const { t } = useTranslation()
-    const { selectedApp } = useApps()
     const $textarea = useRef<HTMLTextAreaElement>(null)
+
+    const textareaPlaceholder = useCreation(
+      () =>
+        appListController.selectedApp
+          ? t('chat.placeholderWithApp', {
+              appName: appListController.selectedApp.name,
+            })
+          : t('chat.placeholderNewApp'),
+      [appListController.selectedApp]
+    )
 
     const handleSendMessageOrCancelGenerate = useMemoizedFn(() => {
       if (!$textarea.current || generating) return
@@ -68,11 +78,7 @@ export const ChatInput = memo(
           <Textarea
             ref={$textarea}
             className="h-24 pb-14 resize-none"
-            placeholder={
-              selectedApp
-                ? t('chat.placeholderWithApp', { appName: selectedApp.name })
-                : t('chat.placeholderNewApp')
-            }
+            placeholder={textareaPlaceholder}
           />
 
           <Button

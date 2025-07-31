@@ -11,6 +11,7 @@ import './styles/style.css'
 
 themeAdaptor()
 const router = createBrowserRouter(routes)
+console.log(routes)
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <>
