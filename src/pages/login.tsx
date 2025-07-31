@@ -3,19 +3,18 @@ import { Alert, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import authController from '@/controllers/auth-controller'
 import { useMemoizedFn } from 'ahooks'
 import { AlertCircleIcon } from 'lucide-react'
-import React, { memo, useState } from 'react'
+import { observer } from 'mobx-react-lite'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Navigate } from 'react-router'
 import { toast } from 'sonner'
 import { KiwiLogo } from '../components/kiwi-logo'
-import { useAuth } from '../contexts/AuthContext'
 
-export default memo(() => {
+export default observer(() => {
   const { t } = useTranslation()
-  const { login, register, isAuthenticated } = useAuth()
-
   const [isLoginMode, setIsLoginMode] = useState(true)
   const [userName, setUserName] = useState('')
   const [password, setPassword] = useState('')
@@ -35,9 +34,9 @@ export default memo(() => {
     setLoading(true)
     try {
       if (isLoginMode) {
-        await login(userName, password)
+        await authController.login(userName, password)
       } else {
-        await register(userName, password)
+        await authController.register(userName, password)
         toast.success(t('login.registerSuccess'))
       }
     } catch (err) {
@@ -58,7 +57,7 @@ export default memo(() => {
     setConfirmPassword('')
   })
 
-  if (isAuthenticated) {
+  if (authController.isAuthenticated) {
     return <Navigate to="/" replace />
   }
 

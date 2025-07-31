@@ -1,8 +1,6 @@
 import { deleteApplication, searchApplications } from '@/api/app'
-import { useSidebar } from '@/components/ui/sidebar'
-import { useMemoizedFn } from 'ahooks'
+import { navigate } from '@/lib/utils'
 import { makeAutoObservable, runInAction } from 'mobx'
-import { useNavigate } from 'react-router'
 
 class AppListController {
   appList: Application[] = []
@@ -35,6 +33,7 @@ class AppListController {
     } else {
       sessionStorage.removeItem('newAppId')
     }
+    navigate.replace(`/${app?.id || ''}`)
   }
 
   selectAppById(appId: string) {
@@ -60,20 +59,4 @@ class AppListController {
   }
 }
 
-const appListController = new AppListController()
-export default appListController
-
-export function useSelectApp() {
-  const navigate = useNavigate()
-  const { setOpenMobile } = useSidebar()
-  return useMemoizedFn(
-    (app: Nilable<Application>, isNewApp: boolean = false) => {
-      setOpenMobile(false)
-      if (app?.id === appListController.selectedApp?.id) return
-      appListController.selectApp(app || null, isNewApp)
-      navigate(`/${app?.id || ''}`, {
-        replace: true,
-      })
-    }
-  )
-}
+export default new AppListController()

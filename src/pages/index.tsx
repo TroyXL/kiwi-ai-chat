@@ -1,7 +1,7 @@
 // src/pages/MainPage.tsx
 import { ProtectedRoute } from '@/components/ProtectedRoute'
 import { SidebarProvider } from '@/components/ui/sidebar'
-import appListController from '@/controllers/appListController'
+import appListController from '@/controllers/app-list-controller'
 import { Observer } from 'mobx-react-lite'
 import { memo } from 'react'
 import { Outlet } from 'react-router'

@@ -1,4 +1,4 @@
-import { useSelectApp } from '@/controllers/appListController'
+import { useSelectApp } from '@/hooks/use-select-app'
 import { Plus } from 'lucide-react'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'

@@ -1,14 +1,15 @@
 // src/components/ProtectedRoute.tsx
+import authController from '@/controllers/auth-controller'
+import { observer } from 'mobx-react-lite'
 import React from 'react'
 import { Navigate } from 'react-router'
-import { useAuth } from '../contexts/AuthContext'
 
-export const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { isAuthenticated } = useAuth()
+export const ProtectedRoute = observer(
+  ({ children }: { children: React.ReactNode }) => {
+    if (!authController.isAuthenticated) {
+      return <Navigate to="/login" replace />
+    }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
+    return <>{children}</>
   }
-
-  return <>{children}</>
-}
+)

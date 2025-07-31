@@ -1,5 +1,6 @@
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
+import exchangeController from '@/controllers/exchange-controller'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { cn } from '@/lib/utils'
 import { useCreation } from 'ahooks'
@@ -17,30 +18,21 @@ import {
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 
-type ExchangeAction = (exchangeId: string) => void
-
 type ExchangeProps = {
   exchange: Exchange
-  onCancel: ExchangeAction
-  onRetry: ExchangeAction
 }
 
-export const MessageList = memo(
-  ({
-    exchanges,
-    ...actions
-  }: { exchanges: Exchange[] } & Omit<ExchangeProps, 'exchange'>) => {
-    return (
-      <ul>
-        {exchanges.map(ex => (
-          <MessageBubble key={ex.id} exchange={ex} {...actions} />
-        ))}
-      </ul>
-    )
-  }
-)
+export const MessageList = memo(({ exchanges }: { exchanges: Exchange[] }) => {
+  return (
+    <ul>
+      {exchanges.map(ex => (
+        <MessageBubble key={ex.id} exchange={ex} />
+      ))}
+    </ul>
+  )
+})
 
-const MessageBubble = memo(({ exchange, ...actions }: ExchangeProps) => {
+const MessageBubble = memo(({ exchange }: ExchangeProps) => {
   const splitedPrompts = useCreation(
     () => exchange.prompt?.split('\n').filter(Boolean) || [],
     [exchange.prompt]
@@ -55,12 +47,12 @@ const MessageBubble = memo(({ exchange, ...actions }: ExchangeProps) => {
         </section>
       </div>
 
-      <KiwiResponseView exchange={exchange} {...actions} />
+      <KiwiResponseView exchange={exchange} />
     </li>
   )
 })
 
-const KiwiResponseView = memo(({ exchange, ...actions }: ExchangeProps) => {
+const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
   const isMobile = useIsMobile()
   const { t } = useTranslation()
   const isSuccess = exchange.status === 'SUCCESSFUL'
@@ -70,7 +62,7 @@ const KiwiResponseView = memo(({ exchange, ...actions }: ExchangeProps) => {
 
   return (
     <section className="pt-8 flex flex-col">
-      <KiwiResponseStatus exchange={exchange} {...actions} />
+      <KiwiResponseStatus exchange={exchange} />
 
       <ul>
         {exchange.stages?.map(stage => (
@@ -124,7 +116,7 @@ const KiwiResponseView = memo(({ exchange, ...actions }: ExchangeProps) => {
 })
 
 const KiwiResponseStatus = memo(
-  ({ exchange, onRetry, onCancel }: ExchangeProps) => {
+  ({ exchange }: ExchangeProps) => {
     const { t } = useTranslation()
 
     const isRunning =
@@ -159,12 +151,18 @@ const KiwiResponseStatus = memo(
           </div>
 
           {isRunning && (
-            <Button size="xs" onClick={() => onCancel(exchange.id)}>
+            <Button
+              size="xs"
+              onClick={() => exchangeController.cancelGeneration(exchange.id)}
+            >
               {t('exchange.cancelAction')}
             </Button>
           )}
           {isFailed && (
-            <Button size="xs" onClick={() => onRetry(exchange.id)}>
+            <Button
+              size="xs"
+              onClick={() => exchangeController.retryGeneration(exchange.id)}
+            >
               {t('exchange.retryAction')}
             </Button>
           )}

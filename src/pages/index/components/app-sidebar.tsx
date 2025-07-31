@@ -1,6 +1,6 @@
-import appListController, {
-  useSelectApp,
-} from '@/controllers/appListController'
+import appListController from '@/controllers/app-list-controller'
+import authController from '@/controllers/auth-controller'
+import { useSelectApp } from '@/hooks/use-select-app'
 import { useRequest } from 'ahooks'
 import { Archive, LogOut } from 'lucide-react'
 import { observer } from 'mobx-react-lite'
@@ -20,14 +20,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '../../../components/ui/sidebar'
-import { useAuth } from '../../../contexts/AuthContext'
 import { BetaTip } from './beta-tip'
 import { CreateAppButton } from './create-app-button'
 
 export const AppSidebar = observer(() => {
   const { t } = useTranslation()
   const { appId } = useParams()
-  const { logout } = useAuth()
   const handleSelectApp = useSelectApp()
 
   const { loading } = useRequest(async () => {
@@ -83,7 +81,11 @@ export const AppSidebar = observer(() => {
         )}
       </SidebarContent>
       <SidebarFooter className="flex flex-row gap-2">
-        <Button className="w-0 flex-1" variant="outline" onClick={logout}>
+        <Button
+          className="w-0 flex-1"
+          variant="outline"
+          onClick={() => authController.logout()}
+        >
           <LogOut />
           {t('sidebar.logout')}
         </Button>

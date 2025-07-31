@@ -8,9 +8,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { SidebarTrigger } from '@/components/ui/sidebar'
-import appListController, {
-  useSelectApp,
-} from '@/controllers/appListController'
+import appListController from '@/controllers/app-list-controller'
+import { useSelectApp } from '@/hooks/use-select-app'
 import { cn } from '@/lib/utils'
 import { useBoolean, useRequest } from 'ahooks'
 import { Trash2 } from 'lucide-react'

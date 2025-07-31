@@ -5,29 +5,29 @@ export type StorageKey = {
   'kiwi:ui:beta-tip-shown': boolean
 }
 
-export function getStorage(
-  key: keyof StorageKey
-): StorageKey[keyof StorageKey] | undefined {
+export type StorageKeyType = keyof StorageKey
+
+export function getStorage<K extends StorageKeyType>(
+  key: K
+): StorageKey[K] | undefined {
   const data = localStorage.getItem(key)
   if (!data) return
   try {
-    return JSON.parse(data) as StorageKey[keyof StorageKey]
+    return JSON.parse(data) as StorageKey[K]
   } catch {
-    return data as StorageKey[keyof StorageKey]
+    return data as unknown as StorageKey[K]
   }
 }
 
-export function setStorage(
-  key: keyof StorageKey,
-  value: StorageKey[keyof StorageKey]
+export function setStorage<K extends StorageKeyType>(
+  key: K,
+  value: StorageKey[K]
 ) {
   if (isUndefined(value)) removeStorage(key)
-  else {
-    if (isString(value)) localStorage.setItem(key, value)
-    else localStorage.setItem(key, JSON.stringify(value))
-  }
+  else if (isString(value)) localStorage.setItem(key, value)
+  else localStorage.setItem(key, JSON.stringify(value))
 }
 
-export function removeStorage(key: keyof StorageKey) {
+export function removeStorage<K extends StorageKeyType>(key: K) {
   localStorage.removeItem(key)
 }
