@@ -13,6 +13,8 @@ import { useTranslation } from 'react-i18next'
 export const ChatInput = observer(({ className }: { className?: string }) => {
   const { t } = useTranslation()
   const $textarea = useRef<HTMLTextAreaElement>(null)
+  const disabled =
+    exchangeController.isGenerating || exchangeController.isReverting
 
   const textareaPlaceholder = useCreation(
     () =>
@@ -25,7 +27,7 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
   )
 
   const handleSendMessageOrCancelGenerate = useMemoizedFn(() => {
-    if (!$textarea.current || exchangeController.isGenerating) return
+    if (!$textarea.current || disabled) return
     const message = $textarea.current.value.trim()
     if (!message) return
     $textarea.current.value = ''
@@ -55,11 +57,7 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
     // 如果同时按下了修饰键（meta、ctrl、shift），则不处理Enter事件
     if (e.metaKey || e.ctrlKey || e.shiftKey) return
 
-    if (
-      exchangeController.isGenerating ||
-      document.activeElement !== $textarea.current
-    )
-      return
+    if (disabled || document.activeElement !== $textarea.current) return
 
     // 阻止默认换行行为并发送消息
     e.preventDefault()
@@ -78,10 +76,10 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
         <Button
           size="icon"
           className="absolute right-3 bottom-3 size-8"
-          disabled={exchangeController.isGenerating}
+          disabled={disabled}
           onClick={handleSendMessageOrCancelGenerate}
         >
-          {exchangeController.isGenerating ? <Spinner /> : <Send />}
+          {disabled ? <Spinner /> : <Send />}
         </Button>
       </section>
 

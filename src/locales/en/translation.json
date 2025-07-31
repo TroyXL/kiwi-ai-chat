@@ -52,7 +52,8 @@
     "generationFailed": "Generation failed: {{error}}",
     "connectionError": "A connection error occurred.",
     "cancelAction": "Cancel",
-    "retryAction": "Retry"
+    "retryAction": "Retry",
+    "revertAction": "Revert"
   },
   "enums": {
     "status": {
@@ -60,7 +61,8 @@
       "GENERATING": "Generating",
       "SUCCESSFUL": "Successful",
       "FAILED": "Failed",
-      "CANCELLED": "Cancelled"
+      "CANCELLED": "Cancelled",
+      "REVERTED": "Reverted"
     },
     "stageStatus": {
       "GENERATING": "Generating",

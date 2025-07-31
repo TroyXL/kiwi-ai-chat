@@ -1,6 +1,10 @@
+import { Spinner } from '@/components/spinner'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
-import exchangeController from '@/controllers/exchange-controller'
+import exchangeController, {
+  STATUSES_FINISHED,
+  STATUSES_RUNNING,
+} from '@/controllers/exchange-controller'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { cn } from '@/lib/utils'
 import { useCreation } from 'ahooks'
@@ -15,6 +19,7 @@ import {
   MonitorX,
   PencilRuler,
 } from 'lucide-react'
+import { observer } from 'mobx-react-lite'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -55,10 +60,24 @@ const MessageBubble = memo(({ exchange }: ExchangeProps) => {
 const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
   const isMobile = useIsMobile()
   const { t } = useTranslation()
-  const isSuccess = exchange.status === 'SUCCESSFUL'
-  const isFailed = exchange.status === 'FAILED'
-  const isCancelled = exchange.status === 'CANCELLED'
+
   const hasStages = !!exchange.stages?.length
+
+  const statusLabel = useCreation(() => {
+    if (exchange.status === 'SUCCESSFUL') {
+      return t('exchange.processComplete')
+    }
+    if (exchange.status === 'FAILED') {
+      return t('exchange.generationFailed', { error: exchange.errorMessage })
+    }
+    if (exchange.status === 'CANCELLED') {
+      return t(`enums.status.${exchange.status}` as const, exchange.status)
+    }
+    if (exchange.status === 'REVERTED') {
+      return t(`enums.status.${exchange.status}` as const, exchange.status)
+    }
+    return t('exchange.processing')
+  }, [exchange.status])
 
   return (
     <section className="pt-8 flex flex-col">
@@ -78,15 +97,7 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
           !isMobile && 'flex justify-between items-center gap-4'
         )}
       >
-        <p className="font-medium">
-          {isSuccess
-            ? t('exchange.processComplete')
-            : isFailed
-            ? t('exchange.generationFailed', { error: exchange.errorMessage })
-            : isCancelled
-            ? t(`enums.status.${exchange.status}` as const, exchange.status)
-            : t('exchange.processing')}
-        </p>
+        <p className="font-medium">{statusLabel}</p>
 
         <div className={isMobile ? ' space-x-3 mt-3 text-right' : 'space-x-2'}>
           {exchange.managementURL && (
@@ -115,41 +126,50 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
   )
 })
 
-const KiwiResponseStatus = memo(
-  ({ exchange }: ExchangeProps) => {
-    const { t } = useTranslation()
+const KiwiResponseStatus = observer(({ exchange }: ExchangeProps) => {
+  const { t } = useTranslation()
 
-    const isRunning =
-      exchange.status === 'PLANNING' || exchange.status === 'GENERATING'
-    const isFailed = exchange.status === 'FAILED'
+  const isRunning = STATUSES_RUNNING.includes(exchange.status)
+  const isFailed = exchange.status === 'FAILED'
+  const allowRevert =
+    // 不存在活跃中的记录
+    !exchangeController.activeExchange &&
+    // 历史记录中的最后一项
+    exchange ===
+      exchangeController.exchangeHistories[
+        exchangeController.exchangeHistories.length - 1
+      ] &&
+    // 状态为已结束
+    STATUSES_FINISHED.includes(exchange.status)
 
-    let icon = <Hourglass size={20} />
-    switch (exchange.status) {
-      case 'GENERATING':
-        icon = <ChevronsLeftRightEllipsis size={20} />
-        break
-      case 'SUCCESSFUL':
-        icon = <MonitorCheck size={20} />
-        break
-      case 'FAILED':
-        icon = <MonitorX size={20} />
-        break
-      case 'CANCELLED':
-        icon = <MonitorOff size={20} />
-        break
-    }
+  let icon = <Hourglass size={20} />
+  switch (exchange.status) {
+    case 'GENERATING':
+      icon = <ChevronsLeftRightEllipsis size={20} />
+      break
+    case 'SUCCESSFUL':
+      icon = <MonitorCheck size={20} />
+      break
+    case 'FAILED':
+      icon = <MonitorX size={20} />
+      break
+    case 'CANCELLED':
+      icon = <MonitorOff size={20} />
+      break
+  }
 
-    return (
-      <Alert variant="default">
-        <AlertTitle className="flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            {icon}
-            <p>
-              {t('exchange.statusLabel')}
-              {t(`enums.status.${exchange.status}` as const, exchange.status)}
-            </p>
-          </div>
+  return (
+    <Alert variant="default">
+      <AlertTitle className="flex justify-between items-center">
+        <div className="flex items-center gap-4">
+          {icon}
+          <p>
+            {t('exchange.statusLabel')}
+            {t(`enums.status.${exchange.status}` as const, exchange.status)}
+          </p>
+        </div>
 
+        <div className="space-x-2">
           {isRunning && (
             <Button
               size="xs"
@@ -166,12 +186,23 @@ const KiwiResponseStatus = memo(
               {t('exchange.retryAction')}
             </Button>
           )}
-        </AlertTitle>
-      </Alert>
-    )
-  },
-  (prev, next) => prev.exchange.status === next.exchange.status
-)
+          {allowRevert && (
+            <Button
+              size="xs"
+              onClick={() => exchangeController.revertGeneration(exchange.id)}
+            >
+              {exchangeController.isReverting ? (
+                <Spinner />
+              ) : (
+                t('exchange.revertAction')
+              )}
+            </Button>
+          )}
+        </div>
+      </AlertTitle>
+    </Alert>
+  )
+})
 
 const KiwiResponseStage = memo(({ stage }: { stage: Stage }) => {
   const { t } = useTranslation()

@@ -38,7 +38,13 @@ interface Exchange {
   userId: string
   first: boolean
   prompt: string
-  status: 'PLANNING' | 'GENERATING' | 'SUCCESSFUL' | 'FAILED' | 'CANCELLED'
+  status:
+    | 'PLANNING'
+    | 'GENERATING'
+    | 'SUCCESSFUL'
+    | 'FAILED'
+    | 'CANCELLED'
+    | 'REVERTED'
   stages: Stage[]
   errorMessage: string | null
   productURL: string | null

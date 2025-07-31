@@ -4,6 +4,7 @@ import {
   getApplication,
   reconnectExchange,
   retryGeneration as retryGenerationApi,
+  revertGeneration as revertGenerationApi,
   searchExchanges,
 } from '@/api/app'
 import i18n from '@/i18n'
@@ -12,10 +13,12 @@ import { groupBy } from 'lodash'
 import { makeAutoObservable, runInAction } from 'mobx'
 import appListController from './app-list-controller'
 
-const RUNNING_STATUSES = ['PLANNING', 'GENERATING']
+export const STATUSES_RUNNING = ['PLANNING', 'GENERATING']
+export const STATUSES_FINISHED = ['SUCCESSFUL', 'FAILED']
 
 class ExchangeController {
   isGenerating = false
+  isReverting = false
   exchangeHistories: Exchange[] = []
   activeExchange: Nullable<Exchange> = null
 
@@ -85,11 +88,9 @@ class ExchangeController {
     )
     if (!exchangeToRetry || this.isGenerating) return
 
-    runInAction(() => {
-      this.exchangeHistories = this.exchangeHistories.filter(
-        ex => ex.id !== exchangeId
-      )
-    })
+    this.exchangeHistories = this.exchangeHistories.filter(
+      ex => ex.id !== exchangeId
+    )
     this.isGenerating = true
     this.activeExchange = { ...exchangeToRetry, status: 'PLANNING' }
     this.abortController = new AbortController()
@@ -104,6 +105,22 @@ class ExchangeController {
       },
       this.abortController.signal
     )
+  }
+
+  async revertGeneration(exchangeId: string) {
+    this.isReverting = true
+    try {
+      await revertGenerationApi(exchangeId)
+      runInAction(
+        () =>
+          (this.exchangeHistories = this.exchangeHistories.map(ex => {
+            if (ex.id !== exchangeId) return ex
+            return { ...ex, status: 'REVERTED' as const }
+          }))
+      )
+    } finally {
+      this.isReverting = false
+    }
   }
 
   async fetchExchangeHistory() {
@@ -122,7 +139,7 @@ class ExchangeController {
       pageSize: 100,
     })
     const groupedExchanges = groupBy(data.items, ex => {
-      return RUNNING_STATUSES.includes(ex.status) ? 'active' : 'completed'
+      return STATUSES_RUNNING.includes(ex.status) ? 'active' : 'completed'
     })
     const exchangeToReconnect = groupedExchanges['active']?.[0]
 

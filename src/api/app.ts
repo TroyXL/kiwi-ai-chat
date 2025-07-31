@@ -178,3 +178,10 @@ export const retryGeneration = (
     body: { exchangeId: params.exchangeId },
   })
 }
+
+export const revertGeneration = (exchangeId: string) => {
+  return apiClient<void>('/generate/revert', {
+    method: 'POST',
+    body: { exchangeId },
+  })
+}

@@ -50,7 +50,8 @@
     "generationFailed": "生成失败: {{error}}",
     "connectionError": "发生连接错误。",
     "cancelAction": "取消",
-    "retryAction": "重试"
+    "retryAction": "重试",
+    "revertAction": "撤回"
   },
   "enums": {
     "status": {
@@ -58,7 +59,8 @@
       "GENERATING": "生成中",
       "SUCCESSFUL": "成功",
       "FAILED": "失败",
-      "CANCELLED": "已取消"
+      "CANCELLED": "已取消",
+      "REVERTED": "已撤回"
     },
     "stageStatus": {
       "GENERATING": "生成中",
