@@ -73,10 +73,9 @@ export const AppSidebar = observer(() => {
             </SidebarMenu>
           </>
         ) : (
-          <div className="flex flex-col items-center p-4 gap-2 border border-dashed rounded-md text-muted-foreground">
+          <div className="flex flex-col items-center p-4 mx-2 gap-2 border border-dashed rounded-md text-muted-foreground bg-muted">
             <Archive strokeWidth={1} />
             <p className="text-xs">{t('sidebar.noApps')}</p>
-            <CreateAppButton className="mt-4" small highlight={false} />
           </div>
         )}
       </SidebarContent>

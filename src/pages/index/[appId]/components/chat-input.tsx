@@ -4,7 +4,7 @@ import { Textarea } from '@/components/ui/textarea'
 import appListController from '@/controllers/app-list-controller'
 import exchangeController from '@/controllers/exchange-controller'
 import { cn } from '@/lib/utils'
-import { useCreation, useKeyPress, useMemoizedFn } from 'ahooks'
+import { useKeyPress, useMemoizedFn } from 'ahooks'
 import { Send } from 'lucide-react'
 import { observer } from 'mobx-react-lite'
 import { useRef } from 'react'
@@ -16,15 +16,11 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
   const disabled =
     exchangeController.isGenerating || exchangeController.isReverting
 
-  const textareaPlaceholder = useCreation(
-    () =>
-      appListController.selectedApp
-        ? t('chat.placeholderWithApp', {
-            appName: appListController.selectedApp.name,
-          })
-        : t('chat.placeholderNewApp'),
-    [appListController.selectedApp]
-  )
+  const textareaPlaceholder = appListController.selectedApp
+    ? t('chat.placeholderWithApp', {
+        appName: appListController.selectedApp.name,
+      })
+    : t('chat.placeholderNewApp')
 
   const handleSendMessageOrCancelGenerate = useMemoizedFn(() => {
     if (!$textarea.current || disabled) return

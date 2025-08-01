@@ -165,7 +165,7 @@ class ExchangeController {
     })
   }
 
-  async receiveSseMessage(exchangeData: Exchange, sentPrompt?: string) {
+  private async receiveSseMessage(exchangeData: Exchange, sentPrompt?: string) {
     if (!appListController.selectedApp && exchangeData.appId) {
       const newApp = await getApplication(exchangeData.appId)
       if (newApp) {
@@ -178,13 +178,15 @@ class ExchangeController {
     if (
       sessionStorage.getItem('newAppId') === appListController.selectedApp?.id
     ) {
-      const backendStage = exchangeData.stages.find(s => s.type === 'BACKEND')
-      if (backendStage?.status === 'GENERATING') {
-        getApplication(exchangeData.appId).then(updatedApp => {
-          if (updatedApp) {
-            appListController.updateApp(updatedApp)
-          }
-        })
+      if (
+        exchangeData.stages.some(
+          s => s.type === 'BACKEND' && s.status === 'GENERATING'
+        )
+      ) {
+        const updatedApp = await getApplication(exchangeData.appId)
+        if (updatedApp) {
+          appListController.updateApp(updatedApp)
+        }
         sessionStorage.removeItem('newAppId')
       }
     }
@@ -203,12 +205,12 @@ class ExchangeController {
     }
   }
 
-  receiveSseClose() {
+  private receiveSseClose() {
     this.isGenerating = false
     this.abortController = null
   }
 
-  receiveSseError(error: unknown) {
+  private receiveSseError(error: unknown) {
     const aborted = this.abortController?.signal.aborted
     this.isGenerating = false
     this.abortController = null
@@ -223,8 +225,9 @@ class ExchangeController {
       : null
   }
 
-  terminateSseMessage(exchangeData: Exchange) {
-    this.exchangeHistories = [...this.exchangeHistories, exchangeData]
+  terminateSseMessage(exchangeData?: Exchange) {
+    if (exchangeData)
+      this.exchangeHistories = [...this.exchangeHistories, exchangeData]
     this.activeExchange = null
     this.isGenerating = false
     this.abortController?.abort()

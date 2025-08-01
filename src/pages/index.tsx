@@ -18,7 +18,7 @@ export default memo(() => {
             <NavHeader />
             <Observer>
               {() =>
-                appListController.appList.length ? (
+                appListController.initialized ? (
                   <Outlet key={appListController.selectedApp?.id} />
                 ) : null
               }

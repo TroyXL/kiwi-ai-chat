@@ -3,6 +3,7 @@ import { navigate } from '@/lib/utils'
 import { makeAutoObservable, runInAction } from 'mobx'
 
 class AppListController {
+  initialized = false
   appList: Application[] = []
   selectedApp: Nullable<Application> = null
 
@@ -23,7 +24,7 @@ class AppListController {
       runInAction(() => (this.appList = []))
       console.error('Failed to fetch applications:', error)
     }
-    return this.appList
+    runInAction(() => (this.initialized = true))
   }
 
   selectApp(app: Nullable<Application>, isNewApp = false) {
@@ -44,12 +45,14 @@ class AppListController {
   }
 
   addApp(app: Application) {
-    this.appList = [app, ...this.appList]
+    if (!this.appList.some(appItem => appItem.id === app.id))
+      this.appList = [app, ...this.appList]
   }
-  updateApp(app: Application) {
+  updateApp(nextApp: Application) {
     this.appList = this.appList.map(appItem =>
-      appItem.id === app.id ? app : appItem
+      appItem.id === nextApp.id ? nextApp : appItem
     )
+    if (nextApp.id === this.selectedApp?.id) this.selectedApp = nextApp
   }
   async removeAppById(appId: string) {
     await deleteApplication(appId)

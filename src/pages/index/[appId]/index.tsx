@@ -34,7 +34,7 @@ const ChatView = observer(() => {
   )
 
   useUnmount(() => {
-    exchangeController.abortController?.abort()
+    exchangeController.terminateSseMessage()
     disposeReaction()
   })
 
