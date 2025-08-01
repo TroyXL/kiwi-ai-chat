@@ -14,8 +14,12 @@ import { MessageList } from './components/message-exchange'
 const ChatView = observer(() => {
   const { t } = useTranslation()
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const { loading: historyLoading } = useRequest(() =>
-    exchangeController.fetchExchangeHistory()
+  const { loading: historyLoading } = useRequest(
+    () => exchangeController.fetchExchangeHistory(),
+    {
+      retryInterval: 300,
+      retryCount: 5,
+    }
   )
 
   const disposeReaction = useCreation(
