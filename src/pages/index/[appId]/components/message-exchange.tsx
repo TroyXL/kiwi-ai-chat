@@ -219,7 +219,7 @@ const KiwiResponseStage = memo(({ stage }: { stage: Stage }) => {
   return (
     <li className="relative ml-12 border-l-2 pl-4 py-3">
       <div className="flex items-center -ml-4">
-        <span className="p-1.5 bg-muted text-foreground rounded-full -translate-x-1/2">
+        <span className="p-1.5 bg-background text-foreground rounded-full -translate-x-1/2">
           {icon}
         </span>
         <p className="flex-1 w-0 flex justify-between">

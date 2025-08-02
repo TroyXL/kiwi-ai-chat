@@ -24,7 +24,7 @@ export const LanguageSwitcher = memo(
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            size={simple ? 'icon' : void 0}
+            size={simple ? 'icon-sm' : void 0}
             className={className}
           >
             <Languages />

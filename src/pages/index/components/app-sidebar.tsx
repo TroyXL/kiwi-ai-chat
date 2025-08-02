@@ -1,3 +1,4 @@
+import { ThemeToggle } from '@/components/theme-toggle'
 import appListController from '@/controllers/app-list-controller'
 import authController from '@/controllers/auth-controller'
 import { useSelectApp } from '@/hooks/use-select-app'
@@ -37,7 +38,7 @@ export const AppSidebar = observer(() => {
   const selectedApp = appListController.selectedApp
 
   return (
-    <Sidebar>
+    <Sidebar className="border-none">
       <SidebarHeader>
         <div className="flex items-center p-2">
           <KiwiLogo />
@@ -83,11 +84,13 @@ export const AppSidebar = observer(() => {
         <Button
           className="w-0 flex-1"
           variant="outline"
+          size="sm"
           onClick={() => authController.logout()}
         >
           <LogOut />
           {t('sidebar.logout')}
         </Button>
+        <ThemeToggle />
         <LanguageSwitcher simple />
       </SidebarFooter>
     </Sidebar>

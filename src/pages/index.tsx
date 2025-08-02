@@ -12,17 +12,19 @@ export default memo(() => {
   return (
     <ProtectedRoute>
       <SidebarProvider>
-        <div className="full-screen flex">
+        <div className="full-screen flex bg-sidebar">
           <AppSidebar />
-          <main className="w-0 h-full flex-1 flex flex-col">
-            <NavHeader />
-            <Observer>
-              {() =>
-                appListController.initialized ? (
-                  <Outlet key={appListController.selectedApp?.id} />
-                ) : null
-              }
-            </Observer>
+          <main className="w-0 flex-1 p-2">
+            <div className="w-full h-full flex flex-col md:border md:rounded-lg md:shadow-md bg-muted">
+              <NavHeader />
+              <Observer>
+                {() =>
+                  appListController.initialized ? (
+                    <Outlet key={appListController.selectedApp?.id} />
+                  ) : null
+                }
+              </Observer>
+            </div>
           </main>
         </div>
       </SidebarProvider>

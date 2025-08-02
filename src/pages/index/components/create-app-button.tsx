@@ -1,5 +1,6 @@
 import { useSelectApp } from '@/hooks/use-select-app'
-import { Plus } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { PackagePlus } from 'lucide-react'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../../components/ui/button'
@@ -9,8 +10,12 @@ export const CreateAppButton = memo(({ className }: { className?: string }) => {
   const handleSelectApp = useSelectApp()
 
   return (
-    <Button className={className} onClick={() => handleSelectApp(null)}>
-      <Plus />
+    <Button
+      className={cn('justify-start gap-2 !px-3', className)}
+      size="sm"
+      onClick={() => handleSelectApp(null)}
+    >
+      <PackagePlus />
       <span>{t('sidebar.newApp')}</span>
     </Button>
   )
