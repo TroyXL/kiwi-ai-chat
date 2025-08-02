@@ -1,3 +1,4 @@
+import { MdRenderer } from '@/components/md-renderer'
 import { Spinner } from '@/components/spinner'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -38,18 +39,13 @@ export const MessageList = memo(({ exchanges }: { exchanges: Exchange[] }) => {
 })
 
 const MessageBubble = memo(({ exchange }: ExchangeProps) => {
-  const splitedPrompts = useCreation(
-    () => exchange.prompt?.split('\n').filter(Boolean) || [],
-    [exchange.prompt]
-  )
   return (
     <li>
       <div className="flex justify-end pt-8">
-        <section className="px-4 py-3 rounded-md rounded-tr-none bg-blue-600/20 text-foreground">
-          {splitedPrompts.map((prompt, index) => (
-            <p key={index}>{prompt}</p>
-          ))}
-        </section>
+        <MdRenderer
+          className="px-4 py-3 rounded-md rounded-tr-none bg-blue-600/20 text-foreground"
+          content={exchange.prompt}
+        />
       </div>
 
       <KiwiResponseView exchange={exchange} />
