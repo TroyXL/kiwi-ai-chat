@@ -2,7 +2,7 @@ type Nullable<T> = T | null
 type Optional<T> = T | undefined
 type Nilable<T> = T | null | undefined
 
-type ThemeMode = 'light' | 'dark' | 'auto'
+type Theme = 'light' | 'dark' | 'system'
 
 interface SearchResult<T> {
   items: T[]

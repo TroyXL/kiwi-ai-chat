@@ -24,7 +24,7 @@ export const LanguageSwitcher = memo(
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
-            size={simple ? 'icon' : void 0}
+            size={simple ? 'icon-sm' : void 0}
             className={className}
           >
             <Languages />
@@ -34,20 +34,14 @@ export const LanguageSwitcher = memo(
 
         <DropdownMenuContent align="end">
           <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <div
-                className="w-full flex justify-between items-center"
-                onClick={() => handleSwitchLanguage('en')}
-              >
+            <DropdownMenuItem onClick={() => handleSwitchLanguage('en')}>
+              <div className="w-full flex justify-between items-center">
                 <span>English</span>
                 {isEn && <Check className="text-foreground" />}
               </div>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <div
-                className="w-full flex justify-between items-center"
-                onClick={() => handleSwitchLanguage('zh')}
-              >
+            <DropdownMenuItem onClick={() => handleSwitchLanguage('zh')}>
+              <div className="w-full flex justify-between items-center">
                 <span>中文</span>
                 {!isEn && <Check className="text-foreground" />}
               </div>

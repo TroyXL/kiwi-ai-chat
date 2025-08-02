@@ -4,6 +4,11 @@
     "cancel": "Cancel",
     "close": "Close"
   },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
   "betaTip": {
     "title": "Kiwi AI Beta Version",
     "description": "Thank you for using Kiwi AI! Please note that the current version is still in development stage, and we provide all features free for you to try.\n\nIf you encounter any issues or have any suggestions during use, please feel free to provide feedback.",

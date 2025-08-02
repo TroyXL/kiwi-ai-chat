@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import appListController from '@/controllers/app-list-controller'
 import { useSelectApp } from '@/hooks/use-select-app'
@@ -60,7 +61,13 @@ export const NavHeader = observer(() => {
         <div className="flex items-center gap-2">
           <SidebarTrigger />
           {selectedApp && (
-            <h2 className="text-base font-medium">{selectedApp.name}</h2>
+            <>
+              <Separator
+                orientation="vertical"
+                className="mr-1.5 data-[orientation=vertical]:h-4"
+              />
+              <h2 className="text-base font-medium">{selectedApp.name}</h2>
+            </>
           )}
         </div>
         {selectedApp && (
