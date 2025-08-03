@@ -80,7 +80,7 @@ export const AppSidebar = observer(() => {
         )}
       </SidebarContent>
       <SidebarFooter>
-        <div className="flex flex-row gap-2 p-2 shadow-2xl rounded-xl bg-background">
+        <div className="flex flex-row gap-2 p-2 shadow-2xl rounded-xl bg-background border border-border/80">
           <ThemeToggle />
           <LanguageSwitcher simple />
           <div className="flex-1" />
