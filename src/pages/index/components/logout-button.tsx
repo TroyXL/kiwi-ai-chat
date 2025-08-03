@@ -18,7 +18,7 @@ export const LogoutButton = memo(() => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          className="border-none shadow-md"
+          className="!border-border/80 shadow-md"
           variant="outline"
           size="icon-sm"
           title={t('sidebar.logout')}

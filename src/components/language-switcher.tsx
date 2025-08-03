@@ -24,7 +24,7 @@ export const LanguageSwitcher = memo(
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            className={cn('border-none shadow-md', className)}
+            className={cn('!border-border/80 shadow-md', className)}
             variant="outline"
             size={simple ? 'icon-sm' : 'sm'}
           >
