@@ -79,11 +79,13 @@ export const AppSidebar = observer(() => {
           </div>
         )}
       </SidebarContent>
-      <SidebarFooter className="flex flex-row gap-2">
-        <ThemeToggle />
-        <LanguageSwitcher simple />
-        <div className="flex-1" />
-        <LogoutButton />
+      <SidebarFooter>
+        <div className="flex flex-row gap-2 p-2 shadow-2xl rounded-xl bg-background">
+          <ThemeToggle />
+          <LanguageSwitcher simple />
+          <div className="flex-1" />
+          <LogoutButton />
+        </div>
       </SidebarFooter>
     </Sidebar>
   )

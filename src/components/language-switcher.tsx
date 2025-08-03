@@ -1,3 +1,4 @@
+import { cn } from '@/lib/utils'
 import { useMemoizedFn } from 'ahooks'
 import { Check, Languages } from 'lucide-react'
 import { memo, useMemo } from 'react'
@@ -23,9 +24,9 @@ export const LanguageSwitcher = memo(
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
+            className={cn('border-none shadow-md', className)}
             variant="outline"
             size={simple ? 'icon-sm' : 'sm'}
-            className={className}
           >
             <Languages />
             {!simple && <span>{isEn ? 'English' : '中文'}</span>}
