@@ -95,7 +95,7 @@ export function ThemeToggle({ className }: { className?: string }) {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="start">
         <DropdownMenuItem onClick={() => setTheme('light')}>
           <div className="w-full flex justify-between items-center">
             <span>{t('theme.light')}</span>

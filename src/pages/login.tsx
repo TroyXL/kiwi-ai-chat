@@ -1,4 +1,5 @@
 import { LanguageSwitcher } from '@/components/language-switcher'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { Alert, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -146,7 +147,10 @@ export default observer(() => {
           </Alert>
         )}
       </div>
-      <LanguageSwitcher className="fixed top-4 right-4" />
+      <div className="fixed top-4 right-4 space-x-2">
+        <ThemeToggle />
+        <LanguageSwitcher />
+      </div>
     </>
   )
 })

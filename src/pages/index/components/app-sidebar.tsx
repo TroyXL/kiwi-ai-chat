@@ -1,16 +1,14 @@
 import { ThemeToggle } from '@/components/theme-toggle'
 import appListController from '@/controllers/app-list-controller'
-import authController from '@/controllers/auth-controller'
 import { useSelectApp } from '@/hooks/use-select-app'
 import { useRequest } from 'ahooks'
-import { Archive, LogOut } from 'lucide-react'
+import { Archive } from 'lucide-react'
 import { observer } from 'mobx-react-lite'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
 import { KiwiLogo } from '../../../components/kiwi-logo'
 import { LanguageSwitcher } from '../../../components/language-switcher'
 import { Spinner } from '../../../components/spinner'
-import { Button } from '../../../components/ui/button'
 import {
   Sidebar,
   SidebarContent,
@@ -23,6 +21,7 @@ import {
 } from '../../../components/ui/sidebar'
 import { BetaTip } from './beta-tip'
 import { CreateAppButton } from './create-app-button'
+import { LogoutButton } from './logout-button'
 
 export const AppSidebar = observer(() => {
   const { t } = useTranslation()
@@ -81,17 +80,10 @@ export const AppSidebar = observer(() => {
         )}
       </SidebarContent>
       <SidebarFooter className="flex flex-row gap-2">
-        <Button
-          className="w-0 flex-1"
-          variant="outline"
-          size="sm"
-          onClick={() => authController.logout()}
-        >
-          <LogOut />
-          {t('sidebar.logout')}
-        </Button>
         <ThemeToggle />
         <LanguageSwitcher simple />
+        <div className="flex-1" />
+        <LogoutButton />
       </SidebarFooter>
     </Sidebar>
   )

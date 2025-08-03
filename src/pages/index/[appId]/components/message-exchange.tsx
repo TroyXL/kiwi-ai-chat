@@ -19,6 +19,7 @@ import {
   MonitorOff,
   MonitorX,
   PencilRuler,
+  Undo2,
 } from 'lucide-react'
 import { observer } from 'mobx-react-lite'
 import { memo } from 'react'
@@ -151,6 +152,9 @@ const KiwiResponseStatus = observer(({ exchange }: ExchangeProps) => {
       break
     case 'CANCELLED':
       icon = <MonitorOff size={20} />
+      break
+    case 'REVERTED':
+      icon = <Undo2 size={20} />
       break
   }
 

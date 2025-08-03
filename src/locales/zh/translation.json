@@ -33,15 +33,16 @@
   "sidebar": {
     "applications": "应用列表",
     "newApp": "新建应用",
-    "logout": "登出",
+    "logout": "退出",
+    "logoutTitle": "确认退出",
     "loading": "加载中...",
     "noApps": "暂无应用",
     "deleteTitle": "删除应用",
-    "deleteConfirmMessage": "您确定要永久删除应用 “{{appName}}” 吗？此操作无法撤销。",
+    "deleteConfirmMessage": "您确定要永久删除应用 \"{{appName}}\" 吗？此操作无法撤销。",
     "deleteConfirmButton": "删除"
   },
   "chat": {
-    "placeholderWithApp": "描述对 “{{appName}}” 的更改...",
+    "placeholderWithApp": "描述对 \"{{appName}}\" 的更改...",
     "placeholderNewApp": "描述您想创建的新应用...",
     "generationNote": "请注意：生成过程可能需要 5-10 分钟。您可以安全地关闭此窗口，该过程将继续在后台运行。"
   },
