@@ -34,6 +34,7 @@
     "applications": "Applications",
     "newApp": "New Application",
     "logout": "Logout",
+    "logoutTitle": "Confirm Logout",
     "loading": "Loading...",
     "noApps": "No applications yet.",
     "deleteTitle": "Delete Application",
