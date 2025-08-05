@@ -107,16 +107,6 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
               {t('exchange.visitManagement')}
             </Button>
           )}
-          {exchange.productURL && (
-            <Button
-              size="xs"
-              onClick={() => {
-                window.open(exchange.productURL!, '_blank')
-              }}
-            >
-              {t('exchange.visitApp')}
-            </Button>
-          )}
         </div>
       </div>
     </section>

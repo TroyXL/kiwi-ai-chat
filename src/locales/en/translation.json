@@ -53,6 +53,8 @@
     "attemptLabel": "Attempt",
     "processing": "Processing",
     "processComplete": "Process complete!",
+    "deleteApp": "Delete Application",
+    "togglePreview": "Toggle Preview",
     "visitApp": "Visit Application",
     "visitManagement": "Visit Management",
     "generationFailed": "Generation failed: {{error}}",

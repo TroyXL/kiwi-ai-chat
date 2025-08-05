@@ -52,6 +52,8 @@
     "attemptLabel": "尝试",
     "processing": "处理中...",
     "processComplete": "处理完成！",
+    "deleteApp": "删除应用",
+    "togglePreview": "显示/隐藏预览",
     "visitApp": "访问应用",
     "visitManagement": "访问管理后台",
     "generationFailed": "生成失败: {{error}}",

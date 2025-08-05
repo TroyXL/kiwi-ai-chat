@@ -15,7 +15,7 @@ export default memo(() => {
         <div className="full-screen flex bg-sidebar">
           <AppSidebar />
           <main className="w-0 flex-1 md:p-2">
-            <div className="w-full h-full flex flex-col md:border md:rounded-lg md:shadow-md bg-muted">
+            <div className="w-full h-full flex flex-col md:border md:rounded-lg md:shadow-md overflow-hidden bg-muted">
               <NavHeader />
               <Observer>
                 {() =>
