@@ -118,7 +118,7 @@ const DeleteButton = ({ app }: AppProps) => {
                 disabled={deleteLoading}
               >
                 {deleteLoading && <Spinner />}
-                {t('sidebar.deleteConfirmButton')}
+                {t('sidebar.delete')}
               </Button>
             </DialogFooter>
           </DialogContent>

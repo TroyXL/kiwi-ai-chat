@@ -2,7 +2,8 @@
   "common": {
     "loading": "加载中...",
     "cancel": "取消",
-    "close": "关闭"
+    "close": "关闭",
+    "delete": "删除"
   },
   "theme": {
     "light": "浅色",
@@ -35,11 +36,10 @@
     "newApp": "新建应用",
     "logout": "退出",
     "logoutTitle": "确认退出",
-    "loading": "加载中...",
-    "noApps": "暂无应用",
+    "noApps": "暂未创建应用",
+    "kiwiAppMarket": "Kiwi 应用市场",
     "deleteTitle": "删除应用",
-    "deleteConfirmMessage": "您确定要永久删除应用 \"{{appName}}\" 吗？此操作无法撤销。",
-    "deleteConfirmButton": "删除"
+    "deleteConfirmMessage": "您确定要永久删除应用 \"{{appName}}\" 吗？此操作无法撤销。"
   },
   "chat": {
     "placeholderWithApp": "描述对 \"{{appName}}\" 的更改...",
