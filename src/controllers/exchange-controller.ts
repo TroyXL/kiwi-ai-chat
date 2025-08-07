@@ -248,9 +248,11 @@ class ExchangeController {
   }
 
   private updatePreviewUrl() {
-    const productURL =
-      this.activeExchange?.productURL ||
-      this.exchangeHistories[this.exchangeHistories.length - 1]?.productURL
+    const productURL = [
+      this.activeExchange,
+      ...this.exchangeHistories.reverse(),
+    ].find(ex => ex?.productURL)?.productURL
+
     if (productURL) {
       this.previewUrl = productURL + '?__kiwi__timestamp__=' + Date.now()
     }
