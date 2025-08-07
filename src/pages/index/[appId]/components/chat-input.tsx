@@ -65,7 +65,7 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
       <section className="relative max-w-[720px] m-auto">
         <Textarea
           ref={$textarea}
-          className="min-h-24 max-h-80 pb-14 resize-none"
+          className="min-h-24 max-h-80 pb-14 resize-none text-sm"
           placeholder={textareaPlaceholder}
         />
 

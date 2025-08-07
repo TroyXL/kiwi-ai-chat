@@ -8,7 +8,8 @@ import {
   searchExchanges,
 } from '@/api/app'
 import i18n from '@/i18n'
-import { groupBy } from 'lodash'
+import { getStorage, setStorage } from '@/lib/storage'
+import { groupBy, isBoolean } from 'lodash'
 import { makeAutoObservable, runInAction } from 'mobx'
 import appListController from './app-list-controller'
 
@@ -21,10 +22,20 @@ class ExchangeController {
   exchangeHistories: Exchange[] = []
   activeExchange: Nullable<Exchange> = null
 
+  previewEnabled = true
+  previewUrl = ''
+
   abortController: Nullable<AbortController> = null
 
   constructor() {
+    const previewEnabled = getStorage('kiwi:ui:preview-enabled')
+    this.previewEnabled = isBoolean(previewEnabled) ? previewEnabled : true
     makeAutoObservable(this)
+  }
+
+  togglePreviewEnabled() {
+    this.previewEnabled = !this.previewEnabled
+    setStorage('kiwi:ui:preview-enabled', this.previewEnabled)
   }
 
   async sendMessageToAI(prompt: string) {
@@ -126,6 +137,7 @@ class ExchangeController {
     this.abortController?.abort()
     this.abortController = null
     this.activeExchange = null
+    this.previewUrl = ''
     this.exchangeHistories = []
     const appId = appListController.selectedApp?.id || ''
     if (!appId) return
@@ -160,6 +172,7 @@ class ExchangeController {
       } else {
         this.exchangeHistories = data.items.reverse()
       }
+      this.updatePreviewUrl()
     })
   }
 
@@ -224,12 +237,23 @@ class ExchangeController {
   }
 
   terminateSseMessage(exchangeData?: Exchange) {
-    if (exchangeData)
+    if (exchangeData) {
       this.exchangeHistories = [...this.exchangeHistories, exchangeData]
+      this.updatePreviewUrl()
+    }
     this.activeExchange = null
     this.isGenerating = false
     this.abortController?.abort()
     this.abortController = null
+  }
+
+  private updatePreviewUrl() {
+    const productURL =
+      this.activeExchange?.productURL ||
+      this.exchangeHistories[this.exchangeHistories.length - 1]?.productURL
+    if (productURL) {
+      this.previewUrl = productURL + '?__kiwi__timestamp__=' + Date.now()
+    }
   }
 }
 
