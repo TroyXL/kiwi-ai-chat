@@ -19,6 +19,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '../../../components/ui/sidebar'
+import { AppStoreButton } from './app-store-button'
 import { BetaTip } from './beta-tip'
 import { CreateAppButton } from './create-app-button'
 import { LogoutButton } from './logout-button'
@@ -44,7 +45,12 @@ export const AppSidebar = observer(() => {
           <h2 className="text-xl ml-4">Kiwi AI</h2>
           <BetaTip />
         </div>
-        {hasApplicaitons && <CreateAppButton />}
+        {hasApplicaitons && (
+          <div className="flex gap-2">
+            <CreateAppButton />
+            <AppStoreButton simple />
+          </div>
+        )}
       </SidebarHeader>
       <SidebarContent className="p-2">
         {loading ? (
@@ -73,10 +79,13 @@ export const AppSidebar = observer(() => {
             </SidebarMenu>
           </>
         ) : (
-          <div className="flex flex-col items-center p-4 mx-2 gap-2 border border-dashed rounded-md text-muted-foreground bg-muted">
-            <Archive strokeWidth={1} />
-            <p className="text-xs">{t('sidebar.noApps')}</p>
-          </div>
+          <>
+            <AppStoreButton className="mx-2" />
+            <div className="flex flex-col items-center p-4 mx-2 mt-4 gap-2 border border-dashed rounded-md text-muted-foreground bg-muted">
+              <Archive strokeWidth={1} />
+              <p className="text-xs">{t('sidebar.noApps')}</p>
+            </div>
+          </>
         )}
       </SidebarContent>
       <SidebarFooter>

@@ -11,7 +11,7 @@ export const CreateAppButton = memo(({ className }: { className?: string }) => {
 
   return (
     <Button
-      className={cn('justify-start gap-2 !px-3', className)}
+      className={cn('flex-1 w-0 justify-start gap-2 !px-3', className)}
       size="sm"
       onClick={() => handleSelectApp(null)}
     >

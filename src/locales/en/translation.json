@@ -2,7 +2,8 @@
   "common": {
     "loading": "Loading...",
     "cancel": "Cancel",
-    "close": "Close"
+    "close": "Close",
+    "delete": "Delete"
   },
   "theme": {
     "light": "Light",
@@ -35,11 +36,10 @@
     "newApp": "New Application",
     "logout": "Logout",
     "logoutTitle": "Confirm Logout",
-    "loading": "Loading...",
-    "noApps": "No applications yet.",
+    "noApps": "No applications created yet.",
+    "kiwiAppMarket": "Kiwi App Market",
     "deleteTitle": "Delete Application",
-    "deleteConfirmMessage": "Are you sure you want to permanently delete the application \"{{appName}}\"? This action cannot be undone.",
-    "deleteConfirmButton": "Delete"
+    "deleteConfirmMessage": "Are you sure you want to permanently delete the application \"{{appName}}\"? This action cannot be undone."
   },
   "chat": {
     "placeholderWithApp": "Describe changes for \"{{appName}}\"...",
