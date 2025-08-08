@@ -9,12 +9,14 @@ import {
 } from '@/api/app'
 import i18n from '@/i18n'
 import { getStorage, setStorage } from '@/lib/storage'
-import { groupBy, isBoolean } from 'lodash'
+import { groupBy } from 'lodash'
 import { makeAutoObservable, runInAction } from 'mobx'
 import appListController from './app-list-controller'
 
 export const STATUSES_RUNNING = ['PLANNING', 'GENERATING']
 export const STATUSES_FINISHED = ['SUCCESSFUL', 'FAILED']
+
+const VALID_PREVIEW_MODES: PreviewMode[] = ['desktop', 'mobile', 'disabled']
 
 class ExchangeController {
   isGenerating = false
@@ -22,21 +24,23 @@ class ExchangeController {
   exchangeHistories: Exchange[] = []
   activeExchange: Nullable<Exchange> = null
 
-  previewEnabled = true
+  previewMode: PreviewMode = 'desktop'
   productUrl = ''
   managementUrl = ''
 
   abortController: Nullable<AbortController> = null
 
   constructor() {
-    const previewEnabled = getStorage('kiwi:ui:preview-enabled')
-    this.previewEnabled = isBoolean(previewEnabled) ? previewEnabled : true
+    const previewMode = getStorage('kiwi:ui:preview-mode')
+    if (previewMode && VALID_PREVIEW_MODES.includes(previewMode)) {
+      this.previewMode = previewMode
+    }
     makeAutoObservable(this)
   }
 
-  togglePreviewEnabled() {
-    this.previewEnabled = !this.previewEnabled
-    setStorage('kiwi:ui:preview-enabled', this.previewEnabled)
+  updatePreviewMode(mode: PreviewMode) {
+    this.previewMode = mode
+    setStorage('kiwi:ui:preview-mode', mode)
   }
 
   async sendMessageToAI(prompt: string) {

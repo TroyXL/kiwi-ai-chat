@@ -1,7 +1,7 @@
 import { KiwiLogo } from '@/components/kiwi-logo'
 import appListController from '@/controllers/app-list-controller'
 import exchangeController from '@/controllers/exchange-controller'
-import { nextTick } from '@/lib/utils'
+import { cn, nextTick } from '@/lib/utils'
 import { useCreation, useRequest, useUnmount } from 'ahooks'
 import { reaction } from 'mobx'
 import { observer } from 'mobx-react-lite'
@@ -45,8 +45,13 @@ const ChatView = observer(() => {
 
   return appListController.selectedApp ? (
     <div className="h-0 flex-1 flex">
-      {exchangeController.previewEnabled && (
-        <AppPreview className="h-full flex-2/3 border-r shadow" />
+      {exchangeController.previewMode !== 'disabled' && (
+        <AppPreview
+          className={cn(
+            'h-full border-r shadow flex-2/3',
+            exchangeController.previewMode === 'mobile' && 'max-w-[414px]'
+          )}
+        />
       )}
 
       <section className="h-full flex-1/3 flex flex-col min-w-[375px]">
