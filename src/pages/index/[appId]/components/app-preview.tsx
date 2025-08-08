@@ -9,12 +9,12 @@ import { useRef } from 'react'
 export const AppPreview = observer(({ className }: { className?: string }) => {
   const isMobile = useIsMobile()
   const $iframe = useRef<HTMLIFrameElement>(null)
-  const previewUrl = exchangeController.previewUrl
+  const productUrl = exchangeController.productUrl
 
   const disposeReaction = useCreation(
     () =>
       reaction(
-        () => [exchangeController.previewUrl],
+        () => [exchangeController.productUrl],
         ([nextUrl]) => {
           const contentWindow = $iframe.current?.contentWindow
           if (!contentWindow) return
@@ -33,16 +33,16 @@ export const AppPreview = observer(({ className }: { className?: string }) => {
   // useCreation(() => {
   //   const contentWindow = $iframe.current?.contentWindow
   //   if (!contentWindow) {
-  //     setPreviewUrl(exchangeController.previewUrl)
+  //     setPreviewUrl(exchangeController.productUrl)
   //     return
   //   }
   //   console.log('reloaded')
-  //   const params = exchangeController.previewUrl.split('?')[1]
+  //   const params = exchangeController.productUrl.split('?')[1]
   //   const contentUrl = contentWindow.location.href.split('?')[0]
   //   setPreviewUrl(contentUrl + (contentUrl.includes('?') ? '' : '?') + params)
-  // }, [exchangeController.previewUrl])
+  // }, [exchangeController.productUrl])
 
-  // useCreation(() => reaction(() => [exchangeController.previewUrl], ([previewUrl]) => {
+  // useCreation(() => reaction(() => [exchangeController.productUrl], ([productUrl]) => {
   //   if (!url) {
   //     return
   //   }
@@ -51,11 +51,11 @@ export const AppPreview = observer(({ className }: { className?: string }) => {
 
   useUnmount(() => disposeReaction())
 
-  return isMobile || !previewUrl ? null : (
+  return isMobile || !productUrl ? null : (
     <div className={cn('relative', className)}>
       <iframe
         ref={$iframe}
-        src={previewUrl}
+        src={productUrl}
         className="w-full h-full border-0"
         allowFullScreen
       />

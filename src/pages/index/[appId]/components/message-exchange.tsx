@@ -6,8 +6,6 @@ import exchangeController, {
   STATUSES_FINISHED,
   STATUSES_RUNNING,
 } from '@/controllers/exchange-controller'
-import { useIsMobile } from '@/hooks/use-mobile'
-import { cn } from '@/lib/utils'
 import { useCreation } from 'ahooks'
 import {
   ChevronsLeftRightEllipsis,
@@ -24,6 +22,7 @@ import {
 import { observer } from 'mobx-react-lite'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { OpenWebsitesButton } from '../../components/open-websites-button'
 
 type ExchangeProps = {
   exchange: Exchange
@@ -55,7 +54,6 @@ const MessageBubble = memo(({ exchange }: ExchangeProps) => {
 })
 
 const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
-  const isMobile = useIsMobile()
   const { t } = useTranslation()
 
   const hasStages = !!exchange.stages?.length
@@ -88,26 +86,14 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
 
       {!hasStages && <div className="border h-4 w-0 ml-12" />}
 
-      <div
-        className={cn(
-          'border bg-card rounded-md px-4 py-3',
-          !isMobile && 'flex justify-between items-center gap-4'
-        )}
-      >
+      <div className="flex justify-between items-center gap-4 border bg-card rounded-md px-4 py-3">
         <p className="font-medium">{statusLabel}</p>
 
-        <div className={isMobile ? ' space-x-3 mt-3 text-right' : 'space-x-2'}>
-          {exchange.managementURL && (
-            <Button
-              size="xs"
-              onClick={() => {
-                window.open(exchange.managementURL!, '_blank')
-              }}
-            >
-              {t('exchange.visitManagement')}
-            </Button>
-          )}
-        </div>
+        <OpenWebsitesButton
+          small
+          productUrl={exchange.productURL}
+          managementUrl={exchange.managementURL}
+        />
       </div>
     </section>
   )

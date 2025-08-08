@@ -35,17 +35,19 @@ export const LanguageSwitcher = memo(
 
         <DropdownMenuContent align="start">
           <DropdownMenuGroup>
-            <DropdownMenuItem onClick={() => handleSwitchLanguage('en')}>
-              <div className="w-full flex justify-between items-center">
-                <span>English</span>
-                {isEn && <Check className="text-foreground" />}
-              </div>
+            <DropdownMenuItem
+              className="w-full flex justify-between items-center"
+              onClick={() => handleSwitchLanguage('en')}
+            >
+              <span>English</span>
+              {isEn && <Check className="text-foreground" />}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleSwitchLanguage('zh')}>
-              <div className="w-full flex justify-between items-center">
-                <span>中文</span>
-                {!isEn && <Check className="text-foreground" />}
-              </div>
+            <DropdownMenuItem
+              className="w-full flex justify-between items-center"
+              onClick={() => handleSwitchLanguage('zh')}
+            >
+              <span>中文</span>
+              {!isEn && <Check className="text-foreground" />}
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>

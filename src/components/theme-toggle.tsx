@@ -101,23 +101,26 @@ export function ThemeToggle({ className }: { className?: string }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
-        <DropdownMenuItem onClick={() => setTheme('light')}>
-          <div className="w-full flex justify-between items-center">
-            <span>{t('theme.light')}</span>
-            {isLight && <Check className="text-foreground" />}
-          </div>
+        <DropdownMenuItem
+          className="w-full flex justify-between items-center"
+          onClick={() => setTheme('light')}
+        >
+          <span>{t('theme.light')}</span>
+          {isLight && <Check className="text-foreground" />}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>
-          <div className="w-full flex justify-between items-center">
-            <span>{t('theme.dark')}</span>
-            {isDark && <Check className="text-foreground" />}
-          </div>
+        <DropdownMenuItem
+          className="w-full flex justify-between items-center"
+          onClick={() => setTheme('dark')}
+        >
+          <span>{t('theme.dark')}</span>
+          {isDark && <Check className="text-foreground" />}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>
-          <div className="w-full flex justify-between items-center">
-            <span>{t('theme.system')}</span>
-            {isSystem && <Check className="text-foreground" />}
-          </div>
+        <DropdownMenuItem
+          className="w-full flex justify-between items-center"
+          onClick={() => setTheme('system')}
+        >
+          <span>{t('theme.system')}</span>
+          {isSystem && <Check className="text-foreground" />}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

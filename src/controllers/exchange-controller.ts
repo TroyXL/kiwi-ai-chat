@@ -23,7 +23,8 @@ class ExchangeController {
   activeExchange: Nullable<Exchange> = null
 
   previewEnabled = true
-  previewUrl = ''
+  productUrl = ''
+  managementUrl = ''
 
   abortController: Nullable<AbortController> = null
 
@@ -137,7 +138,7 @@ class ExchangeController {
     this.abortController?.abort()
     this.abortController = null
     this.activeExchange = null
-    this.previewUrl = ''
+    this.productUrl = ''
     this.exchangeHistories = []
     const appId = appListController.selectedApp?.id || ''
     if (!appId) return
@@ -248,14 +249,20 @@ class ExchangeController {
   }
 
   private updatePreviewUrl() {
-    const productURL = [
-      this.activeExchange,
-      ...this.exchangeHistories.reverse(),
-    ].find(ex => ex?.productURL)?.productURL
+    let productUrl = ''
+    let managementUrl = ''
+    const exchanges = [this.activeExchange, ...this.exchangeHistories.reverse()]
+    for (const exchange of exchanges) {
+      if (!productUrl && exchange?.productURL) productUrl = exchange.productURL
+      if (!managementUrl && exchange?.managementURL)
+        managementUrl = exchange.managementURL
 
-    if (productURL) {
-      this.previewUrl = productURL + '?__kiwi__timestamp__=' + Date.now()
+      if (productUrl && managementUrl) break
     }
+
+    if (productUrl)
+      this.productUrl = productUrl + '?__kiwi__timestamp__=' + Date.now()
+    if (managementUrl) this.managementUrl = managementUrl
   }
 }
 
