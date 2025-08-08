@@ -47,18 +47,20 @@ class ExchangeController {
     this.abortController = new AbortController()
     this.isGenerating = true
 
-    // const initialExchange: Omit<Exchange, 'first'> = {
-    //   id: `temp_${Date.now()}`,
-    //   prompt,
-    //   appId: appListController.selectedApp?.id || '',
-    //   userId: '',
-    //   status: 'PLANNING',
-    //   stages: [],
-    //   errorMessage: null,
-    //   productURL: null,
-    //   managementURL: null,
-    // }
-    // this.activeExchange = initialExchange as Exchange
+    if (appListController.selectedApp) {
+      const activeExchange: Omit<Exchange, 'first'> = {
+        id: `temp_${Date.now()}`,
+        prompt,
+        appId: appListController.selectedApp?.id || '',
+        userId: '',
+        status: 'PLANNING',
+        stages: [],
+        errorMessage: null,
+        productURL: null,
+        managementURL: null,
+      }
+      this.activeExchange = activeExchange as Exchange
+    }
 
     generateCode(
       { prompt, appId: appListController.selectedApp?.id },
@@ -251,7 +253,11 @@ class ExchangeController {
   private updatePreviewUrl() {
     let productUrl = ''
     let managementUrl = ''
-    const exchanges = [this.activeExchange, ...this.exchangeHistories.reverse()]
+
+    const exchanges = [
+      this.activeExchange,
+      ...this.exchangeHistories.concat().reverse(),
+    ]
     for (const exchange of exchanges) {
       if (!productUrl && exchange?.productURL) productUrl = exchange.productURL
       if (!managementUrl && exchange?.managementURL)

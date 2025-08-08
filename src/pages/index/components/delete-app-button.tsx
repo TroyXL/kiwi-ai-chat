@@ -69,7 +69,7 @@ export const DeleteAppButton = observer(() => {
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>{t('exchange.deleteApp')}</p>
+            <p>{t('navbar.deleteApp')}</p>
           </TooltipContent>
         </Tooltip>
 

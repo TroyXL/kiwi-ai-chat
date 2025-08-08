@@ -3,7 +3,9 @@
     "loading": "Loading...",
     "cancel": "Cancel",
     "close": "Close",
-    "delete": "Delete"
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "ok": "OK"
   },
   "theme": {
     "light": "Light",
@@ -41,6 +43,13 @@
     "deleteTitle": "Delete Application",
     "deleteConfirmMessage": "Are you sure you want to permanently delete the application \"{{appName}}\"? This action cannot be undone."
   },
+  "navbar": {
+    "deleteApp": "Delete Application",
+    "togglePreview": "Toggle Preview",
+    "visitApp": "Visit Application",
+    "visitManagement": "Visit Management",
+    "visitWebsites": "Visit Websites"
+  },
   "chat": {
     "placeholderWithApp": "Describe changes for \"{{appName}}\"...",
     "placeholderNewApp": "Describe the new application you want to create...",
@@ -57,6 +66,7 @@
     "togglePreview": "Toggle Preview",
     "visitApp": "Visit Application",
     "visitManagement": "Visit Management",
+    "visiteWebsites": "Visite Websites",
     "generationFailed": "Generation failed: {{error}}",
     "connectionError": "A connection error occurred.",
     "cancelAction": "Cancel",

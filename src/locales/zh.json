@@ -3,7 +3,9 @@
     "loading": "加载中...",
     "cancel": "取消",
     "close": "关闭",
-    "delete": "删除"
+    "delete": "删除",
+    "confirm": "确认",
+    "ok": "确定"
   },
   "theme": {
     "light": "浅色",
@@ -41,6 +43,13 @@
     "deleteTitle": "删除应用",
     "deleteConfirmMessage": "您确定要永久删除应用 \"{{appName}}\" 吗？此操作无法撤销。"
   },
+  "navbar": {
+    "deleteApp": "删除应用",
+    "togglePreview": "显示/隐藏预览",
+    "visitApp": "访问应用",
+    "visitManagement": "访问管理后台",
+    "visitWebsites": "访问应用站点"
+  },
   "chat": {
     "placeholderWithApp": "描述对 \"{{appName}}\" 的更改...",
     "placeholderNewApp": "描述您想创建的新应用...",
@@ -52,10 +61,6 @@
     "attemptLabel": "尝试",
     "processing": "处理中...",
     "processComplete": "处理完成！",
-    "deleteApp": "删除应用",
-    "togglePreview": "显示/隐藏预览",
-    "visitApp": "访问应用",
-    "visitManagement": "访问管理后台",
     "generationFailed": "生成失败: {{error}}",
     "connectionError": "发生连接错误。",
     "cancelAction": "取消",

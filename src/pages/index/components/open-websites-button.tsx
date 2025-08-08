@@ -5,6 +5,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { AppWindow, SquareArrowOutUpRight } from 'lucide-react'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -22,17 +27,30 @@ export const OpenWebsitesButton = memo(
     const { t } = useTranslation()
     if (!productUrl && !managementUrl) return null
 
+    const $dropdownTrigger = (
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant={small ? 'secondary' : 'ghost'}
+          size={small ? 'icon-xs' : 'icon-sm'}
+          className="hover:bg-foreground/5"
+        >
+          <AppWindow />
+        </Button>
+      </DropdownMenuTrigger>
+    )
+
     return (
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant={small ? 'secondary' : 'ghost'}
-            size={small ? 'icon-xs' : 'icon-sm'}
-            className="hover:bg-foreground/5"
-          >
-            <AppWindow />
-          </Button>
-        </DropdownMenuTrigger>
+        {small ? (
+          $dropdownTrigger
+        ) : (
+          <Tooltip>
+            <TooltipTrigger asChild>{$dropdownTrigger}</TooltipTrigger>
+            <TooltipContent>
+              <p>{t('navbar.visitWebsites')}</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
         <DropdownMenuContent className="flex flex-col p-1 w-auto" align="end">
           {productUrl && (
             <DropdownMenuItem
@@ -41,7 +59,7 @@ export const OpenWebsitesButton = memo(
                 window.open(productUrl.split('?')[0], '_blank')
               }}
             >
-              <span>{t('exchange.visitApp')}</span>
+              <span>{t('navbar.visitApp')}</span>
               <SquareArrowOutUpRight className="text-foreground" />
             </DropdownMenuItem>
           )}
@@ -52,7 +70,7 @@ export const OpenWebsitesButton = memo(
                 window.open(managementUrl, '_blank')
               }}
             >
-              <span>{t('exchange.visitManagement')}</span>
+              <span>{t('navbar.visitManagement')}</span>
               <SquareArrowOutUpRight className="text-foreground" />
             </DropdownMenuItem>
           )}

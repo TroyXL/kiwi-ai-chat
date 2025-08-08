@@ -149,6 +149,7 @@ const KiwiResponseStatus = observer(({ exchange }: ExchangeProps) => {
           {isRunning && (
             <Button
               size="xs"
+              variant="secondary"
               onClick={() => exchangeController.cancelGeneration(exchange.id)}
             >
               {t('exchange.cancelAction')}
@@ -157,6 +158,7 @@ const KiwiResponseStatus = observer(({ exchange }: ExchangeProps) => {
           {isFailed && (
             <Button
               size="xs"
+              variant="secondary"
               onClick={() => exchangeController.retryGeneration(exchange.id)}
             >
               {t('exchange.retryAction')}
@@ -165,6 +167,7 @@ const KiwiResponseStatus = observer(({ exchange }: ExchangeProps) => {
           {allowRevert && (
             <Button
               size="xs"
+              variant="secondary"
               onClick={() => exchangeController.revertGeneration(exchange.id)}
             >
               {exchangeController.isReverting ? (
@@ -202,7 +205,7 @@ const KiwiResponseStage = memo(({ stage }: { stage: Stage }) => {
         <span className="p-1.5 bg-background text-foreground rounded-full -translate-x-1/2">
           {icon}
         </span>
-        <p className="flex-1 w-0 flex justify-between">
+        <p className="flex-1 w-0 flex justify-between pr-4">
           <span>
             {t('exchange.stageLabel')}
             {t(`enums.stageType.${stage.type}` as const, stage.type)}

@@ -52,7 +52,7 @@ const TogglePreviewButton = observer(({ app }: AppProps) => {
         </Button>
       </TooltipTrigger>
       <TooltipContent>
-        <p>{t('exchange.togglePreview')}</p>
+        <p>{t('navbar.togglePreview')}</p>
       </TooltipContent>
     </Tooltip>
   )
