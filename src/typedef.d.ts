@@ -50,3 +50,5 @@ interface Exchange {
   productURL: string | null
   managementURL: string | null
 }
+
+type PreviewMode = 'desktop' | 'mobile' | 'disabled'

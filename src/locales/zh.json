@@ -45,7 +45,9 @@
   },
   "navbar": {
     "deleteApp": "删除应用",
-    "togglePreview": "显示/隐藏预览",
+    "previewAsDesktop": "桌面模式",
+    "previewAsMobile": "移动模式",
+    "disabledPreview": "禁用预览",
     "visitApp": "访问应用",
     "visitManagement": "访问管理后台",
     "visitWebsites": "访问应用站点"

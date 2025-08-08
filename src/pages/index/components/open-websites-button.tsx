@@ -31,7 +31,7 @@ export const OpenWebsitesButton = memo(
       <DropdownMenuTrigger asChild>
         <Button
           variant={small ? 'secondary' : 'ghost'}
-          size={small ? 'icon-xs' : 'icon-sm'}
+          size={small ? 'icon-xs' : 'icon'}
           className="hover:bg-foreground/5"
         >
           <AppWindow />

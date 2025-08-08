@@ -61,7 +61,7 @@ export const DeleteAppButton = observer(() => {
           <TooltipTrigger asChild>
             <Button
               variant="ghost"
-              size="icon-sm"
+              size="icon"
               className="!text-red-500 hover:bg-red-500/10"
               onClick={showDeleteDialog}
             >
