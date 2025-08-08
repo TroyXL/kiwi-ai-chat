@@ -1,11 +1,9 @@
 import { Button } from '@/components/ui/button'
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import authController from '@/controllers/auth-controller'
 import { LogOut } from 'lucide-react'
 import { memo } from 'react'
@@ -15,8 +13,8 @@ export const LogoutButton = memo(() => {
   const { t } = useTranslation()
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <Popover>
+      <PopoverTrigger asChild>
         <Button
           className="!border-border/80 shadow-md"
           variant="outline"
@@ -25,18 +23,18 @@ export const LogoutButton = memo(() => {
         >
           <LogOut />
         </Button>
-      </DropdownMenuTrigger>
+      </PopoverTrigger>
 
-      <DropdownMenuContent align="end">
-        <DropdownMenuGroup>
-          <DropdownMenuItem
-            className="!text-destructive"
-            onClick={() => authController.logout()}
-          >
-            {t('sidebar.logoutTitle')}
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      <PopoverContent align="end" className="w-auto p-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="!text-destructive"
+          onClick={() => authController.logout()}
+        >
+          {t('sidebar.logoutTitle')}
+        </Button>
+      </PopoverContent>
+    </Popover>
   )
 })
