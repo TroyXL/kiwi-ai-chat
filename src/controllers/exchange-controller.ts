@@ -23,7 +23,8 @@ class ExchangeController {
   activeExchange: Nullable<Exchange> = null
 
   previewEnabled = true
-  previewUrl = ''
+  productUrl = ''
+  managementUrl = ''
 
   abortController: Nullable<AbortController> = null
 
@@ -46,18 +47,20 @@ class ExchangeController {
     this.abortController = new AbortController()
     this.isGenerating = true
 
-    // const initialExchange: Omit<Exchange, 'first'> = {
-    //   id: `temp_${Date.now()}`,
-    //   prompt,
-    //   appId: appListController.selectedApp?.id || '',
-    //   userId: '',
-    //   status: 'PLANNING',
-    //   stages: [],
-    //   errorMessage: null,
-    //   productURL: null,
-    //   managementURL: null,
-    // }
-    // this.activeExchange = initialExchange as Exchange
+    if (appListController.selectedApp) {
+      const activeExchange: Omit<Exchange, 'first'> = {
+        id: `temp_${Date.now()}`,
+        prompt,
+        appId: appListController.selectedApp?.id || '',
+        userId: '',
+        status: 'PLANNING',
+        stages: [],
+        errorMessage: null,
+        productURL: null,
+        managementURL: null,
+      }
+      this.activeExchange = activeExchange as Exchange
+    }
 
     generateCode(
       { prompt, appId: appListController.selectedApp?.id },
@@ -137,7 +140,7 @@ class ExchangeController {
     this.abortController?.abort()
     this.abortController = null
     this.activeExchange = null
-    this.previewUrl = ''
+    this.productUrl = ''
     this.exchangeHistories = []
     const appId = appListController.selectedApp?.id || ''
     if (!appId) return
@@ -248,14 +251,24 @@ class ExchangeController {
   }
 
   private updatePreviewUrl() {
-    const productURL = [
-      this.activeExchange,
-      ...this.exchangeHistories.reverse(),
-    ].find(ex => ex?.productURL)?.productURL
+    let productUrl = ''
+    let managementUrl = ''
 
-    if (productURL) {
-      this.previewUrl = productURL + '?__kiwi__timestamp__=' + Date.now()
+    const exchanges = [
+      this.activeExchange,
+      ...this.exchangeHistories.concat().reverse(),
+    ]
+    for (const exchange of exchanges) {
+      if (!productUrl && exchange?.productURL) productUrl = exchange.productURL
+      if (!managementUrl && exchange?.managementURL)
+        managementUrl = exchange.managementURL
+
+      if (productUrl && managementUrl) break
     }
+
+    if (productUrl)
+      this.productUrl = productUrl + '?__kiwi__timestamp__=' + Date.now()
+    if (managementUrl) this.managementUrl = managementUrl
   }
 }
 
