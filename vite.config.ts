@@ -5,6 +5,19 @@ import { defineConfig } from 'vite'
 import pages from 'vite-plugin-pages'
 
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        'kiwi-channel': path.resolve(__dirname, 'src/lib/kiwi-channel/for-preview/index.ts'),
+      },
+      output: {
+        entryFileNames: (chunkInfo) => {
+          return chunkInfo.name === 'kiwi-channel' ? 'kiwi-channel.js' : 'assets/[name]-[hash].js';
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     tailwindcss(),
