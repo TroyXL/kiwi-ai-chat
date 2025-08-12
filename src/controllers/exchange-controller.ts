@@ -15,6 +15,7 @@ import appListController from './app-list-controller'
 
 export const STATUSES_RUNNING = ['PLANNING', 'GENERATING']
 export const STATUSES_FINISHED = ['SUCCESSFUL', 'FAILED']
+export const STATUSES_CANCELLED = ['CANCELLED', 'REVERTED']
 
 const VALID_PREVIEW_MODES: PreviewMode[] = ['desktop', 'mobile', 'disabled']
 
@@ -215,9 +216,8 @@ class ExchangeController {
     runInAction(() => (this.activeExchange = finalExchangeData))
 
     if (
-      finalExchangeData.status === 'SUCCESSFUL' ||
-      finalExchangeData.status === 'FAILED' ||
-      finalExchangeData.status === 'CANCELLED'
+      STATUSES_FINISHED.includes(finalExchangeData.status) ||
+      STATUSES_CANCELLED.includes(finalExchangeData.status)
     ) {
       this.terminateSseMessage(finalExchangeData)
     }
@@ -252,6 +252,16 @@ class ExchangeController {
     this.isGenerating = false
     this.abortController?.abort()
     this.abortController = null
+  }
+
+  reset() {
+    this.activeExchange = null
+    this.isGenerating = false
+    this.abortController?.abort()
+    this.abortController = null
+    this.exchangeHistories = []
+    this.productUrl = ''
+    this.managementUrl = ''
   }
 
   private updatePreviewUrl() {

@@ -4,7 +4,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import appListController from '@/controllers/app-list-controller'
 import authController from '@/controllers/auth-controller'
+import exchangeController from '@/controllers/exchange-controller'
 import { LogOut } from 'lucide-react'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -30,7 +32,11 @@ export const LogoutButton = memo(() => {
           variant="ghost"
           size="sm"
           className="!text-destructive"
-          onClick={() => authController.logout()}
+          onClick={() => {
+            authController.logout()
+            appListController.reset()
+            exchangeController.reset()
+          }}
         >
           {t('sidebar.logoutTitle')}
         </Button>
