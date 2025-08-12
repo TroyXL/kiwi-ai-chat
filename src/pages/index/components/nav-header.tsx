@@ -33,8 +33,8 @@ export const NavHeader = observer(() => {
     <>
       <header
         className={cn(
-          'h-14 px-4 flex justify-between items-center bg-background',
-          selectedApp && 'border-b'
+          'h-14 px-4 flex justify-between items-center',
+          selectedApp && 'border-b bg-background'
         )}
       >
         <div className="flex items-center gap-2">

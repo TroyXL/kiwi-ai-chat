@@ -1,11 +1,10 @@
 import { KiwiLogo } from '@/components/kiwi-logo'
 import appListController from '@/controllers/app-list-controller'
 import exchangeController from '@/controllers/exchange-controller'
-import { cn, nextTick } from '@/lib/utils'
-import { useCreation, useRequest, useUnmount } from 'ahooks'
-import { reaction } from 'mobx'
+import { cn } from '@/lib/utils'
+import { useRequest, useUnmount } from 'ahooks'
 import { observer } from 'mobx-react-lite'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Loading } from '../../../components/loading'
 import { AppPreview } from './components/app-preview'
@@ -23,24 +22,12 @@ const ChatView = observer(() => {
     }
   )
 
-  const disposeReaction = useCreation(
-    () =>
-      reaction(
-        () => [
-          exchangeController.exchangeHistories,
-          exchangeController.activeExchange,
-        ],
-        async () => {
-          await nextTick()
-          messagesEndRef.current?.scrollIntoView({ behavior: 'instant' })
-        }
-      ),
-    []
-  )
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'instant' })
+  }, [historyLoading])
 
   useUnmount(() => {
     exchangeController.terminateSseMessage()
-    disposeReaction()
   })
 
   return appListController.selectedApp ? (

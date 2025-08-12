@@ -60,6 +60,11 @@ class AppListController {
       () => (this.appList = this.appList.filter(app => app.id !== appId))
     )
   }
+  reset() {
+    this.initialized = false
+    this.appList = []
+    this.selectedApp = null
+  }
 }
 
 export default new AppListController()

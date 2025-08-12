@@ -45,9 +45,7 @@
   },
   "navbar": {
     "deleteApp": "Delete Application",
-    "previewAsDesktop": "Desktop Mode",
-    "previewAsMobile": "Mobile Mode",
-    "disabledPreview": "Disable Preview",
+    "previewMode": "Preview Mode",
     "visitApp": "Visit Application",
     "visitManagement": "Visit Management",
     "visitWebsites": "Visit Websites"
