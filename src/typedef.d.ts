@@ -7,6 +7,11 @@ interface ErrorResponse {
   message: string
 }
 
+// 文件上传响应类型定义
+interface MultiUploadResult {
+  urls: string[]
+}
+
 type Theme = 'light' | 'dark' | 'system'
 
 interface SearchResult<T> {

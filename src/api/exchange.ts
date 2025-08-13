@@ -1,5 +1,5 @@
 import { fetchEventSource } from '@microsoft/fetch-event-source'
-import alovaInstance from '.'
+import { request } from '../lib/request'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
@@ -9,11 +9,11 @@ export function searchExchanges(params: {
   page?: number
   pageSize?: number
 }) {
-  return alovaInstance.Post<SearchResult<Exchange>>('/generate/history', params)
+  return request.Post<SearchResult<Exchange>>('/generate/history', params)
 }
 
 export function cancelGeneration(exchangeId: string) {
-  return alovaInstance.Post<void>('/generate/cancel', { exchangeId })
+  return request.Post<void>('/generate/cancel', { exchangeId })
 }
 
 function createEventSource(
@@ -135,5 +135,5 @@ export function retryGeneration(
 }
 
 export function revertGeneration(exchangeId: string) {
-  return alovaInstance.Post<void>('/generate/revert', { exchangeId })
+  return request.Post<void>('/generate/revert', { exchangeId })
 }

@@ -2,13 +2,20 @@ import { createAlova } from 'alova'
 import adapterFetch from 'alova/fetch'
 import reactHook from 'alova/react'
 
-const alovaInstance = createAlova({
+// 添加认证头的通用函数
+const addAuthHeaders = (headers: Record<string, string> = {}) => {
+  const token = localStorage.getItem('authToken')
+  if (token) headers['Authorization'] = `Bearer ${token}`
+  return headers
+}
+
+export const request = createAlova({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 5000,
   cacheFor: null,
   statesHook: reactHook,
   requestAdapter: adapterFetch(),
-  responded: async response => {
+  async responded(response: Response) {
     const status = response.status
 
     if (status === 401 || status === 403) {
@@ -42,12 +49,41 @@ const alovaInstance = createAlova({
   async beforeRequest(method) {
     const headers = method.config.headers || {}
     if (method.data) headers['Content-Type'] = 'application/json'
-
-    const token = localStorage.getItem('authToken')
-    if (token) headers['Authorization'] = `Bearer ${token}`
-
-    method.config.headers = headers
+    method.config.headers = addAuthHeaders(headers)
   },
 })
 
-export default alovaInstance
+const FILE_ALLOWED_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'application/pdf',
+  'video/mp4',
+  'text/plain',
+  'text/html',
+  'application/json',
+]
+/**
+ * 上传文件方法
+ * @param file 要上传的文件
+ * @returns 上传后的文件URL
+ */
+export const uploadFile = async (file: File): Promise<string> => {
+  // 验证文件类型
+  if (!FILE_ALLOWED_TYPES.includes(file.type)) {
+    throw new Error(`不支持的文件类型: ${file.name}`)
+  }
+
+  const formData = new FormData()
+  formData.append('files', file)
+
+  const { urls } = await request.Post<MultiUploadResult>(
+    '/generate/attachments',
+    formData,
+    {
+      // 对于文件上传，不设置 Content-Type，让浏览器自动设置带 boundary 的 multipart/form-data
+      headers: addAuthHeaders(),
+    }
+  )
+  return urls[0] || ''
+}

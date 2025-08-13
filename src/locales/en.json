@@ -54,7 +54,9 @@
     "placeholderWithApp": "Describe changes for \"{{appName}}\"...",
     "placeholderNewApp": "Describe the new application you want to create...",
     "historyLoading": "Loading history...",
-    "generationNote": "Note: Generation can take 5-10 minutes. You can safely close this window, the process will continue."
+    "generationNote": "Note: Generation can take 5-10 minutes. You can safely close this window, the process will continue.",
+    "fileUploadTooltip": "Upload files (JPEG, PNG, GIF, PDF, MP4, TXT, HTML, JSON)",
+    "uploadedFiles": "Uploaded Files"
   },
   "exchange": {
     "statusLabel": "Overall Status: ",

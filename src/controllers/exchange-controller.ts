@@ -12,6 +12,7 @@ import { getStorage, setStorage } from '@/lib/storage'
 import { groupBy } from 'lodash'
 import { makeAutoObservable, runInAction } from 'mobx'
 import appListController from './app-list-controller'
+import uploadController from './upload-controller'
 
 export const STATUSES_RUNNING = ['PLANNING', 'GENERATING']
 export const STATUSES_FINISHED = ['SUCCESSFUL', 'FAILED']
@@ -22,6 +23,7 @@ const VALID_PREVIEW_MODES: PreviewMode[] = ['desktop', 'mobile', 'disabled']
 class ExchangeController {
   isGenerating = false
   isReverting = false
+  isUploading = false
   exchangeHistories: Exchange[] = []
   activeExchange: Nullable<Exchange> = null
 
@@ -262,6 +264,7 @@ class ExchangeController {
     this.exchangeHistories = []
     this.productUrl = ''
     this.managementUrl = ''
+    uploadController.reset()
   }
 
   private updatePreviewUrl() {

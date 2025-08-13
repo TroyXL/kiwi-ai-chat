@@ -1,4 +1,4 @@
-import alovaInstance from '.'
+import { request } from '../lib/request'
 
 interface LoginResponse {
   token: string
@@ -6,7 +6,7 @@ interface LoginResponse {
 
 // 使用 alovajs 重构登录功能
 export async function login(userName: string, password: string) {
-  const data = await alovaInstance.Post<LoginResponse>('/auth/login', {
+  const data = await request.Post<LoginResponse>('/auth/login', {
     userName,
     password,
   })
@@ -42,7 +42,7 @@ export async function login(userName: string, password: string) {
 }
 
 export function register(userName: string, password: string) {
-  return alovaInstance.Post<void>('/auth/register', {
+  return request.Post<void>('/auth/register', {
     userName,
     password,
   })
@@ -50,7 +50,7 @@ export function register(userName: string, password: string) {
 
 export async function logout() {
   try {
-    await alovaInstance.Post<void>('/auth/logout')
+    await request.Post<void>('/auth/logout')
   } catch (error) {
     console.error('Logout API call failed, but clearing token anyway.', error)
   } finally {
