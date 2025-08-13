@@ -125,19 +125,22 @@ const ChatInputActions = ({
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            className="overflow-clip"
+            className="relative"
             size="icon-sm"
+            variant="secondary"
             disabled={disabled || uploading}
           >
             {uploading ? <Spinner /> : <Paperclip />}
-            <Input
-              className="opacity-0 absolute"
-              type="file"
-              multiple
-              accept="image/jpeg,image/png,image/gif,application/pdf,video/mp4,text/plain,text/html,application/json"
-              disabled={disabled || uploading}
-              onChange={handleFilesUpload}
-            />
+            {!disabled && (
+              <Input
+                className="opacity-0 absolute top-0 bottom-0 left-0 right-0 z-10"
+                type="file"
+                multiple
+                accept="image/jpeg,image/png,image/gif,application/pdf,video/mp4,text/plain,text/html,application/json"
+                disabled={disabled || uploading}
+                onChange={handleFilesUpload}
+              />
+            )}
           </Button>
         </TooltipTrigger>
         <TooltipContent side="bottom">
@@ -147,6 +150,7 @@ const ChatInputActions = ({
 
       <Button
         size="icon-sm"
+        variant="secondary"
         disabled={disabled || uploading}
         onClick={onSendMessage}
       >

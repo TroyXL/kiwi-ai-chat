@@ -2,13 +2,6 @@ import { createAlova } from 'alova'
 import adapterFetch from 'alova/fetch'
 import reactHook from 'alova/react'
 
-// 添加认证头的通用函数
-const addAuthHeaders = (headers: Record<string, string> = {}) => {
-  const token = localStorage.getItem('authToken')
-  if (token) headers['Authorization'] = `Bearer ${token}`
-  return headers
-}
-
 export const request = createAlova({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 5000,
@@ -19,16 +12,17 @@ export const request = createAlova({
     const status = response.status
 
     if (status === 401 || status === 403) {
-      localStorage.removeItem('authToken')
-      if (!location.pathname.includes('/login')) {
-        window.location.replace('/login')
-        return
-      }
+      // localStorage.removeItem('authToken')
+      // if (!location.pathname.includes('/login')) {
+      //   window.location.replace('/login')
+      //   return {}
+      // }
+      return {}
     }
 
     // 处理 204 或空响应
     if (status === 204 || response.headers.get('content-length') === '0') {
-      return null
+      return {}
     }
 
     if (status >= 200 && status < 300) return response.json()
@@ -48,8 +42,12 @@ export const request = createAlova({
   },
   async beforeRequest(method) {
     const headers = method.config.headers || {}
-    if (method.data) headers['Content-Type'] = 'application/json'
-    method.config.headers = addAuthHeaders(headers)
+    const token = localStorage.getItem('authToken')
+    if (token) headers['Authorization'] = `Bearer ${token}`
+    if (!(method.data instanceof FormData)) {
+      headers['Content-Type'] = 'application/json'
+    }
+    method.config.headers = headers
   },
 })
 
@@ -77,13 +75,9 @@ export const uploadFile = async (file: File): Promise<string> => {
   const formData = new FormData()
   formData.append('files', file)
 
-  const { urls } = await request.Post<MultiUploadResult>(
+  const { urls = [] } = await request.Post<MultiUploadResult>(
     '/generate/attachments',
-    formData,
-    {
-      // 对于文件上传，不设置 Content-Type，让浏览器自动设置带 boundary 的 multipart/form-data
-      headers: addAuthHeaders(),
-    }
+    formData
   )
   return urls[0] || ''
 }

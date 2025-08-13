@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import authController from '@/controllers/auth-controller'
+import exchangeController from '@/controllers/exchange-controller'
+import { setStorage } from '@/lib/storage'
 import { useMemoizedFn } from 'ahooks'
 import { AlertCircleIcon } from 'lucide-react'
 import { observer } from 'mobx-react-lite'
@@ -36,6 +38,8 @@ export default observer(() => {
     try {
       if (isLoginMode) {
         await authController.login(userName, password)
+        exchangeController.updatePreviewMode('desktop')
+        setStorage('kiwi:ui:sidebar-opened', true)
       } else {
         await authController.register(userName, password)
         toast.success(t('login.registerSuccess'))

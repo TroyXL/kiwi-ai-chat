@@ -70,7 +70,11 @@ class ExchangeController {
     }
 
     generateCode(
-      { prompt, appId: appListController.selectedApp?.id },
+      {
+        prompt,
+        appId: appListController.selectedApp?.id,
+        attachmentUrls: uploadController.getSuccessFileUrls(true),
+      },
       {
         onMessage: exchangeData => this.receiveSseMessage(exchangeData, prompt),
         onClose: () => this.receiveSseClose,

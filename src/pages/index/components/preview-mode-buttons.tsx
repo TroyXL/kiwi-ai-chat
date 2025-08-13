@@ -11,7 +11,7 @@ export const PreviewModeButtons = observer(() => {
   const isMobile = useIsMobile()
   const app = appListController.selectedApp
   const handleModeChange = useMemoizedFn((value: string) => {
-    exchangeController.previewMode = value as PreviewMode
+    exchangeController.updatePreviewMode(value as PreviewMode)
   })
   if (isMobile || !app || !exchangeController.productUrl) return null
 

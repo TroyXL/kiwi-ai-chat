@@ -88,26 +88,18 @@ function createEventSource(
 }
 
 export function generateCode(
-  params: { prompt: string; appId?: string; skipPageGeneration?: boolean },
+  body: {
+    prompt: string
+    appId?: string
+    attachmentUrls?: string[]
+    skipPageGeneration?: boolean
+  },
   listeners: GenerateCodeListeners,
   signal: AbortSignal
 ): void {
-  const body: { prompt: string; appId?: string; skipPageGeneration?: boolean } =
-    {
-      prompt: params.prompt,
-    }
-
-  if (params.appId) {
-    body.appId = params.appId
-  }
-
-  if (params.skipPageGeneration) {
-    body.skipPageGeneration = params.skipPageGeneration
-  }
-
   createEventSource(`${API_BASE_URL}/generate`, listeners, signal, {
     method: 'POST',
-    body: body,
+    body,
   })
 }
 
