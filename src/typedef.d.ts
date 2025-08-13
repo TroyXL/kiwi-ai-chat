@@ -2,6 +2,11 @@ type Nullable<T> = T | null
 type Optional<T> = T | undefined
 type Nilable<T> = T | null | undefined
 
+interface ErrorResponse {
+  code: number
+  message: string
+}
+
 type Theme = 'light' | 'dark' | 'system'
 
 interface SearchResult<T> {
@@ -52,3 +57,9 @@ interface Exchange {
 }
 
 type PreviewMode = 'desktop' | 'mobile' | 'disabled'
+
+interface GenerateCodeListeners {
+  onMessage: (event: Exchange) => void
+  onClose: () => void
+  onError: (err: any) => void
+}

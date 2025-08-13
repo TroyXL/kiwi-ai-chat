@@ -1,12 +1,12 @@
+import { getApplication } from '@/api/app'
 import {
   cancelGeneration as cancelGenerationApi,
   generateCode,
-  getApplication,
   reconnectExchange,
   retryGeneration as retryGenerationApi,
   revertGeneration as revertGenerationApi,
   searchExchanges,
-} from '@/api/app'
+} from '@/api/exchange'
 import i18n from '@/i18n'
 import { getStorage, setStorage } from '@/lib/storage'
 import { groupBy } from 'lodash'
