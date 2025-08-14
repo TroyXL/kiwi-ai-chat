@@ -1,11 +1,13 @@
 import { MdRenderer } from '@/components/md-renderer'
 import { Spinner } from '@/components/spinner'
+import { Tag } from '@/components/tag'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import exchangeController, {
   STATUSES_FINISHED,
   STATUSES_RUNNING,
 } from '@/controllers/exchange-controller'
+import extractFileInfo from '@/lib/extractFileInfo'
 import { useCreation } from 'ahooks'
 import {
   ChevronsLeftRightEllipsis,
@@ -63,13 +65,15 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
       return t('exchange.processComplete')
     }
     if (exchange.status === 'FAILED') {
-      return t('exchange.generationFailed', { error: exchange.errorMessage })
+      return t('exchange.generationFailed', {
+        error: exchange.errorMessage || '-',
+      })
     }
     if (exchange.status === 'CANCELLED') {
-      return t(`enums.status.${exchange.status}` as const, exchange.status)
+      return t(`enums.status.${exchange.status}`, exchange.status)
     }
     if (exchange.status === 'REVERTED') {
-      return t(`enums.status.${exchange.status}` as const, exchange.status)
+      return t(`enums.status.${exchange.status}`, exchange.status)
     }
     return t('exchange.processing')
   }, [exchange.status])
@@ -101,6 +105,11 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
 
 const KiwiResponseStatus = observer(({ exchange }: ExchangeProps) => {
   const { t } = useTranslation()
+
+  const fileInfos = useCreation(
+    () => exchange.attachmentUrls?.map(extractFileInfo) || [],
+    [exchange.attachmentUrls]
+  )
 
   const isRunning = STATUSES_RUNNING.includes(exchange.status)
   const isFailed = exchange.status === 'FAILED'
@@ -141,7 +150,7 @@ const KiwiResponseStatus = observer(({ exchange }: ExchangeProps) => {
           {icon}
           <p>
             {t('exchange.statusLabel')}
-            {t(`enums.status.${exchange.status}` as const, exchange.status)}
+            {t(`enums.status.${exchange.status}`, exchange.status)}
           </p>
         </div>
 
@@ -179,6 +188,16 @@ const KiwiResponseStatus = observer(({ exchange }: ExchangeProps) => {
           )}
         </div>
       </AlertTitle>
+
+      {fileInfos.length > 0 && (
+        <AlertDescription>
+          <div className="flex flex-wrap gap-2 mt-2">
+            {fileInfos.map(file => (
+              <Tag key={file.id}>{file.fileName}</Tag>
+            ))}
+          </div>
+        </AlertDescription>
+      )}
     </Alert>
   )
 })
@@ -208,11 +227,9 @@ const KiwiResponseStage = memo(({ stage }: { stage: Stage }) => {
         <p className="flex-1 w-0 flex justify-between pr-4">
           <span>
             {t('exchange.stageLabel')}
-            {t(`enums.stageType.${stage.type}` as const, stage.type)}
+            {t(`enums.stageType.${stage.type}`, stage.type)}
           </span>
-          <span>
-            {t(`enums.stageStatus.${stage.status}` as const, stage.status)}
-          </span>
+          <span>{t(`enums.stageStatus.${stage.status}`, stage.status)}</span>
         </p>
       </div>
       <ul>

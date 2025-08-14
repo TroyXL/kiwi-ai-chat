@@ -2,6 +2,23 @@ type Nullable<T> = T | null
 type Optional<T> = T | undefined
 type Nilable<T> = T | null | undefined
 
+interface ErrorResponse {
+  code: number
+  message: string
+}
+
+// 文件上传响应类型定义
+interface MultiUploadResult {
+  urls: string[]
+}
+
+interface FileInfo {
+  id: string
+  fileName: string
+  contentType: string
+  url: string
+}
+
 type Theme = 'light' | 'dark' | 'system'
 
 interface SearchResult<T> {
@@ -38,6 +55,7 @@ interface Exchange {
   userId: string
   first: boolean
   prompt: string
+  attachmentUrls?: string[]
   status:
     | 'PLANNING'
     | 'GENERATING'
@@ -52,3 +70,9 @@ interface Exchange {
 }
 
 type PreviewMode = 'desktop' | 'mobile' | 'disabled'
+
+interface GenerateCodeListeners {
+  onMessage: (event: Exchange) => void
+  onClose: () => void
+  onError: (err: any) => void
+}

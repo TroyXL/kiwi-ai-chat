@@ -1,14 +1,22 @@
 import { Spinner } from '@/components/spinner'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import appListController from '@/controllers/app-list-controller'
 import exchangeController from '@/controllers/exchange-controller'
+import uploadController from '@/controllers/upload-controller'
 import { cn } from '@/lib/utils'
-import { useKeyPress, useMemoizedFn } from 'ahooks'
-import { Send } from 'lucide-react'
+import { useKeyPress, useMemoizedFn, useRequest } from 'ahooks'
+import { Paperclip, Send } from 'lucide-react'
 import { observer } from 'mobx-react-lite'
-import { useRef } from 'react'
+import { ChangeEvent, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { FileList } from './file-list'
 
 export const ChatInput = observer(({ className }: { className?: string }) => {
   const { t } = useTranslation()
@@ -22,7 +30,14 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
       })
     : t('chat.placeholderNewApp')
 
-  const handleSendMessageOrCancelGenerate = useMemoizedFn(() => {
+  const { loading: uploading, run: handleUploadFiles } = useRequest(
+    (files: File[]) => uploadController.uploadFiles(files),
+    {
+      manual: true,
+    }
+  )
+
+  const handleSendMessage = useMemoizedFn(() => {
     if (!$textarea.current || disabled) return
     const message = $textarea.current.value.trim()
     if (!message) return
@@ -57,26 +72,25 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
 
     // 阻止默认换行行为并发送消息
     e.preventDefault()
-    handleSendMessageOrCancelGenerate()
+    handleSendMessage()
   })
 
   return (
     <div className={cn('pb-4 px-4', className)}>
-      <section className="relative max-w-[720px] m-auto">
+      <section className="relative max-w-[720px] m-auto flex flex-col gap-2">
+        <FileList />
         <Textarea
           ref={$textarea}
           className="min-h-24 max-h-80 pb-14 resize-none text-sm"
           placeholder={textareaPlaceholder}
         />
 
-        <Button
-          size="icon"
-          className="absolute right-3 bottom-3 size-8"
+        <ChatInputActions
           disabled={disabled}
-          onClick={handleSendMessageOrCancelGenerate}
-        >
-          {disabled ? <Spinner /> : <Send />}
-        </Button>
+          uploading={uploading}
+          onUploadFiles={handleUploadFiles}
+          onSendMessage={handleSendMessage}
+        />
       </section>
 
       <p className="text-muted-foreground text-xs text-center mt-2">
@@ -85,3 +99,63 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
     </div>
   )
 })
+
+const ChatInputActions = ({
+  disabled,
+  uploading,
+  onUploadFiles,
+  onSendMessage,
+}: {
+  disabled: boolean
+  uploading: boolean
+  onUploadFiles: (files: File[]) => void
+  onSendMessage: () => void
+}) => {
+  const { t } = useTranslation()
+  const handleFilesUpload = useMemoizedFn(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const files = e.target.files
+      if (!files) return
+      onUploadFiles(Array.from(files))
+    }
+  )
+
+  return (
+    <div className="absolute right-3 bottom-3 flex gap-2">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            className="relative"
+            size="icon-sm"
+            variant="secondary"
+            disabled={disabled || uploading}
+          >
+            {uploading ? <Spinner /> : <Paperclip />}
+            {!disabled && (
+              <Input
+                className="opacity-0 absolute top-0 bottom-0 left-0 right-0 z-10"
+                type="file"
+                multiple
+                accept="image/jpeg,image/png,image/gif,application/pdf,video/mp4,text/plain,text/html,application/json"
+                disabled={disabled || uploading}
+                onChange={handleFilesUpload}
+              />
+            )}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">
+          <p>{t('chat.fileUploadTooltip')}</p>
+        </TooltipContent>
+      </Tooltip>
+
+      <Button
+        size="icon-sm"
+        variant="secondary"
+        disabled={disabled || uploading}
+        onClick={onSendMessage}
+      >
+        {disabled ? <Spinner /> : <Send />}
+      </Button>
+    </div>
+  )
+}
