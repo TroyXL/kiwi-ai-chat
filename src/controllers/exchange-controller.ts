@@ -54,12 +54,15 @@ class ExchangeController {
     this.abortController = new AbortController()
     this.isGenerating = true
 
+    const attachmentUrls = uploadController.getSuccessFileUrls(true)
+
     if (appListController.selectedApp) {
       const activeExchange: Omit<Exchange, 'first'> = {
         id: `temp_${Date.now()}`,
         prompt,
         appId: appListController.selectedApp?.id || '',
         userId: '',
+        attachmentUrls,
         status: 'PLANNING',
         stages: [],
         errorMessage: null,
@@ -73,7 +76,7 @@ class ExchangeController {
       {
         prompt,
         appId: appListController.selectedApp?.id,
-        attachmentUrls: uploadController.getSuccessFileUrls(true),
+        attachmentUrls,
       },
       {
         onMessage: exchangeData => this.receiveSseMessage(exchangeData, prompt),

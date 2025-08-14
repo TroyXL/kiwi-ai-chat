@@ -24,7 +24,11 @@ const ChatView = observer(() => {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'instant' })
-  }, [historyLoading])
+  }, [
+    historyLoading,
+    exchangeController.exchangeHistories,
+    exchangeController.activeExchange,
+  ])
 
   useUnmount(() => {
     exchangeController.terminateSseMessage()

@@ -12,6 +12,13 @@ interface MultiUploadResult {
   urls: string[]
 }
 
+interface FileInfo {
+  id: string
+  fileName: string
+  contentType: string
+  url: string
+}
+
 type Theme = 'light' | 'dark' | 'system'
 
 interface SearchResult<T> {
@@ -48,6 +55,7 @@ interface Exchange {
   userId: string
   first: boolean
   prompt: string
+  attachmentUrls?: string[]
   status:
     | 'PLANNING'
     | 'GENERATING'

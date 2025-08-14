@@ -14,7 +14,7 @@ export function Tag({ className, children, onClose, ...props }: TagProps) {
   return (
     <div
       className={cn(
-        'inline-flex items-center bg-muted rounded px-2 py-1 text-sm',
+        'inline-flex items-center bg-muted rounded-md px-2 py-1 text-sm transition-colors hover:bg-muted-foreground/15',
         className
       )}
       {...props}
@@ -24,7 +24,7 @@ export function Tag({ className, children, onClose, ...props }: TagProps) {
         <button
           type="button"
           onClick={onClose}
-          className="ml-1 rounded-full hover:bg-muted-foreground/10"
+          className="ml-1 p-0.5 rounded-full transition-colors hover:bg-muted-foreground/15"
         >
           <XIcon className="size-3" />
           <span className="sr-only">关闭</span>
