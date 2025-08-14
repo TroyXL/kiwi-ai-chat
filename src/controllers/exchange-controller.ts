@@ -151,11 +151,7 @@ class ExchangeController {
   }
 
   async fetchExchangeHistory() {
-    this.abortController?.abort()
-    this.abortController = null
-    this.activeExchange = null
-    this.productUrl = ''
-    this.exchangeHistories = []
+    this.reset()
     const appId = appListController.selectedApp?.id || ''
     if (!appId) return
 
@@ -264,10 +260,10 @@ class ExchangeController {
   }
 
   reset() {
-    this.activeExchange = null
-    this.isGenerating = false
     this.abortController?.abort()
     this.abortController = null
+    this.isGenerating = false
+    this.activeExchange = null
     this.exchangeHistories = []
     this.productUrl = ''
     this.managementUrl = ''
