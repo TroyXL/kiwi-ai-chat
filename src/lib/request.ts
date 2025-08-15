@@ -12,12 +12,11 @@ export const request = createAlova({
     const status = response.status
 
     if (status === 401 || status === 403) {
-      // localStorage.removeItem('authToken')
-      // if (!location.pathname.includes('/login')) {
-      //   window.location.replace('/login')
-      //   return {}
-      // }
-      return {}
+      localStorage.removeItem('authToken')
+      if (!location.pathname.includes('/login')) {
+        window.location.replace('/login')
+        return {}
+      }
     }
 
     // 处理 204 或空响应
