@@ -1,3 +1,4 @@
+import { getQueryParam } from '@/lib/utils'
 import { makeAutoObservable, runInAction } from 'mobx'
 import * as authApi from '../api/auth'
 import appListController from './app-list-controller'
@@ -10,20 +11,23 @@ class AuthController {
     makeAutoObservable(this)
   }
 
-  async login(userName: string, password: string) {
-    await authApi.login(userName, password)
-    // 获取重定向URL参数
-    const params = new URLSearchParams(window.location.search)
-    const redirectUrl = params.get('redirectUrl')
-    if (!redirectUrl) {
-      runInAction(() => (this.isAuthenticated = true))
-      return
-    }
+  async checkRedirectUrl() {
+    const redirectUrl = getQueryParam('redirectUrl')
+    if (!redirectUrl) return true
 
     const code = await this.generateSsoCode()
     const url = new URL(redirectUrl)
     url.searchParams.set('code', code)
     window.location.href = url.toString()
+    return false
+  }
+
+  async login(userName: string, password: string) {
+    await authApi.login(userName, password)
+    const isRedirected = await this.checkRedirectUrl()
+    if (!isRedirected) {
+      runInAction(() => (this.isAuthenticated = true))
+    }
   }
 
   async register(userName: string, password: string) {

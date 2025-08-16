@@ -9,8 +9,13 @@ import './i18n'
 // @ts-ignore
 import '@fontsource-variable/geist'
 import { ThemeProvider } from './components/theme-toggle.tsx'
+import authController from './controllers/auth-controller.ts'
 import './styles/global.css'
 import './styles/style.css'
+
+if (authController.isAuthenticated) {
+  await authController.checkRedirectUrl()
+}
 
 const router = createBrowserRouter(routes)
 console.log(routes)
