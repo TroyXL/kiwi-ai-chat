@@ -11,19 +11,20 @@ export const request = createAlova({
   async responded(response: Response) {
     const status = response.status
 
+    if (status === 401 || status === 403) {
+      localStorage.removeItem('authToken')
+      if (!location.pathname.includes('/login')) {
+        window.location.replace('/login')
+      }
+      throw new Error('Unauthorized ' + status)
+    }
+
     // 处理 204 或空响应
     if (status === 204 || response.headers.get('content-length') === '0') {
       return {}
     }
 
     if (status >= 200 && status < 300) return response.json()
-
-    if (status === 401 || status === 403) {
-      localStorage.removeItem('authToken')
-      if (!location.pathname.includes('/login')) {
-        window.location.replace('/login')
-      }
-    }
 
     // 处理其他错误
     let errorMessage = `API request failed with status ${response.status}`

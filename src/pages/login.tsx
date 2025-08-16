@@ -152,8 +152,8 @@ export default observer(() => {
         )}
       </div>
       <div className="fixed top-4 right-4 space-x-2">
+        <LanguageSwitcher simple />
         <ThemeToggle />
-        <LanguageSwitcher />
       </div>
     </>
   )
