@@ -9,7 +9,6 @@ class AppListController {
 
   constructor() {
     makeAutoObservable(this)
-    this.fetchAppList()
   }
 
   async fetchAppList(newlyChangedId?: string) {

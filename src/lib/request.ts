@@ -18,6 +18,13 @@ export const request = createAlova({
 
     if (status >= 200 && status < 300) return response.json()
 
+    if (status === 401 || status === 403) {
+      localStorage.removeItem('authToken')
+      if (!location.pathname.includes('/login')) {
+        window.location.replace('/login')
+      }
+    }
+
     // 处理其他错误
     let errorMessage = `API request failed with status ${response.status}`
 
@@ -29,13 +36,6 @@ export const request = createAlova({
         'Could not parse API error response body:',
         await response.text()
       )
-    }
-
-    if (status === 401 || status === 403) {
-      localStorage.removeItem('authToken')
-      if (!location.pathname.includes('/login')) {
-        window.location.replace('/login')
-      }
     }
 
     throw new Error(errorMessage)
