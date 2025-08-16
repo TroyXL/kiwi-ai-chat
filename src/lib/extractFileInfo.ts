@@ -115,6 +115,6 @@ export default function extractFileInfo(fileUrlOrPath: string): FileInfo {
     id,
     fileName: lastSegment,
     contentType: 'application/octet-stream',
-    url: url.href,
+    url: url.toString(),
   }
 }

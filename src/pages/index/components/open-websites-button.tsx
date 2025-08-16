@@ -10,6 +10,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import authController from '@/controllers/auth-controller'
+import { useMemoizedFn } from 'ahooks'
 import { AppWindow, SquareArrowOutUpRight } from 'lucide-react'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -25,6 +27,18 @@ export const OpenWebsitesButton = memo(
     small?: boolean
   }) => {
     const { t } = useTranslation()
+
+    const handleOpenProductUrl = useMemoizedFn(async () => {
+      if (!productUrl) return
+      window.open(productUrl.split('?')[0], '_blank')
+    })
+
+    const handleOpenManagementUrl = useMemoizedFn(async () => {
+      if (!managementUrl) return
+      const code = await authController.generateSsoCode()
+      window.open(`${managementUrl}?code=${code}`, '_blank')
+    })
+
     if (!productUrl && !managementUrl) return null
 
     const $dropdownTrigger = (
@@ -55,9 +69,7 @@ export const OpenWebsitesButton = memo(
           {productUrl && (
             <DropdownMenuItem
               className="w-full flex justify-between items-center gap-4"
-              onClick={() => {
-                window.open(productUrl.split('?')[0], '_blank')
-              }}
+              onClick={handleOpenProductUrl}
             >
               <span>{t('navbar.visitApp')}</span>
               <SquareArrowOutUpRight className="text-foreground" />
@@ -66,9 +78,7 @@ export const OpenWebsitesButton = memo(
           {managementUrl && (
             <DropdownMenuItem
               className="w-full flex justify-between items-center gap-4"
-              onClick={() => {
-                window.open(managementUrl, '_blank')
-              }}
+              onClick={handleOpenManagementUrl}
             >
               <span>{t('navbar.visitManagement')}</span>
               <SquareArrowOutUpRight className="text-foreground" />
