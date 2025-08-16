@@ -12,7 +12,18 @@ class AuthController {
 
   async login(userName: string, password: string) {
     await authApi.login(userName, password)
-    runInAction(() => (this.isAuthenticated = true))
+    // 获取重定向URL参数
+    const params = new URLSearchParams(window.location.search)
+    const redirectUrl = params.get('redirectUrl')
+    if (!redirectUrl) {
+      runInAction(() => (this.isAuthenticated = true))
+      return
+    }
+
+    const code = await this.generateSsoCode()
+    const url = new URL(redirectUrl)
+    url.searchParams.set('code', code)
+    window.location.href = url.toString()
   }
 
   async register(userName: string, password: string) {
@@ -25,6 +36,10 @@ class AuthController {
     appListController.reset()
     exchangeController.reset()
     runInAction(() => (this.isAuthenticated = false))
+  }
+
+  generateSsoCode() {
+    return authApi.generateSsoCode()
   }
 }
 

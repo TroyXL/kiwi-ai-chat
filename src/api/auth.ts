@@ -57,3 +57,10 @@ export async function logout() {
     localStorage.removeItem('authToken')
   }
 }
+
+export async function generateSsoCode() {
+  const { code } = await request.Post<{ code: string }>(
+    '/auth/generate-sso-code'
+  )
+  return code
+}
