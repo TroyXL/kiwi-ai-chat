@@ -24,20 +24,21 @@ export const request = createAlova({
       return {}
     }
 
-    if (status >= 200 && status < 300) return response.json()
+    const responseText = await response.text()
+    let responseData: any = responseText
+    try {
+      responseData = JSON.parse(responseText)
+    } catch {
+      //
+    }
+
+    if (status >= 200 && status < 300) return responseData
 
     // 处理其他错误
     let errorMessage = `API request failed with status ${response.status}`
 
-    try {
-      const errorData: ErrorResponse = await response.json()
-      if (errorData?.message) errorMessage = errorData.message
-    } catch {
-      console.error(
-        'Could not parse API error response body:',
-        await response.text()
-      )
-    }
+    if (responseData?.message) errorMessage = responseData.message
+    else console.error('Could not parse API error response body:', responseData)
 
     throw new Error(errorMessage)
   },
