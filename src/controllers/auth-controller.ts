@@ -13,18 +13,19 @@ class AuthController {
 
   async checkRedirectUrl() {
     const redirectUrl = getQueryParam('redirectUrl')
-    if (!redirectUrl) return true
+    if (!redirectUrl) return false
 
     const code = await this.generateSsoCode()
     const url = new URL(redirectUrl)
     url.searchParams.set('code', code)
     window.location.href = url.toString()
-    return false
+    return true
   }
 
   async login(userName: string, password: string) {
     await authApi.login(userName, password)
     const isRedirected = await this.checkRedirectUrl()
+    console.log('isRedirected =', isRedirected)
     if (!isRedirected) {
       runInAction(() => (this.isAuthenticated = true))
     }
