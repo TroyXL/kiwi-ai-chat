@@ -3,8 +3,6 @@
  * 负责与Preview iframe进行通信
  */
 
-import { IMessage, MessageType } from '../types'
-
 /**
  * DOM加载完成事件的回调函数类型
  */
