@@ -1,9 +1,10 @@
 import { createAlova } from 'alova'
 import adapterFetch from 'alova/fetch'
 import reactHook from 'alova/react'
+import { API_BASE_URL } from './constants'
 
 export const request = createAlova({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: API_BASE_URL,
   timeout: 5000,
   cacheFor: null,
   statesHook: reactHook,

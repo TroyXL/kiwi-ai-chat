@@ -19,12 +19,12 @@ import {
   MonitorOff,
   MonitorX,
   PencilRuler,
+  SquareArrowOutUpRight,
   Undo2,
 } from 'lucide-react'
 import { observer } from 'mobx-react-lite'
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { OpenWebsitesButton } from '../../components/open-websites-button'
 
 type ExchangeProps = {
   exchange: Exchange
@@ -92,13 +92,32 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
 
       <div className="flex justify-between items-center gap-4 border bg-card rounded-md px-4 py-3">
         <p className="font-medium">{statusLabel}</p>
-
-        <OpenWebsitesButton
-          small
-          productUrl={exchange.productURL}
-          managementUrl={exchange.managementURL}
-        />
       </div>
+
+      {exchange.productURL || exchange.managementURL ? (
+        <div className="flex justify-end gap-2 mt-2">
+          {exchange.productURL && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => window.open(exchange.productURL!, '_blank')}
+            >
+              <SquareArrowOutUpRight />
+              {t('navbar.visitApp')}
+            </Button>
+          )}
+          {exchange.managementURL && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => window.open(exchange.managementURL!, '_blank')}
+            >
+              <SquareArrowOutUpRight />
+              {t('navbar.visitManagement')}
+            </Button>
+          )}
+        </div>
+      ) : null}
     </section>
   )
 })

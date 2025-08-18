@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid'
+import { API_BASE_URL } from './constants'
 
 const MIME_TYPE_MAP: Record<string, string> = {
   txt: 'text/plain',
@@ -66,7 +67,7 @@ const HEX_ID_REGEX = /^[a-f0-9]{32}$/i
 
 export default function extractFileInfo(fileUrlOrPath: string): FileInfo {
   const id = nanoid()
-  const url = new URL(fileUrlOrPath, import.meta.env.VITE_API_BASE_URL)
+  const url = new URL(fileUrlOrPath, API_BASE_URL)
   try {
     const storedFileName = url.pathname.split('/').pop()
 

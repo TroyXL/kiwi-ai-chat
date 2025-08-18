@@ -1,7 +1,6 @@
+import { API_BASE_URL } from '@/lib/constants'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
 import { request } from '../lib/request'
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
 
 export function searchExchanges(params: {
   appId: string
