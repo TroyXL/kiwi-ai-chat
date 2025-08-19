@@ -73,7 +73,8 @@
     "connectionError": "A connection error occurred.",
     "cancelAction": "Cancel",
     "retryAction": "Retry",
-    "revertAction": "Revert"
+    "revertAction": "Revert",
+    "autoTest": "Auto Test"
   },
   "enums": {
     "status": {

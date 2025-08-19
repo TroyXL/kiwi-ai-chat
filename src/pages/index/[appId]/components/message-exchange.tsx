@@ -4,16 +4,17 @@ import { Tag } from '@/components/tag'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import exchangeController, {
-  STATUSES_FINISHED,
   STATUSES_RUNNING,
 } from '@/controllers/exchange-controller'
+import { useIsMobile } from '@/hooks/use-mobile'
 import extractFileInfo from '@/lib/extractFileInfo'
-import { useCreation } from 'ahooks'
+import { useCreation, useMemoizedFn } from 'ahooks'
 import {
   ChevronsLeftRightEllipsis,
   CircleCheckBig,
   CircleXIcon,
   ClockFading,
+  Hammer,
   Hourglass,
   MonitorCheck,
   MonitorOff,
@@ -28,6 +29,20 @@ import { useTranslation } from 'react-i18next'
 
 type ExchangeProps = {
   exchange: Exchange
+}
+
+function getAllowRevert(exchange: Exchange) {
+  // 不存在活跃中的记录
+  return (
+    !exchangeController.activeExchange &&
+    // 历史记录中的最后一项
+    exchange ===
+      exchangeController.exchangeHistories[
+        exchangeController.exchangeHistories.length - 1
+      ] &&
+    // 状态为已成功
+    exchange.status === 'SUCCESSFUL'
+  )
 }
 
 export const MessageList = memo(({ exchanges }: { exchanges: Exchange[] }) => {
@@ -57,6 +72,7 @@ const MessageBubble = memo(({ exchange }: ExchangeProps) => {
 
 const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
   const { t } = useTranslation()
+  const isMobile = useIsMobile()
 
   const hasStages = !!exchange.stages?.length
 
@@ -78,6 +94,17 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
     return t('exchange.processing')
   }, [exchange.status])
 
+  const allowAutoTest = !!(
+    getAllowRevert(exchange) &&
+    !isMobile &&
+    exchange.productURL
+  )
+
+  const handleAutoTest = useMemoizedFn(() => {
+    if (!allowAutoTest) return
+    exchangeController.updatePreviewMode('desktop')
+  })
+
   return (
     <section className="pt-8 flex flex-col">
       <KiwiResponseStatus exchange={exchange} />
@@ -92,13 +119,20 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
 
       <div className="flex justify-between items-center gap-4 border bg-card rounded-md px-4 py-3">
         <p className="font-medium">{statusLabel}</p>
+
+        {allowAutoTest && (
+          <Button size="xs" variant="secondary" onClick={handleAutoTest}>
+            <Hammer />
+            {t('exchange.autoTest')}
+          </Button>
+        )}
       </div>
 
       {exchange.productURL || exchange.managementURL ? (
         <div className="flex justify-end gap-2 mt-2">
           {exchange.productURL && (
             <Button
-              size="sm"
+              size="xs"
               variant="outline"
               onClick={() => window.open(exchange.productURL!, '_blank')}
             >
@@ -108,7 +142,7 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
           )}
           {exchange.managementURL && (
             <Button
-              size="sm"
+              size="xs"
               variant="outline"
               onClick={() => window.open(exchange.managementURL!, '_blank')}
             >
@@ -132,16 +166,7 @@ const KiwiResponseStatus = observer(({ exchange }: ExchangeProps) => {
 
   const isRunning = STATUSES_RUNNING.includes(exchange.status)
   const isFailed = exchange.status === 'FAILED'
-  const allowRevert =
-    // 不存在活跃中的记录
-    !exchangeController.activeExchange &&
-    // 历史记录中的最后一项
-    exchange ===
-      exchangeController.exchangeHistories[
-        exchangeController.exchangeHistories.length - 1
-      ] &&
-    // 状态为已结束
-    STATUSES_FINISHED.includes(exchange.status)
+  const allowRevert = getAllowRevert(exchange)
 
   let icon = <Hourglass size={20} />
   switch (exchange.status) {

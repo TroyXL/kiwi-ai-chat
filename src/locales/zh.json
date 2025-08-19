@@ -67,7 +67,8 @@
     "connectionError": "发生连接错误。",
     "cancelAction": "取消",
     "retryAction": "重试",
-    "revertAction": "撤回"
+    "revertAction": "撤回",
+    "autoTest": "自动测试"
   },
   "enums": {
     "status": {
