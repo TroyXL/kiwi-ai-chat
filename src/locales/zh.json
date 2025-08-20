@@ -48,7 +48,8 @@
     "previewMode": "预览模式",
     "visitApp": "访问应用",
     "visitManagement": "访问管理后台",
-    "visitWebsites": "访问应用站点"
+    "visitWebsites": "访问应用站点",
+    "downloadSource": "下载源代码"
   },
   "chat": {
     "placeholderWithApp": "描述对 \"{{appName}}\" 的更改...",

@@ -67,6 +67,7 @@ interface Exchange {
   errorMessage: string | null
   productURL: string | null
   managementURL: string | null
+  sourceCodeURL: string | null
 }
 
 type PreviewMode = 'desktop' | 'mobile' | 'disabled'

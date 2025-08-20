@@ -30,6 +30,7 @@ class ExchangeController {
   previewMode: PreviewMode = 'desktop'
   productUrl = ''
   managementUrl = ''
+  sourceCodeUrl = ''
 
   abortController: Nullable<AbortController> = null
 
@@ -68,6 +69,7 @@ class ExchangeController {
         errorMessage: null,
         productURL: null,
         managementURL: null,
+        sourceCodeURL: null,
       }
       this.activeExchange = activeExchange as Exchange
     }
@@ -267,12 +269,14 @@ class ExchangeController {
     this.exchangeHistories = []
     this.productUrl = ''
     this.managementUrl = ''
+    this.sourceCodeUrl = ''
     uploadController.reset()
   }
 
   private updatePreviewUrl() {
     let productUrl = ''
     let managementUrl = ''
+    let sourceCodeUrl = ''
 
     const exchanges = [
       this.activeExchange,
@@ -282,8 +286,10 @@ class ExchangeController {
       if (!productUrl && exchange?.productURL) productUrl = exchange.productURL
       if (!managementUrl && exchange?.managementURL)
         managementUrl = exchange.managementURL
+      if (!sourceCodeUrl && exchange?.sourceCodeURL)
+        sourceCodeUrl = exchange.sourceCodeURL
 
-      if (productUrl && managementUrl) break
+      if (productUrl && managementUrl && sourceCodeUrl) break
     }
 
     if (productUrl) {
@@ -297,6 +303,7 @@ class ExchangeController {
       this.productUrl = _productUrl.toString()
     }
     if (managementUrl) this.managementUrl = managementUrl
+    if (sourceCodeUrl) this.sourceCodeUrl = sourceCodeUrl
   }
 }
 
