@@ -1,5 +1,6 @@
 import exchangeController from '@/controllers/exchange-controller'
 import { useIsMobile } from '@/hooks/use-mobile'
+import hostMessageChannel from '@/lib/kiwi-channel/for-host'
 import { cn } from '@/lib/utils'
 import { useCreation, useUnmount } from 'ahooks'
 import { reaction } from 'mobx'
@@ -15,16 +16,9 @@ export const AppPreview = observer(({ className }: { className?: string }) => {
     () =>
       reaction(
         () => [exchangeController.productUrl],
-        ([nextUrl]) => {
-          const contentWindow = $iframe.current?.contentWindow
-          if (!contentWindow) return
-
+        () => {
           console.log('reload')
-          try {
-            contentWindow.location.reload()
-          } catch {
-            $iframe.current!.setAttribute('src', nextUrl)
-          }
+          hostMessageChannel.refreshPreview()
         }
       ),
     []
