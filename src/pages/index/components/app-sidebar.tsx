@@ -1,4 +1,6 @@
+import { Github } from '@/components/svgs'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { Button } from '@/components/ui/button'
 import appListController from '@/controllers/app-list-controller'
 import { useSelectApp } from '@/hooks/use-select-app'
 import { useRequest } from 'ahooks'
@@ -92,6 +94,15 @@ export const AppSidebar = observer(() => {
         <div className="flex flex-row gap-2 p-2 shadow-2xl rounded-xl bg-background border border-border/80">
           <ThemeToggle />
           <LanguageSwitcher simple />
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() =>
+              window.open('https://github.com/kiwi-language/kiwi', '_blank')
+            }
+          >
+            <Github />
+          </Button>
           <div className="flex-1" />
           <LogoutButton />
         </div>

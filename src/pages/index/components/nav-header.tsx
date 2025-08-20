@@ -5,6 +5,7 @@ import exchangeController from '@/controllers/exchange-controller'
 import { cn } from '@/lib/utils'
 import { observer } from 'mobx-react-lite'
 import { DeleteAppButton } from './delete-app-button'
+import { DownloadSourceButton } from './download-source-button'
 import { OpenWebsitesButton } from './open-websites-button'
 import { PreviewModeButtons } from './preview-mode-buttons'
 
@@ -48,6 +49,7 @@ export const NavHeader = observer(() => {
             productUrl={exchangeController.productUrl}
             managementUrl={exchangeController.managementUrl}
           />
+          <DownloadSourceButton />
           <DeleteAppButton />
         </div>
       </header>

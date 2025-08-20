@@ -48,7 +48,8 @@
     "previewMode": "Preview Mode",
     "visitApp": "Visit Application",
     "visitManagement": "Visit Management",
-    "visitWebsites": "Visit Websites"
+    "visitWebsites": "Visit Websites",
+    "downloadSource": "Download Source Code"
   },
   "chat": {
     "placeholderWithApp": "Describe changes for \"{{appName}}\"...",
@@ -64,7 +65,6 @@
     "attemptLabel": "Attempt",
     "processing": "Processing",
     "processComplete": "Process complete!",
-    "deleteApp": "Delete Application",
     "togglePreview": "Toggle Preview",
     "visitApp": "Visit Application",
     "visitManagement": "Visit Management",
