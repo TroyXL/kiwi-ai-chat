@@ -3,6 +3,8 @@
  * 负责与Preview iframe进行通信
  */
 
+import { MessageType } from '../shared'
+
 /**
  * DOM加载完成事件的回调函数类型
  */
@@ -17,14 +19,18 @@ type DOMContentCallback = (content: string) => void
  * Host端的消息通道类
  * 负责与Preview iframe进行通信
  */
-export class HostMessageChannel {
+class HostMessageChannel {
   private static instance: HostMessageChannel
   private targetOrigin: string = '*' // 允许任何来源，可以根据安全需求进行限制
-  private previewIframe: HTMLIFrameElement | null = null
+  private _previewIframe: HTMLIFrameElement | null = null
 
   // 回调函数集合
   private domLoadedCallbacks: DOMLoadedCallback[] = []
   private domContentCallbacks: DOMContentCallback[] = []
+
+  get previewIframe() {
+    return this._previewIframe ?? document.querySelector('iframe')
+  }
 
   private constructor() {
     this.initMessageListener()
@@ -44,7 +50,7 @@ export class HostMessageChannel {
    * 设置Preview iframe元素
    */
   public setPreviewIframe(iframe: HTMLIFrameElement): void {
-    this.previewIframe = iframe
+    this._previewIframe = iframe
   }
 
   /**
@@ -82,7 +88,7 @@ export class HostMessageChannel {
    * 发送消息给Preview
    */
   private sendMessage(message: IMessage): void {
-    if (this.previewIframe && this.previewIframe.contentWindow) {
+    if (this.previewIframe?.contentWindow) {
       this.previewIframe.contentWindow.postMessage(message, this.targetOrigin)
     } else {
       console.error('Preview iframe not set or contentWindow not available')
@@ -138,4 +144,5 @@ export class HostMessageChannel {
 }
 
 // 导出单例实例
-export default HostMessageChannel.getInstance()
+const hostMessageChannel = HostMessageChannel.getInstance()
+export default hostMessageChannel

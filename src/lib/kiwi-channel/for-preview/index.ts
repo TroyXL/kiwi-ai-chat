@@ -3,6 +3,8 @@
  * 负责与Host进行通信
  */
 
+import { MessageType } from '../shared'
+
 /**
  * Preview端的消息通道类
  * 负责与Host进行通信
