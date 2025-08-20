@@ -7,11 +7,12 @@
  * Preview端的消息通道类
  * 负责与Host进行通信
  */
-export class PreviewMessageChannel {
+class PreviewMessageChannel {
   private static instance: PreviewMessageChannel
   private targetOrigin: string = '*' // 允许任何来源，可以根据安全需求进行限制
 
   private constructor() {
+    console.log('Setup PreviewMessageChannel', window)
     this.initMessageListener()
   }
 

@@ -295,11 +295,10 @@ class ExchangeController {
     if (productUrl) {
       const _productUrl = new URL(productUrl)
       _productUrl.searchParams.set('__kiwi__timestamp__', Date.now().toString())
-      // if (!IS_PRODUCTION)
-      //   _productUrl.searchParams.set(
-      //     '__kiwi__channel__src__',
-      //     window.location.origin + '/kiwi-channel.js'
-      //   )
+      _productUrl.searchParams.set(
+        '__kiwi__channel__origin__',
+        encodeURIComponent(window.location.origin)
+      )
       this.productUrl = _productUrl.toString()
     }
     if (managementUrl) this.managementUrl = managementUrl

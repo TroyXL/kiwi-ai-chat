@@ -1,7 +1,7 @@
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import path from 'node:path'
-import { defineConfig } from 'vite'
+import { defineConfig, build } from 'vite'
 import pages from 'vite-plugin-pages'
 
 export default defineConfig({
@@ -45,20 +45,47 @@ export default defineConfig({
         // 添加中间件处理 /kiwi-channel.js 请求
         server.middlewares.use(async (req, res, next) => {
           if (req.url === '/kiwi-channel.js') {
-            // 动态导入模块，支持热更新
             try {
-              // 清除缓存以确保获取最新版本
               const modulePath = path.resolve(
                 __dirname,
                 'src/lib/kiwi-channel/for-preview/index.ts'
               )
-              // 使用 Vite 的转换功能处理 TypeScript 文件
-              const result = await server.transformRequest(modulePath)
-              const jsCode =
-                result?.code || `alert('Kiwi Channel Compile Failed')`
-
-              res.setHeader('Content-Type', 'application/javascript')
-              res.end(jsCode)
+              
+              // 使用 vite build API 动态构建 UMD 格式
+              const result = await build({
+                configFile: false,
+                build: {
+                  lib: {
+                    entry: modulePath,
+                    name: 'KiwiChannel',
+                    formats: ['umd'],
+                    fileName: () => 'kiwi-channel.js'
+                  },
+                  write: false,
+                  rollupOptions: {
+                    external: [],
+                    output: {
+                      globals: {}
+                    }
+                  }
+                },
+                define: {
+                  'process.env.NODE_ENV': '"development"'
+                }
+              })
+              
+              // 获取构建结果
+              const output = Array.isArray(result) ? result[0] : result
+              if ('output' in output && output.output.length > 0) {
+                const chunk = output.output[0]
+                if ('code' in chunk) {
+                  res.setHeader('Content-Type', 'application/javascript')
+                  res.end(chunk.code)
+                  return
+                }
+              }
+              
+              throw new Error('Failed to generate UMD bundle')
             } catch (error: unknown) {
               console.error('Error serving kiwi-channel.js:', error)
               res.statusCode = 500
