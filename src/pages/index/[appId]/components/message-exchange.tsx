@@ -7,7 +7,6 @@ import exchangeController, {
   STATUSES_RUNNING,
 } from '@/controllers/exchange-controller'
 import extractFileInfo from '@/lib/extractFileInfo'
-import hostMessageChannel from '@/lib/kiwi-channel/for-host'
 import { useCreation, useMemoizedFn } from 'ahooks'
 import {
   ChevronsLeftRightEllipsis,
@@ -104,9 +103,6 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
   const handleAutoTest = useMemoizedFn(() => {
     if (!allowAutoTest) return
     exchangeController.updatePreviewMode('desktop')
-    hostMessageChannel.getDOMContent(content => {
-      console.log('DOM内容:', content)
-    })
   })
 
   return (
