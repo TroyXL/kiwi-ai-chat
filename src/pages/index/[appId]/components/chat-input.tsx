@@ -24,10 +24,10 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
   const $textarea = useRef<HTMLTextAreaElement>(null)
   const disabled =
     exchangeController.isGenerating || exchangeController.isReverting
-
-  const textareaPlaceholder = appListController.selectedApp
+  const selectedApp = appListController.selectedApp
+  const textareaPlaceholder = selectedApp
     ? t('chat.placeholderWithApp', {
-        appName: appListController.selectedApp.name,
+        appName: selectedApp.name,
       })
     : t('chat.placeholderNewApp')
 
@@ -87,6 +87,7 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
         />
 
         <ChatInputRightActions
+          app={selectedApp}
           disabled={disabled}
           uploading={uploading}
           onUploadFiles={handleUploadFiles}
@@ -102,11 +103,13 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
 })
 
 const ChatInputRightActions = ({
+  app,
   disabled,
   uploading,
   onUploadFiles,
   onSendMessage,
 }: {
+  app: Application | null
   disabled: boolean
   uploading: boolean
   onUploadFiles: (files: File[]) => void
@@ -123,7 +126,7 @@ const ChatInputRightActions = ({
 
   return (
     <div className="absolute right-3 bottom-3 flex gap-2">
-      <AutoCollectButton disabled={disabled} />
+      {app && <AutoCollectButton disabled={disabled} />}
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
