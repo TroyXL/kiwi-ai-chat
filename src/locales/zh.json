@@ -12,6 +12,11 @@
     "dark": "深色",
     "system": "系统"
   },
+  "request": {
+    "networkError": "网络错误，请稍后再试...",
+    "networkTimeout": "请求超时，请稍后再试...",
+    "urlInfo": "请求 URL: {{url}}"
+  },
   "betaTip": {
     "title": "Kiwi AI 测试版",
     "description": "感谢您使用 Kiwi AI！请注意，当前版本仍处于开发阶段，我们免费提供所有功能供您试用。\n\n在使用过程中如遇到任何问题或有任何建议，欢迎随时反馈。",
