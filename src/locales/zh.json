@@ -12,6 +12,11 @@
     "dark": "深色",
     "system": "系统"
   },
+  "request": {
+    "networkError": "网络错误，请稍后再试...",
+    "networkTimeout": "请求超时，请稍后再试...",
+    "urlInfo": "请求 URL: {{url}}"
+  },
   "betaTip": {
     "title": "Kiwi AI 测试版",
     "description": "感谢您使用 Kiwi AI！请注意，当前版本仍处于开发阶段，我们免费提供所有功能供您试用。\n\n在使用过程中如遇到任何问题或有任何建议，欢迎随时反馈。",
@@ -56,7 +61,8 @@
     "placeholderNewApp": "描述您想创建的新应用...",
     "generationNote": "请注意：生成过程可能需要 5-10 分钟。您可以安全地关闭此窗口，该过程将继续在后台运行。",
     "fileUploadTooltip": "上传文件（JPEG、PNG、GIF、PDF、MP4、TXT、HTML、JSON）",
-    "uploadedFiles": "已上传文件"
+    "uploadedFiles": "已上传文件",
+    "autoFixPrompt": "根据已上传文件修复存在的问题"
   },
   "exchange": {
     "statusLabel": "总体状态：",
@@ -68,7 +74,10 @@
     "connectionError": "发生连接错误。",
     "cancelAction": "取消",
     "retryAction": "重试",
-    "revertAction": "撤回"
+    "revertAction": "撤回",
+    "autoTest": "自动测试",
+    "collectPageDataTooltip": "点击以上传当前页面信息，可针对性修改当前页面内容",
+    "channelNotSupported": "当前应用暂不支持自动收集页面信息"
   },
   "enums": {
     "status": {

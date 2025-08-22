@@ -3,6 +3,8 @@
  * 负责与Preview iframe进行通信
  */
 
+import { MessageType } from '../shared'
+
 /**
  * DOM加载完成事件的回调函数类型
  */
@@ -17,14 +19,23 @@ type DOMContentCallback = (content: string) => void
  * Host端的消息通道类
  * 负责与Preview iframe进行通信
  */
-export class HostMessageChannel {
+class HostMessageChannel {
   private static instance: HostMessageChannel
   private targetOrigin: string = '*' // 允许任何来源，可以根据安全需求进行限制
-  private previewIframe: HTMLIFrameElement | null = null
+  private _previewIframe: HTMLIFrameElement | null = null
 
   // 回调函数集合
   private domLoadedCallbacks: DOMLoadedCallback[] = []
   private domContentCallbacks: DOMContentCallback[] = []
+  private logsContentCallbacks: ((logs: ILogEvent[]) => void)[] = []
+  private screenshotCallbacks: ((
+    screenshotData: IScreenshotData | null
+  ) => void)[] = []
+  private channelSupportedCallbacks: ((supported: boolean) => void)[] = []
+
+  get previewIframe() {
+    return this._previewIframe ?? document.querySelector('iframe')
+  }
 
   private constructor() {
     this.initMessageListener()
@@ -33,7 +44,7 @@ export class HostMessageChannel {
   /**
    * 获取单例实例
    */
-  public static getInstance(): HostMessageChannel {
+  static getInstance(): HostMessageChannel {
     if (!HostMessageChannel.instance) {
       HostMessageChannel.instance = new HostMessageChannel()
     }
@@ -43,8 +54,8 @@ export class HostMessageChannel {
   /**
    * 设置Preview iframe元素
    */
-  public setPreviewIframe(iframe: HTMLIFrameElement): void {
-    this.previewIframe = iframe
+  setPreviewIframe(iframe: HTMLIFrameElement): void {
+    this._previewIframe = iframe
   }
 
   /**
@@ -73,6 +84,21 @@ export class HostMessageChannel {
         this.handleDOMContent(message.payload)
         break
 
+      case MessageType.LOGS_CONTENT:
+        // 处理接收到的日志内容
+        this.handleLogsContent(message.payload)
+        break
+
+      case MessageType.SCREENSHOT_CONTENT:
+        // 处理接收到的截图内容
+        this.handleScreenshotContent(message.payload)
+        break
+
+      case MessageType.CHANNEL_SUPPORTED:
+        // 处理接收到的通道支持状态
+        this.handleChannelSupported(message.payload)
+        break
+
       default:
         console.log('Host: Unknown message type', message.type)
     }
@@ -82,10 +108,12 @@ export class HostMessageChannel {
    * 发送消息给Preview
    */
   private sendMessage(message: IMessage): void {
-    if (this.previewIframe && this.previewIframe.contentWindow) {
+    if (this.previewIframe?.contentWindow) {
       this.previewIframe.contentWindow.postMessage(message, this.targetOrigin)
     } else {
-      console.error('Preview iframe not set or contentWindow not available')
+      console.warn(
+        'Preview iframe not set or contentWindow not available:' + message.type
+      )
     }
   }
 
@@ -95,6 +123,16 @@ export class HostMessageChannel {
   private handleDOMLoaded(): void {
     // 触发所有DOM加载完成的回调函数
     this.domLoadedCallbacks.forEach(callback => callback())
+  }
+
+  /**
+   * 处理接收到的截图内容
+   */
+  private handleScreenshotContent(
+    screenshotData: IScreenshotData | null
+  ): void {
+    // 触发所有截图内容回调函数
+    this.screenshotCallbacks.forEach(callback => callback(screenshotData))
   }
 
   /**
@@ -110,14 +148,40 @@ export class HostMessageChannel {
   /**
    * 注册DOM加载完成事件的回调函数
    */
-  public onDOMLoaded(callback: DOMLoadedCallback): void {
+  onDOMLoaded(callback: DOMLoadedCallback): void {
     this.domLoadedCallbacks.push(callback)
+  }
+
+  /**
+   * 注册截图内容回调函数
+   */
+  onScreenshot(
+    callback: (screenshotData: IScreenshotData | null) => void
+  ): void {
+    this.screenshotCallbacks.push(callback)
+  }
+
+  /**
+   * 请求获取页面截图
+   */
+  async getScreenshot(): Promise<IScreenshotData | null> {
+    return new Promise(resolve => {
+      // 添加回调函数
+      this.screenshotCallbacks.push(screenshotData => {
+        resolve(screenshotData)
+      })
+
+      // 发送获取截图的请求
+      this.sendMessage({
+        type: MessageType.GET_SCREENSHOT,
+      })
+    })
   }
 
   /**
    * 发送刷新页面的请求
    */
-  public refreshPreview(): void {
+  refreshPreview(): void {
     this.sendMessage({
       type: MessageType.REFRESH,
     })
@@ -126,16 +190,100 @@ export class HostMessageChannel {
   /**
    * 获取Preview的完整DOM内容
    */
-  public getDOMContent(callback: DOMContentCallback): void {
-    // 添加回调函数
-    this.domContentCallbacks.push(callback)
+  async getDOMContent(): Promise<string> {
+    return new Promise(resolve => {
+      // 添加回调函数
+      this.domContentCallbacks.push(content => {
+        resolve(content)
+      })
 
-    // 发送获取DOM内容的请求
-    this.sendMessage({
-      type: MessageType.GET_DOM_CONTENT,
+      // 发送获取DOM内容的请求
+      this.sendMessage({
+        type: MessageType.GET_DOM_CONTENT,
+      })
+    })
+  }
+
+  /**
+   * 处理接收到的日志内容
+   */
+  private handleLogsContent(logs: ILogEvent[]): void {
+    // 触发所有日志内容回调函数
+    this.logsContentCallbacks.forEach(callback => callback(logs))
+    // 清空回调函数列表，因为这是一次性请求
+    this.logsContentCallbacks = []
+  }
+
+  /**
+   * 获取Preview中捕获的所有日志
+   */
+  async getLogsContent(): Promise<ILogEvent[]> {
+    return new Promise(resolve => {
+      // 添加回调函数
+      this.logsContentCallbacks.push(logs => {
+        resolve(logs)
+      })
+
+      // 发送获取日志内容的请求
+      this.sendMessage({
+        type: MessageType.GET_LOGS_CONTENT,
+      })
+    })
+  }
+
+  /**
+   * 处理接收到的通道支持状态
+   */
+  private handleChannelSupported(supported: boolean): void {
+    // 执行所有回调函数
+    this.channelSupportedCallbacks.forEach(callback => {
+      callback(supported)
+    })
+
+    // 清空回调函数列表
+    this.channelSupportedCallbacks = []
+  }
+
+  /**
+   * 获取Preview中的通道支持状态
+   * 如果在100ms内未获取到则返回false
+   */
+  async getChannelSupported(): Promise<boolean> {
+    return new Promise(resolve => {
+      // 设置超时定时器
+      const timeoutId = setTimeout(() => {
+        // 超时后返回false
+        resolve(false)
+
+        // 清空回调函数列表
+        this.channelSupportedCallbacks = []
+      }, 100)
+
+      // 添加回调函数
+      this.channelSupportedCallbacks.push(supported => {
+        // 清除超时定时器
+        clearTimeout(timeoutId)
+
+        // 返回支持状态
+        resolve(supported)
+      })
+
+      // 发送获取通道支持状态的请求
+      this.sendMessage({
+        type: MessageType.GET_CHANNEL_SUPPORTED,
+      })
     })
   }
 }
 
+/**
+ * 获取通道支持状态
+ * 如果在100ms内未获取到则返回false
+ */
+export async function isChannelSupported(): Promise<boolean> {
+  return await hostMessageChannel.getChannelSupported()
+}
+
 // 导出单例实例
-export default HostMessageChannel.getInstance()
+const hostMessageChannel = HostMessageChannel.getInstance()
+export default hostMessageChannel

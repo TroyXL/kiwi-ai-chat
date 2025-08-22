@@ -126,5 +126,11 @@ export function retryGeneration(
 }
 
 export function revertGeneration(exchangeId: string) {
-  return request.Post<void>('/generate/revert', { exchangeId })
+  return request.Post<void>(
+    '/generate/revert',
+    { exchangeId },
+    {
+      timeout: 30000,
+    }
+  )
 }

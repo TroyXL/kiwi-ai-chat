@@ -3,16 +3,10 @@
  */
 
 /**
- * 通信消息类型常量
+ * 为html2canvas添加全局声明
  */
-declare const MessageType: {
-  // Preview发送给Host的消息类型
-  readonly DOM_LOADED: 'dom_loaded' // DOM加载完成事件
-  readonly DOM_CONTENT: 'dom_content' // 当前完整DOM内容
-
-  // Host发送给Preview的消息类型
-  readonly REFRESH: 'refresh' // 刷新页面事件
-  readonly GET_DOM_CONTENT: 'get_dom_content' // 获取当前完整DOM内容的请求
+interface Window {
+  html2canvas?: (element: HTMLElement, options?: any) => Promise<HTMLCanvasElement>
 }
 
 /**
@@ -21,9 +15,52 @@ declare const MessageType: {
 type MessageTypeValues = (typeof MessageType)[keyof typeof MessageType]
 
 /**
+ * 截图数据的接口定义
+ */
+interface IScreenshotData {
+  buffer: ArrayBuffer // 截图的二进制数据
+  type: string // 图片类型，如'image/png'
+}
+
+/**
  * 通信消息的接口定义
  */
 interface IMessage {
   type: MessageTypeValues // 消息类型
   payload?: any // 消息负载
 }
+
+/**
+ * 日志事件的接口定义
+ */
+type ILogEvent =
+  | {
+      type: 'error'
+      message: string // 错误消息
+      filename: string // 错误发生的文件名
+      lineno: number // 错误发生的行号
+      colno: number // 错误发生的列号
+      error: Error // 错误对象
+      stack: string // 错误栈信息
+      timestamp: number // 错误发生的时间戳
+    }
+  | {
+      type: 'unhandledrejection'
+      reason: any // 未处理的拒绝原因
+      timestamp: number // 错误发生的时间戳
+    }
+  | {
+      type: 'console.log'
+      args: any[] // 日志参数
+      timestamp: number // 日志时间戳
+    }
+  | {
+      type: 'console.warn'
+      args: any[] // 警告参数
+      timestamp: number // 警告时间戳
+    }
+  | {
+      type: 'console.error'
+      args: any[] // 错误参数
+      timestamp: number // 错误时间戳
+    }

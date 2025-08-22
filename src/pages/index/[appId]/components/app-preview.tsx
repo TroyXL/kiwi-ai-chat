@@ -1,8 +1,8 @@
 import exchangeController from '@/controllers/exchange-controller'
 import { useIsMobile } from '@/hooks/use-mobile'
+import hostMessageChannel from '@/lib/kiwi-channel/for-host'
 import { cn } from '@/lib/utils'
-import { useCreation, useUnmount } from 'ahooks'
-import { reaction } from 'mobx'
+import { useCreation } from 'ahooks'
 import { observer } from 'mobx-react-lite'
 import { useRef } from 'react'
 
@@ -11,45 +11,10 @@ export const AppPreview = observer(({ className }: { className?: string }) => {
   const $iframe = useRef<HTMLIFrameElement>(null)
   const productUrl = exchangeController.productUrl
 
-  const disposeReaction = useCreation(
-    () =>
-      reaction(
-        () => [exchangeController.productUrl],
-        ([nextUrl]) => {
-          const contentWindow = $iframe.current?.contentWindow
-          if (!contentWindow) return
-
-          console.log('reload')
-          try {
-            contentWindow.location.reload()
-          } catch {
-            $iframe.current!.setAttribute('src', nextUrl)
-          }
-        }
-      ),
-    []
-  )
-
-  // useCreation(() => {
-  //   const contentWindow = $iframe.current?.contentWindow
-  //   if (!contentWindow) {
-  //     setPreviewUrl(exchangeController.productUrl)
-  //     return
-  //   }
-  //   console.log('reloaded')
-  //   const params = exchangeController.productUrl.split('?')[1]
-  //   const contentUrl = contentWindow.location.href.split('?')[0]
-  //   setPreviewUrl(contentUrl + (contentUrl.includes('?') ? '' : '?') + params)
-  // }, [exchangeController.productUrl])
-
-  // useCreation(() => reaction(() => [exchangeController.productUrl], ([productUrl]) => {
-  //   if (!url) {
-  //     return
-  //   }
-  //   $iframe.current?.setAttribute('src', url)
-  // }))
-
-  useUnmount(() => disposeReaction())
+  useCreation(() => {
+    if (!$iframe.current?.contentWindow) return
+    hostMessageChannel.refreshPreview()
+  }, [productUrl])
 
   return isMobile || !productUrl ? null : (
     <div className={cn('relative', className)}>

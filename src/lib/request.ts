@@ -1,47 +1,64 @@
+import i18n from '@/i18n'
 import { createAlova } from 'alova'
 import adapterFetch from 'alova/fetch'
 import reactHook from 'alova/react'
+import { toast } from 'sonner'
 import { API_BASE_URL } from './constants'
 
 export const request = createAlova({
   baseURL: API_BASE_URL,
-  timeout: 5000,
+  timeout: 10000,
   cacheFor: null,
   statesHook: reactHook,
   requestAdapter: adapterFetch(),
-  async responded(response: Response) {
-    const status = response.status
+  responded: {
+    async onSuccess(response: Response) {
+      const status = response.status
 
-    if (status === 401 || status === 403) {
-      localStorage.removeItem('authToken')
-      if (!location.pathname.includes('/login')) {
-        window.location.replace('/login')
+      if (status === 401 || status === 403) {
+        localStorage.removeItem('authToken')
+        if (!location.pathname.includes('/login')) {
+          window.location.replace('/login')
+        }
+        throw new Error('Unauthorized ' + status)
       }
-      throw new Error('Unauthorized ' + status)
-    }
 
-    // 处理 204 或空响应
-    if (status === 204 || response.headers.get('content-length') === '0') {
-      return {}
-    }
+      // 处理 204 或空响应
+      if (status === 204 || response.headers.get('content-length') === '0') {
+        return {}
+      }
 
-    const responseText = await response.text()
-    let responseData: any = responseText
-    try {
-      responseData = JSON.parse(responseText)
-    } catch {
-      //
-    }
+      const responseText = await response.text()
+      let responseData: any = responseText
+      try {
+        responseData = JSON.parse(responseText)
+      } catch {
+        //
+      }
 
-    if (status >= 200 && status < 300) return responseData
+      if (status >= 200 && status < 300) return responseData
 
-    // 处理其他错误
-    let errorMessage = `API request failed with status ${response.status}`
+      // 处理其他错误
+      let errorMessage = `API request failed with status ${response.status}`
 
-    if (responseData?.message) errorMessage = responseData.message
-    else console.error('Could not parse API error response body:', responseData)
+      if (responseData?.message) errorMessage = responseData.message
+      else
+        console.error('Could not parse API error response body:', responseData)
 
-    throw new Error(errorMessage)
+      throw new Error(errorMessage)
+    },
+    onError(error, instance) {
+      console.error('API request failed:', error)
+      if (error.message.includes('timeout')) {
+        toast.error(i18n.t('request.networkTimeout'), {
+          description: i18n.t('request.urlInfo', { url: instance.url }),
+        })
+      } else {
+        toast.error(i18n.t('request.networkError'), {
+          description: i18n.t('request.urlInfo', { url: instance.url }),
+        })
+      }
+    },
   },
   async beforeRequest(method) {
     const headers = method.config.headers || {}
