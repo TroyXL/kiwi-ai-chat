@@ -16,6 +16,7 @@ import { Paperclip, Send } from 'lucide-react'
 import { observer } from 'mobx-react-lite'
 import { ChangeEvent, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { AutoCollectButton } from './auto-collect-button'
 import { FileList } from './file-list'
 
 export const ChatInput = observer(({ className }: { className?: string }) => {
@@ -85,7 +86,7 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
           placeholder={textareaPlaceholder}
         />
 
-        <ChatInputActions
+        <ChatInputRightActions
           disabled={disabled}
           uploading={uploading}
           onUploadFiles={handleUploadFiles}
@@ -100,7 +101,7 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
   )
 })
 
-const ChatInputActions = ({
+const ChatInputRightActions = ({
   disabled,
   uploading,
   onUploadFiles,
@@ -122,11 +123,12 @@ const ChatInputActions = ({
 
   return (
     <div className="absolute right-3 bottom-3 flex gap-2">
+      <AutoCollectButton disabled={disabled} />
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
             className="relative"
-            size="icon-sm"
+            size="icon-xs"
             variant="secondary"
             disabled={disabled || uploading}
           >
@@ -149,7 +151,7 @@ const ChatInputActions = ({
       </Tooltip>
 
       <Button
-        size="icon-sm"
+        size="icon-xs"
         variant="secondary"
         disabled={disabled || uploading}
         onClick={onSendMessage}

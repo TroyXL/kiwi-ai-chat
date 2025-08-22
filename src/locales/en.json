@@ -76,8 +76,7 @@
     "retryAction": "Retry",
     "revertAction": "Revert",
     "autoTest": "Auto Test",
-    "autoFix": "Collect Page Data",
-    "autoFixTooltip": "Click to upload current page information for targeted page content modification",
+    "collectPageDataTooltip": "Click to upload current page information for targeted page content modification",
     "channelNotSupported": "The current application does not support automatic page information collection"
   },
   "enums": {

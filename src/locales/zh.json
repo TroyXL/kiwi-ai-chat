@@ -71,8 +71,7 @@
     "retryAction": "重试",
     "revertAction": "撤回",
     "autoTest": "自动测试",
-    "autoFix": "收集页面数据",
-    "autoFixTooltip": "点击以上传当前页面信息，可针对性修改当前页面内容",
+    "collectPageDataTooltip": "点击以上传当前页面信息，可针对性修改当前页面内容",
     "channelNotSupported": "当前应用暂不支持自动收集页面信息"
   },
   "enums": {
