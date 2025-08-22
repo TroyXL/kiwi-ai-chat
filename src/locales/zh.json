@@ -56,7 +56,8 @@
     "placeholderNewApp": "描述您想创建的新应用...",
     "generationNote": "请注意：生成过程可能需要 5-10 分钟。您可以安全地关闭此窗口，该过程将继续在后台运行。",
     "fileUploadTooltip": "上传文件（JPEG、PNG、GIF、PDF、MP4、TXT、HTML、JSON）",
-    "uploadedFiles": "已上传文件"
+    "uploadedFiles": "已上传文件",
+    "autoFixPrompt": "根据已上传文件修复存在的问题"
   },
   "exchange": {
     "statusLabel": "总体状态：",
@@ -69,7 +70,10 @@
     "cancelAction": "取消",
     "retryAction": "重试",
     "revertAction": "撤回",
-    "autoTest": "自动测试"
+    "autoTest": "自动测试",
+    "autoFix": "收集页面数据",
+    "autoFixTooltip": "点击以上传当前页面信息，可针对性修改当前页面内容",
+    "channelNotSupported": "当前应用暂不支持自动收集页面信息"
   },
   "enums": {
     "status": {

@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import exchangeController, {
   STATUSES_RUNNING,
 } from '@/controllers/exchange-controller'
-import { useIsMobile } from '@/hooks/use-mobile'
 import extractFileInfo from '@/lib/extractFileInfo'
 import hostMessageChannel from '@/lib/kiwi-channel/for-host'
 import { useCreation, useMemoizedFn } from 'ahooks'
@@ -73,7 +72,7 @@ const MessageBubble = memo(({ exchange }: ExchangeProps) => {
 
 const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
   const { t } = useTranslation()
-  const isMobile = useIsMobile()
+  // const isMobile = useIsMobile()
 
   const hasStages = !!exchange.stages?.length
 
@@ -95,11 +94,12 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
     return t('exchange.processing')
   }, [exchange.status])
 
-  const allowAutoTest = !!(
-    getAllowRevert(exchange) &&
-    !isMobile &&
-    exchange.productURL
-  )
+  // const allowAutoTest = !!(
+  //   getAllowRevert(exchange) &&
+  //   !isMobile &&
+  //   exchange.productURL
+  // )
+  const allowAutoTest = false
 
   const handleAutoTest = useMemoizedFn(() => {
     if (!allowAutoTest) return

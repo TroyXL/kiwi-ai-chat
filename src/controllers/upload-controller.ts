@@ -31,9 +31,9 @@ class UploadController {
         if (!item) return
         item.status = url ? 'success' : 'error'
         item.url = url
-        console.log('uploadFile', url, this.fileList)
       })
     }
+    return this.getSuccessFileUrls()
   }
 
   removeFileById(id: string) {

@@ -57,7 +57,8 @@
     "historyLoading": "Loading history...",
     "generationNote": "Note: Generation can take 5-10 minutes. You can safely close this window, the process will continue.",
     "fileUploadTooltip": "Upload files (JPEG, PNG, GIF, PDF, MP4, TXT, HTML, JSON)",
-    "uploadedFiles": "Uploaded Files"
+    "uploadedFiles": "Uploaded Files",
+    "autoFixPrompt": "根据已上传文件修复存在的问题"
   },
   "exchange": {
     "statusLabel": "Overall Status: ",
@@ -74,7 +75,10 @@
     "cancelAction": "Cancel",
     "retryAction": "Retry",
     "revertAction": "Revert",
-    "autoTest": "Auto Test"
+    "autoTest": "Auto Test",
+    "autoFix": "Collect Page Data",
+    "autoFixTooltip": "Click to upload current page information for targeted page content modification",
+    "channelNotSupported": "The current application does not support automatic page information collection"
   },
   "enums": {
     "status": {
