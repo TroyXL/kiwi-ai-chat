@@ -1,28 +1,10 @@
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import path from 'node:path'
-import { defineConfig, build } from 'vite'
+import { build, defineConfig } from 'vite'
 import pages from 'vite-plugin-pages'
 
 export default defineConfig({
-  build: {
-    rollupOptions: {
-      input: {
-        main: path.resolve(__dirname, 'index.html'),
-        'kiwi-channel': path.resolve(
-          __dirname,
-          'src/lib/kiwi-channel/for-preview/index.ts'
-        ),
-      },
-      output: {
-        entryFileNames: chunkInfo => {
-          return chunkInfo.name === 'kiwi-channel'
-            ? 'kiwi-channel.js'
-            : 'assets/[name]-[hash].js'
-        },
-      },
-    },
-  },
   server: {
     fs: {
       // 允许访问项目根目录下的所有文件
@@ -50,7 +32,7 @@ export default defineConfig({
                 __dirname,
                 'src/lib/kiwi-channel/for-preview/index.ts'
               )
-              
+
               // 使用 vite build API 动态构建 UMD 格式
               const result = await build({
                 configFile: false,
@@ -59,21 +41,12 @@ export default defineConfig({
                     entry: modulePath,
                     name: 'KiwiChannel',
                     formats: ['umd'],
-                    fileName: () => 'kiwi-channel.js'
+                    fileName: () => 'kiwi-channel.js',
                   },
                   write: false,
-                  rollupOptions: {
-                    external: [],
-                    output: {
-                      globals: {}
-                    }
-                  }
                 },
-                define: {
-                  'process.env.NODE_ENV': '"development"'
-                }
               })
-              
+
               // 获取构建结果
               const output = Array.isArray(result) ? result[0] : result
               if ('output' in output && output.output.length > 0) {
@@ -84,7 +57,7 @@ export default defineConfig({
                   return
                 }
               }
-              
+
               throw new Error('Failed to generate UMD bundle')
             } catch (error: unknown) {
               console.error('Error serving kiwi-channel.js:', error)
@@ -99,6 +72,39 @@ export default defineConfig({
           }
           next()
         })
+      },
+    },
+    // 添加生产环境插件，用于构建时将 kiwi-channel 打包为独立文件
+    {
+      name: 'kiwi-channel-prod',
+      apply: 'build', // 仅在构建时应用此插件
+      closeBundle: async () => {
+        console.log('Building kiwi-channel.js for production...')
+        try {
+          const modulePath = path.resolve(
+            __dirname,
+            'src/lib/kiwi-channel/for-preview/index.ts'
+          )
+
+          // 使用 vite build API 构建 UMD 格式
+          await build({
+            configFile: false,
+            build: {
+              lib: {
+                entry: modulePath,
+                name: 'KiwiChannel',
+                formats: ['umd'],
+                fileName: () => 'kiwi-channel.js',
+              },
+              outDir: 'dist',
+              emptyOutDir: false, // 不清空输出目录，避免删除主应用构建结果
+            },
+          })
+
+          console.log('Successfully built kiwi-channel.js')
+        } catch (error) {
+          console.error('Error building kiwi-channel.js:', error)
+        }
       },
     },
   ],
