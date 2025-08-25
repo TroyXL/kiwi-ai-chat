@@ -97,6 +97,7 @@ export const AppSidebar = observer(() => {
           <Button
             size="sm"
             variant="outline"
+            className="!border-border/80 shadow-md"
             onClick={() =>
               window.open('https://github.com/kiwi-language/kiwi', '_blank')
             }
