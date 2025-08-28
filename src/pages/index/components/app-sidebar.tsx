@@ -3,7 +3,8 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
 import appListController from '@/controllers/app-list-controller'
 import { useSelectApp } from '@/hooks/use-select-app'
-import { useRequest } from 'ahooks'
+import { getStorage } from '@/lib/storage'
+import { useCreation, useRequest } from 'ahooks'
 import { Archive } from 'lucide-react'
 import { observer } from 'mobx-react-lite'
 import { useTranslation } from 'react-i18next'
@@ -30,6 +31,10 @@ export const AppSidebar = observer(() => {
   const { t } = useTranslation()
   const { appId } = useParams()
   const handleSelectApp = useSelectApp()
+  const allowShowDownloadButton = useCreation(
+    () => getStorage('kiwi:user:data')?.allowSourceDownload,
+    []
+  )
 
   const { loading } = useRequest(async () => {
     await appListController.fetchAppList()
@@ -94,16 +99,18 @@ export const AppSidebar = observer(() => {
         <div className="flex flex-row gap-2 p-2 shadow-2xl rounded-xl bg-background border border-border/80">
           <ThemeToggle />
           <LanguageSwitcher simple />
-          <Button
-            size="sm"
-            variant="outline"
-            className="!border-border/80 shadow-md"
-            onClick={() =>
-              window.open('https://github.com/kiwi-language/kiwi', '_blank')
-            }
-          >
-            <Github />
-          </Button>
+          {allowShowDownloadButton && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="!border-border/80 shadow-md"
+              onClick={() =>
+                window.open('https://github.com/kiwi-language/kiwi', '_blank')
+              }
+            >
+              <Github />
+            </Button>
+          )}
           <div className="flex-1" />
           <LogoutButton />
         </div>

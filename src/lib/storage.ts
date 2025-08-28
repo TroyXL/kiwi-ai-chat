@@ -5,6 +5,8 @@ export type StorageKey = {
   'kiwi:ui:sidebar-opened': boolean
   'kiwi:ui:beta-tip-shown': boolean
   'kiwi:ui:preview-mode': PreviewMode
+  'kiwi:user:token': string
+  'kiwi:user:data': UserData
 }
 
 export type StorageKeyType = keyof StorageKey

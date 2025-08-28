@@ -1,4 +1,5 @@
 import { API_BASE_URL } from '@/lib/constants'
+import { getStorage, removeStorage } from '@/lib/storage'
 import { fetchEventSource } from '@microsoft/fetch-event-source'
 import { request } from '../lib/request'
 
@@ -21,7 +22,7 @@ function createEventSource(
   signal: AbortSignal,
   options?: { method?: 'GET' | 'POST'; body?: any }
 ): void {
-  const token = localStorage.getItem('authToken')
+  const token = getStorage('kiwi:user:token')
   const headers: Record<string, string> = {
     Accept: 'text/event-stream',
   }
@@ -44,7 +45,7 @@ function createEventSource(
     onopen: async response => {
       // 优先处理认证错误
       if (response.status === 401 || response.status === 403) {
-        localStorage.removeItem('authToken')
+        removeStorage('kiwi:user:token')
         window.location.replace('/login')
         // 抛出错误以确保 fetchEventSource 库停止处理
         throw new Error(`Authentication failed with status ${response.status}`)

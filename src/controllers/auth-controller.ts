@@ -1,3 +1,4 @@
+import { getStorage } from '@/lib/storage'
 import { getQueryParam } from '@/lib/utils'
 import { makeAutoObservable, runInAction } from 'mobx'
 import * as authApi from '../api/auth'
@@ -5,7 +6,7 @@ import appListController from './app-list-controller'
 import exchangeController from './exchange-controller'
 
 class AuthController {
-  isAuthenticated: boolean = !!localStorage.getItem('authToken')
+  isAuthenticated: boolean = !!getStorage('kiwi:user:token')
 
   constructor() {
     makeAutoObservable(this)
@@ -25,7 +26,6 @@ class AuthController {
   async login(userName: string, password: string) {
     await authApi.login(userName, password)
     const isRedirected = await this.checkRedirectUrl()
-    console.log('isRedirected =', isRedirected)
     if (!isRedirected) {
       runInAction(() => (this.isAuthenticated = true))
     }

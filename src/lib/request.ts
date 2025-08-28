@@ -4,6 +4,7 @@ import adapterFetch from 'alova/fetch'
 import reactHook from 'alova/react'
 import { toast } from 'sonner'
 import { API_BASE_URL } from './constants'
+import { getStorage, removeStorage } from './storage'
 
 export const request = createAlova({
   baseURL: API_BASE_URL,
@@ -16,7 +17,7 @@ export const request = createAlova({
       const status = response.status
 
       if (status === 401 || status === 403) {
-        localStorage.removeItem('authToken')
+        removeStorage('kiwi:user:token')
         if (!location.pathname.includes('/login')) {
           window.location.replace('/login')
         }
@@ -62,7 +63,7 @@ export const request = createAlova({
   },
   async beforeRequest(method) {
     const headers = method.config.headers || {}
-    const token = localStorage.getItem('authToken')
+    const token = getStorage('kiwi:user:token')
     if (token) headers['Authorization'] = `Bearer ${token}`
     if (!(method.data instanceof FormData)) {
       headers['Content-Type'] = 'application/json'

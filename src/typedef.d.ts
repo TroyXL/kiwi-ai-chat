@@ -21,6 +21,17 @@ interface FileInfo {
 
 type Theme = 'light' | 'dark' | 'system'
 
+interface UserData {
+  id: string
+  name: string
+  allowSourceDownload: boolean
+}
+
+interface LoginResponse {
+  token: string
+  user: UserData
+}
+
 interface SearchResult<T> {
   items: T[]
   total: number
