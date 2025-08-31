@@ -9,6 +9,7 @@ import exchangeController, {
 import extractFileInfo from '@/lib/extractFileInfo'
 import { useCreation, useMemoizedFn } from 'ahooks'
 import {
+  BugOff,
   ChevronsLeftRightEllipsis,
   CircleCheckBig,
   CircleXIcon,
@@ -93,18 +94,6 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
     return t('exchange.processing')
   }, [exchange.status])
 
-  // const allowAutoTest = !!(
-  //   getAllowRevert(exchange) &&
-  //   !isMobile &&
-  //   exchange.productURL
-  // )
-  const allowAutoTest = false
-
-  const handleAutoTest = useMemoizedFn(() => {
-    if (!allowAutoTest) return
-    exchangeController.updatePreviewMode('desktop')
-  })
-
   return (
     <section className="pt-8 flex flex-col">
       <KiwiResponseStatus exchange={exchange} />
@@ -119,13 +108,6 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
 
       <div className="flex justify-between items-center gap-4 border bg-card rounded-md px-4 py-3">
         <p className="font-medium">{statusLabel}</p>
-
-        {allowAutoTest && (
-          <Button size="xs" variant="secondary" onClick={handleAutoTest}>
-            <Hammer />
-            {t('exchange.autoTest')}
-          </Button>
-        )}
       </div>
 
       {exchange.productURL || exchange.managementURL ? (
@@ -172,6 +154,9 @@ const KiwiResponseStatus = observer(({ exchange }: ExchangeProps) => {
   switch (exchange.status) {
     case 'GENERATING':
       icon = <ChevronsLeftRightEllipsis size={20} />
+      break
+    case 'TESTING':
+      icon = <BugOff size={20} />
       break
     case 'SUCCESSFUL':
       icon = <MonitorCheck size={20} />
@@ -276,11 +261,6 @@ const KiwiResponseStage = memo(({ stage }: { stage: Stage }) => {
           <span>{t(`enums.stageStatus.${stage.status}`, stage.status)}</span>
         </p>
       </div>
-      <ul>
-        {stage.attempts?.map(attempt => (
-          <KiwiResponseAttempt key={attempt.id} attempt={attempt} />
-        ))}
-      </ul>
     </li>
   )
 })

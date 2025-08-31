@@ -183,11 +183,17 @@ class PreviewMessageChannel {
     window.addEventListener('message', this.handleMessage.bind(this))
 
     // 当DOM加载完成时，发送DOM_LOADED消息给Host
-    window.addEventListener('DOMContentLoaded', () => {
-      this.sendMessage({
-        type: MessageType.DOM_LOADED,
-      })
-    })
+    const onDOMLoaded = () => {
+      this.sendDOMLoaded()
+    };
+
+    console.log('Adding DOM init listener. ready state: ', document.readyState)
+
+    if (document.readyState === 'interactive' || document.readyState === 'complete') {
+      onDOMLoaded();
+    } else {
+      window.addEventListener('DOMContentLoaded', onDOMLoaded);
+    }
   }
 
   /**
@@ -248,6 +254,12 @@ class PreviewMessageChannel {
       type: MessageType.DOM_CONTENT,
       payload: htmlContent,
     })
+  }
+
+  private sendDOMLoaded(): void {
+      this.sendMessage({
+        type: MessageType.DOM_LOADED,
+      });
   }
 
   /**
@@ -327,7 +339,10 @@ class PreviewMessageChannel {
       })
     }
   }
+
 }
+
+
 
 // 导出单例实例
 const previewMessageChannel = PreviewMessageChannel.getInstance()

@@ -13,7 +13,7 @@ export const AppPreview = observer(({ className }: { className?: string }) => {
 
   useCreation(() => {
     if (!$iframe.current?.contentWindow) return
-    hostMessageChannel.refreshPreview()
+    // hostMessageChannel.refreshPreview()
   }, [productUrl])
 
   return isMobile || !productUrl ? null : (

@@ -13,17 +13,10 @@ import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-export const AutoCollectButton = memo(({ disabled }: { disabled: boolean }) => {
-  const { t } = useTranslation()
-
-  const { loading, run: handleAutoFix } = useRequest(
-    async () => {
-      if (disabled) return
-      const supported = await hostMessageChannel.getChannelSupported()
-      if (!supported) return toast.error(t('exchange.channelNotSupported'))
-
-      const timestamp = Date.now()
+export const collectDiag = async (appId: string) => {
+        const timestamp = Date.now()
       const files: File[] = []
+      let logFile: File | undefined
 
       const domContent = await hostMessageChannel.getDOMContent()
       // 创建文件名
@@ -38,12 +31,11 @@ export const AutoCollectButton = memo(({ disabled }: { disabled: boolean }) => {
         // 创建日志文件名
         const logsFilename = `logs-${timestamp}.json`
         // 创建日志 Blob 对象
-        const logsFile = new File(
+        logFile = new File(
           [JSON.stringify(logsContent, void 0, 2)],
           logsFilename,
           { type: 'text/plain' }
         )
-        files.push(logsFile)
       }
 
       const screenshotData = await hostMessageChannel.getScreenshot()
@@ -61,8 +53,25 @@ export const AutoCollectButton = memo(({ disabled }: { disabled: boolean }) => {
         files.push(screenshotFile)
       }
 
-      // 上传文件
+      // 上传日志文件
+      if (logFile) {
+        await uploadController.updateConsoleLog(appId, logFile)
+      }
+
+      // 上传其他文件
       await uploadController.uploadFiles(files)
+      return uploadController.getSuccessFileUrls()
+}
+
+export const AutoCollectButton = memo(({ disabled, appId }: { disabled: boolean, appId: string }) => {
+  const { t } = useTranslation()
+
+  const { loading, run: handleAutoFix } = useRequest(
+    async () => {
+      if (disabled) return
+      const supported = await hostMessageChannel.getChannelSupported()
+      if (!supported) return toast.error(t('exchange.channelNotSupported'))
+      await collectDiag(appId)
     },
     {
       manual: true,

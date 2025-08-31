@@ -10,6 +10,7 @@ import { Loading } from '../../../components/loading'
 import { AppPreview } from './components/app-preview'
 import { ChatInput } from './components/chat-input'
 import { MessageList } from './components/message-exchange'
+import BrowserTabView from './components/brwoser-tab-view'
 
 const ChatView = observer(() => {
   const { t } = useTranslation()
@@ -36,7 +37,10 @@ const ChatView = observer(() => {
 
   return appListController.selectedApp ? (
     <div className="h-0 flex-1 flex">
-      {exchangeController.previewMode !== 'disabled' && (
+      {exchangeController.testing && (
+        <BrowserTabView tabId={exchangeController.testTabId}/>
+      )}
+      {!exchangeController.testing && exchangeController.previewMode !== 'disabled' && (
         <AppPreview
           className={cn(
             'h-full border-r shadow flex-2/3',

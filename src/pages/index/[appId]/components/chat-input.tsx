@@ -126,7 +126,7 @@ const ChatInputRightActions = ({
 
   return (
     <div className="absolute right-3 bottom-3 flex gap-2">
-      {app && <AutoCollectButton disabled={disabled} />}
+      {app && <AutoCollectButton disabled={disabled} appId={app.id} />}
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
