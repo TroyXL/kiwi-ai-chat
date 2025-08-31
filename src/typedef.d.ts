@@ -12,6 +12,10 @@ interface MultiUploadResult {
   urls: string[]
 }
 
+interface UploadResult {
+  url: string
+}
+
 interface FileInfo {
   id: string
   fileName: string

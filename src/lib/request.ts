@@ -102,3 +102,22 @@ export const uploadFile = async (file: File): Promise<string> => {
   )
   return urls[0] || ''
 }
+
+
+export const uploadConsoleLog = async (appId: string, file: File): Promise<string> => {
+  // 验证文件类型
+  if (!FILE_ALLOWED_TYPES.includes(file.type)) {
+    throw new Error(`不支持的文件类型: ${file.name}`)
+  }
+
+  const formData = new FormData()
+  formData.append('appId', appId)
+  formData.append('file', file)
+
+  const { url } = await request.Post<UploadResult>(
+    '/generate/console-log',
+    formData
+  )
+  return url
+
+}
