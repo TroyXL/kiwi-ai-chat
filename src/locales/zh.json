@@ -75,28 +75,28 @@
     "cancelAction": "取消",
     "retryAction": "重试",
     "revertAction": "撤回",
-    "autoTest": "自动测试",
     "collectPageDataTooltip": "点击以上传当前页面信息，可针对性修改当前页面内容",
     "channelNotSupported": "当前应用暂不支持自动收集页面信息"
   },
   "enums": {
     "status": {
       "PLANNING": "计划中",
-      "GENERATING": "生成中",
+      "GENERATING": "执行中",
       "SUCCESSFUL": "成功",
       "FAILED": "失败",
       "CANCELLED": "已取消",
       "REVERTED": "已撤回"
     },
     "stageStatus": {
-      "GENERATING": "生成中",
-      "COMMITTING": "提交中",
+      "GENERATING": "执行中",
       "SUCCESSFUL": "成功",
-      "FAILED": "失败"
+      "FAILED": "失败",
+      "REJECTED": "拒绝"
     },
     "stageType": {
       "BACKEND": "后端",
-      "FRONTEND": "前端"
+      "FRONTEND": "前端",
+      "TEST": "测试"
     }
   }
 }

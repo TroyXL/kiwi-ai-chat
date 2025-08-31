@@ -13,7 +13,9 @@ export const AppPreview = observer(({ className }: { className?: string }) => {
 
   useCreation(() => {
     if (!$iframe.current?.contentWindow) return
-    hostMessageChannel.refreshPreview()
+    // Refresh is unnecessary as changing src automatically refreshes the iframe.
+    // Additionally, refresh removes the __kiwi__channel__origin__ parameter, disabling auto collection.
+    // hostMessageChannel.refreshPreview()
   }, [productUrl])
 
   return isMobile || !productUrl ? null : (
