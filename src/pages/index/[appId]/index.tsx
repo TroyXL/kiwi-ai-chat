@@ -38,10 +38,7 @@ const ChatView = observer(() => {
   return appListController.selectedApp ? (
     <div className="h-0 flex-1 flex">
       {exchangeController.testing && (
-        <BrowserTabView
-          tabId={exchangeController.testTabId}
-          domain='localhost:8083'
-        />
+        <BrowserTabView tabId={exchangeController.testTabId}/>
       )}
       {!exchangeController.testing && exchangeController.previewMode !== 'disabled' && (
         <AppPreview

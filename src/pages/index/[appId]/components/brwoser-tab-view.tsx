@@ -1,3 +1,4 @@
+import { SCREENCAST_BASE_URL } from '@/lib/constants';
 import React, { useEffect, useRef, useState } from 'react';
 
 // --- Type Definitions ---
@@ -5,7 +6,6 @@ import React, { useEffect, useRef, useState } from 'react';
 // Props for the component
 interface BrowserTabViewProps {
   tabId: string;
-  domain: string; // e.g., "screencast.metavm.tech"
 }
 
 // Possible states for the connection
@@ -19,20 +19,19 @@ interface ScreencastMessage {
 
 // --- Component Implementation ---
 
-const BrowserTabView: React.FC<BrowserTabViewProps> = ({ tabId, domain }) => {
+const BrowserTabView: React.FC<BrowserTabViewProps> = ({ tabId }) => {
   const [frame, setFrame] = useState<string | null>(null);
   const [status, setStatus] = useState<ConnectionStatus>('connecting');
   const ws = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    if (!tabId || !domain) {
+    if (!tabId) {
       setStatus('error');
       console.error("BrowserTabView: 'tabId' and 'domain' props are required.");
       return;
     }
 
-    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const url = `${protocol}://${domain}?tabId=${tabId}`;
+    const url = `${SCREENCAST_BASE_URL}?tabId=${tabId}`;
     
     ws.current = new WebSocket(url);
     setStatus('connecting');
@@ -70,7 +69,7 @@ const BrowserTabView: React.FC<BrowserTabViewProps> = ({ tabId, domain }) => {
         ws.current.close();
       }
     };
-  }, [tabId, domain]); // Re-run effect if tabId or domain changes
+  }, [tabId]); // Re-run effect if tabId or domain changes
 
   const renderStatus = () => {
     switch (status) {
