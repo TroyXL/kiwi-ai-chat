@@ -18,6 +18,7 @@ import { ChangeEvent, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AutoCollectButton } from './auto-collect-button'
 import { FileList } from './file-list'
+import chatController from '@/controllers/chat-controller'
 
 export const ChatInput = observer(({ className }: { className?: string }) => {
   const { t } = useTranslation()
@@ -38,32 +39,6 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
     }
   )
 
-  const handleSendMessage = useMemoizedFn(() => {
-    if (!$textarea.current || disabled) return
-    const message = $textarea.current.value.trim()
-    if (!message) return
-    $textarea.current.value = ''
-    exchangeController.sendMessageToAI(message)
-  })
-
-  // 使用meta.enter, ctrl.enter, shift.enter在光标位置插入换行
-  useKeyPress(['meta.enter', 'ctrl.enter', 'shift.enter'], () => {
-    if (!$textarea.current || document.activeElement !== $textarea.current)
-      return
-
-    const textarea = $textarea.current
-    const { selectionStart, selectionEnd, value } = textarea
-
-    // 在光标位置插入换行符
-    const newValue =
-      value.substring(0, selectionStart) + '\n' + value.substring(selectionEnd)
-    textarea.value = newValue
-
-    // 将光标位置设置到插入的换行符之后
-    const newCursorPosition = selectionStart + 1
-    textarea.setSelectionRange(newCursorPosition, newCursorPosition)
-  })
-
   // 使用Enter键发送消息
   useKeyPress(['enter'], e => {
     // 如果同时按下了修饰键（meta、ctrl、shift），则不处理Enter事件
@@ -73,7 +48,7 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
 
     // 阻止默认换行行为并发送消息
     e.preventDefault()
-    handleSendMessage()
+    chatController.sendMessage()
   })
 
   return (
@@ -82,6 +57,8 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
         <FileList />
         <Textarea
           ref={$textarea}
+          value={chatController.message}
+          onChange={e => chatController.setMessage(e.target.value)}
           className="min-h-24 max-h-80 pb-14 resize-none text-sm"
           placeholder={textareaPlaceholder}
         />
@@ -91,7 +68,6 @@ export const ChatInput = observer(({ className }: { className?: string }) => {
           disabled={disabled}
           uploading={uploading}
           onUploadFiles={handleUploadFiles}
-          onSendMessage={handleSendMessage}
         />
       </section>
 
@@ -107,13 +83,11 @@ const ChatInputRightActions = ({
   disabled,
   uploading,
   onUploadFiles,
-  onSendMessage,
 }: {
   app: Application | null
   disabled: boolean
   uploading: boolean
   onUploadFiles: (files: File[]) => void
-  onSendMessage: () => void
 }) => {
   const { t } = useTranslation()
   const handleFilesUpload = useMemoizedFn(
@@ -157,7 +131,7 @@ const ChatInputRightActions = ({
         size="icon-xs"
         variant="secondary"
         disabled={disabled || uploading}
-        onClick={onSendMessage}
+        onClick={() => chatController.sendMessage()}
       >
         {disabled ? <Spinner /> : <Send />}
       </Button>

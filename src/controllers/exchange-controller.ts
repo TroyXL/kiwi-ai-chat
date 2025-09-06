@@ -31,6 +31,7 @@ class ExchangeController {
   productUrl = ''
   managementUrl = ''
   sourceCodeUrl = ''
+  testTabId = ''
 
   abortController: Nullable<AbortController> = null
 
@@ -40,6 +41,15 @@ class ExchangeController {
       this.previewMode = previewMode
     }
     makeAutoObservable(this)
+  }
+
+  get testing(): boolean {
+    if (this.activeExchange != null && this.activeExchange.status == 'GENERATING') {
+      const lastStage = this.activeExchange.stages.at(-1)
+      return lastStage !== undefined && lastStage.type == 'TEST' && lastStage.status == 'GENERATING'
+    } else {
+      return false
+    }
   }
 
   updatePreviewMode(mode: PreviewMode) {
@@ -62,7 +72,6 @@ class ExchangeController {
         id: `temp_${Date.now()}`,
         prompt,
         appId: appListController.selectedApp?.id || '',
-        userId: '',
         attachmentUrls,
         status: 'PLANNING',
         stages: [],
@@ -70,6 +79,7 @@ class ExchangeController {
         productURL: null,
         managementURL: null,
         sourceCodeURL: null,
+        testPageId: null
       }
       this.activeExchange = activeExchange as Exchange
     }
@@ -222,6 +232,11 @@ class ExchangeController {
       : exchangeData
     runInAction(() => (this.activeExchange = finalExchangeData))
 
+    if (finalExchangeData.status == "GENERATING" && finalExchangeData.stages.at(-1)?.type == "TEST" 
+        && finalExchangeData.stages.at(-1)?.status == "GENERATING") {
+        this.testTabId =finalExchangeData.testPageId!!
+    }
+
     if (
       STATUSES_FINISHED.includes(finalExchangeData.status) ||
       STATUSES_CANCELLED.includes(finalExchangeData.status)
@@ -259,6 +274,12 @@ class ExchangeController {
     this.isGenerating = false
     this.abortController?.abort()
     this.abortController = null
+    if (exchangeData?.status == 'SUCCESSFUL') {
+      const lastStage = exchangeData.stages.at(-1)
+      if (lastStage?.type == 'TEST' && lastStage.status == "REJECTED") {
+        this.fetchExchangeHistory()
+      }
+    }
   }
 
   reset() {

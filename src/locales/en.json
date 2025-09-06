@@ -80,28 +80,28 @@
     "cancelAction": "Cancel",
     "retryAction": "Retry",
     "revertAction": "Revert",
-    "autoTest": "Auto Test",
     "collectPageDataTooltip": "Click to upload current page information for targeted page content modification",
     "channelNotSupported": "The current application does not support automatic page information collection"
   },
   "enums": {
     "status": {
       "PLANNING": "Planning",
-      "GENERATING": "Generating",
+      "GENERATING": "Running",
       "SUCCESSFUL": "Successful",
       "FAILED": "Failed",
       "CANCELLED": "Cancelled",
       "REVERTED": "Reverted"
     },
     "stageStatus": {
-      "GENERATING": "Generating",
-      "COMMITTING": "Committing",
+      "GENERATING": "Running",
       "SUCCESSFUL": "Successful",
-      "FAILED": "Failed"
+      "FAILED": "Failed",
+      "REJECTED": "Rejected"
     },
     "stageType": {
       "BACKEND": "Backend",
-      "FRONTEND": "Frontend"
+      "FRONTEND": "Frontend",
+      "TEST": "Test"
     }
   }
 }

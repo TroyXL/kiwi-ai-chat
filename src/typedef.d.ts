@@ -58,22 +58,20 @@ interface Attempt {
 // Represents a major step within an Exchange (e.g., BACKEND, FRONTEND).
 interface Stage {
   id: string
-  type: string
-  status: 'GENERATING' | 'COMMITTING' | 'SUCCESSFUL' | 'FAILED'
-  attempts: Attempt[]
+  type: "FRONTEND" | "BACKEND" | "TEST"
+  status: 'GENERATING' | 'COMMITTING' | 'SUCCESSFUL' | 'FAILED' | 'REJECTED'
 }
 
 // Represents a single, complete AI generation interaction.
 interface Exchange {
   id: string
   appId: string
-  userId: string
-  first: boolean
   prompt: string
   attachmentUrls?: string[]
   status:
     | 'PLANNING'
     | 'GENERATING'
+    | 'TESTING'
     | 'SUCCESSFUL'
     | 'FAILED'
     | 'CANCELLED'
@@ -83,6 +81,7 @@ interface Exchange {
   productURL: string | null
   managementURL: string | null
   sourceCodeURL: string | null
+  testPageId: string | null
 }
 
 type PreviewMode = 'desktop' | 'mobile' | 'disabled'
@@ -91,4 +90,12 @@ interface GenerateCodeListeners {
   onMessage: (event: Exchange) => void
   onClose: () => void
   onError: (err: any) => void
+}
+
+type AutoTestActionType = "STEP" | "PASSED" | "FAILED"
+
+interface AutoTestAction {
+  type: AutoTestActionType
+  desc: string
+  content: string
 }

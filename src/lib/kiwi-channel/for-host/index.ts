@@ -28,6 +28,7 @@ class HostMessageChannel {
   private domLoadedCallbacks: DOMLoadedCallback[] = []
   private domContentCallbacks: DOMContentCallback[] = []
   private logsContentCallbacks: ((logs: ILogEvent[]) => void)[] = []
+  private execScriptFinishCallbacks: (() => void)[] = []
   private screenshotCallbacks: ((
     screenshotData: IScreenshotData | null
   ) => void)[] = []
@@ -123,6 +124,12 @@ class HostMessageChannel {
   private handleDOMLoaded(): void {
     // 触发所有DOM加载完成的回调函数
     this.domLoadedCallbacks.forEach(callback => callback())
+    this.domLoadedCallbacks = []
+  }
+
+  private handleExecScriptFinish() {
+    this.execScriptFinishCallbacks.forEach(callback => callback())
+    this.execScriptFinishCallbacks = []
   }
 
   /**
@@ -274,6 +281,7 @@ class HostMessageChannel {
       })
     })
   }
+
 }
 
 /**

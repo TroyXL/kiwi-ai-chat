@@ -13,16 +13,8 @@ import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-export const AutoCollectButton = memo(({ disabled, appId }: { disabled: boolean, appId: string }) => {
-  const { t } = useTranslation()
-
-  const { loading, run: handleAutoFix } = useRequest(
-    async () => {
-      if (disabled) return
-      const supported = await hostMessageChannel.getChannelSupported()
-      if (!supported) return toast.error(t('exchange.channelNotSupported'))
-
-      const timestamp = Date.now()
+export const collectDiag = async (appId: string) => {
+        const timestamp = Date.now()
       const files: File[] = []
       let logFile: File | undefined
 
@@ -68,6 +60,18 @@ export const AutoCollectButton = memo(({ disabled, appId }: { disabled: boolean,
 
       // 上传其他文件
       await uploadController.uploadFiles(files)
+      return uploadController.getSuccessFileUrls()
+}
+
+export const AutoCollectButton = memo(({ disabled, appId }: { disabled: boolean, appId: string }) => {
+  const { t } = useTranslation()
+
+  const { loading, run: handleAutoFix } = useRequest(
+    async () => {
+      if (disabled) return
+      const supported = await hostMessageChannel.getChannelSupported()
+      if (!supported) return toast.error(t('exchange.channelNotSupported'))
+      await collectDiag(appId)
     },
     {
       manual: true,
