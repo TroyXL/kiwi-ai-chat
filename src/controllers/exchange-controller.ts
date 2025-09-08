@@ -277,7 +277,8 @@ class ExchangeController {
     if (exchangeData?.status == 'SUCCESSFUL') {
       const lastStage = exchangeData.stages.at(-1)
       if (lastStage?.type == 'TEST' && lastStage.status == "REJECTED") {
-        this.fetchExchangeHistory()
+        // Wait for one second becomce there can be a search sync delay 
+        setTimeout(() => this.fetchExchangeHistory(), 1000)
       }
     }
   }
