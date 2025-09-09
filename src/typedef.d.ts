@@ -82,6 +82,7 @@ interface Exchange {
   managementURL: string | null
   sourceCodeURL: string | null
   testPageId: string | null
+  chainDepth: number
 }
 
 type PreviewMode = 'desktop' | 'mobile' | 'disabled'

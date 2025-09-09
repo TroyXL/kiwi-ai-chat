@@ -79,7 +79,8 @@ class ExchangeController {
         productURL: null,
         managementURL: null,
         sourceCodeURL: null,
-        testPageId: null
+        testPageId: null,
+        chainDepth: 0
       }
       this.activeExchange = activeExchange as Exchange
     }
@@ -276,8 +277,9 @@ class ExchangeController {
     this.abortController = null
     if (exchangeData?.status == 'SUCCESSFUL') {
       const lastStage = exchangeData.stages.at(-1)
-      if (lastStage?.type == 'TEST' && lastStage.status == "REJECTED") {
-        // Wait for one second becomce there can be a search sync delay 
+      if (lastStage?.type == 'TEST' 
+        && (lastStage.status == "REJECTED" || lastStage.status == "SUCCESSFUL" && exchangeData.chainDepth > 0)) {
+        // Wait for one second to handle search sync delay 
         setTimeout(() => this.fetchExchangeHistory(), 1000)
       }
     }
