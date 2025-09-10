@@ -1,3 +1,4 @@
+import { Beian } from '@/components/beian'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Alert, AlertTitle } from '@/components/ui/alert'
@@ -155,6 +156,8 @@ export default observer(() => {
         <LanguageSwitcher simple />
         <ThemeToggle />
       </div>
+
+      <Beian className="fixed bottom-4 left-1/2 -translate-x-1/2" />
     </>
   )
 })

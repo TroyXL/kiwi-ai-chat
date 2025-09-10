@@ -1,3 +1,4 @@
+import { Beian } from '@/components/beian'
 import { KiwiLogo } from '@/components/kiwi-logo'
 import appListController from '@/controllers/app-list-controller'
 import exchangeController from '@/controllers/exchange-controller'
@@ -64,13 +65,15 @@ const ChatView = observer(() => {
       </section>
     </div>
   ) : (
-    <div className="flex-1 flex flex-col justify-center items-center gap-8 pb-48">
+    <div className="relative flex-1 flex flex-col justify-center items-center gap-8 pb-48">
       <div className="flex items-center gap-4">
         <KiwiLogo logoClassName="size-10" />
         <p className="text-3xl font-bold">Kiwi AI</p>
       </div>
 
       <ChatInput className="w-full px-8" />
+
+      <Beian className="absolute bottom-2 left-1/2 -translate-x-1/2" />
     </div>
   )
 })
