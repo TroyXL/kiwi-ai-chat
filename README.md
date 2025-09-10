@@ -1,6 +1,6 @@
-# Kiwi AI Frontend
+# Keevii Frontend
 
-This is the frontend for Kiwi AI, a chat-based application that allows users to generate and modify application in real-time through a conversational interface.
+This is the frontend for Keevii, a chat-based application that allows users to generate and modify application in real-time through a conversational interface.
 
 ### Installation
 

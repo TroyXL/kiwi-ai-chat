@@ -18,12 +18,12 @@
     "urlInfo": "请求 URL: {{url}}"
   },
   "betaTip": {
-    "title": "Kiwi AI 测试版",
-    "description": "感谢您使用 Kiwi AI！请注意，当前版本仍处于开发阶段，我们免费提供所有功能供您试用。\n\n在使用过程中如遇到任何问题或有任何建议，欢迎随时反馈。",
-    "startTrial": "开始免费试用 Kiwi AI"
+    "title": "Keevii 测试版",
+    "description": "感谢您使用 Keevii！请注意，当前版本仍处于开发阶段，我们免费提供所有功能供您试用。\n\n在使用过程中如遇到任何问题或有任何建议，欢迎随时反馈。",
+    "startTrial": "开始免费试用 Keevii"
   },
   "login": {
-    "title": "Kiwi AI 登录",
+    "title": "Keevii 登录",
     "usernameLabel": "用户名",
     "passwordLabel": "密码",
     "confirmPasswordLabel": "确认密码",
