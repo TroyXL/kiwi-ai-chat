@@ -13,7 +13,7 @@ import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 
-export const AutoCollectButton = memo(({ disabled }: { disabled: boolean }) => {
+export const AutoCollectButton = memo(({ disabled, appId }: { disabled: boolean, appId: string }) => {
   const { t } = useTranslation()
 
   const { loading, run: handleAutoFix } = useRequest(
@@ -24,6 +24,7 @@ export const AutoCollectButton = memo(({ disabled }: { disabled: boolean }) => {
 
       const timestamp = Date.now()
       const files: File[] = []
+      let logFile: File | undefined
 
       const domContent = await hostMessageChannel.getDOMContent()
       // 创建文件名
@@ -38,12 +39,11 @@ export const AutoCollectButton = memo(({ disabled }: { disabled: boolean }) => {
         // 创建日志文件名
         const logsFilename = `logs-${timestamp}.json`
         // 创建日志 Blob 对象
-        const logsFile = new File(
+        logFile = new File(
           [JSON.stringify(logsContent, void 0, 2)],
           logsFilename,
           { type: 'text/plain' }
         )
-        files.push(logsFile)
       }
 
       const screenshotData = await hostMessageChannel.getScreenshot()
@@ -61,7 +61,12 @@ export const AutoCollectButton = memo(({ disabled }: { disabled: boolean }) => {
         files.push(screenshotFile)
       }
 
-      // 上传文件
+      // 上传日志文件
+      if (logFile) {
+        await uploadController.uploadConsoleLog(appId, logFile)
+      }
+
+      // 上传其他文件
       await uploadController.uploadFiles(files)
     },
     {
