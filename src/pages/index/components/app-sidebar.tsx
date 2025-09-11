@@ -49,7 +49,7 @@ export const AppSidebar = observer(() => {
       <SidebarHeader>
         <div className="flex items-center p-2">
           <KiwiLogo />
-          <h2 className="text-xl ml-4">Kiwi AI</h2>
+          <h2 className="text-xl ml-4">Keevii</h2>
           <BetaTip />
         </div>
         {hasApplicaitons && (

@@ -72,7 +72,7 @@ const ChatView = observer(() => {
     <div className="relative flex-1 flex flex-col justify-center items-center gap-8 pb-48">
       <div className="flex items-center gap-4">
         <KiwiLogo logoClassName="size-10" />
-        <p className="text-3xl font-bold">Kiwi AI</p>
+        <p className="text-3xl font-bold">Keevii</p>
       </div>
 
       <ChatInput className="w-full px-8" />
