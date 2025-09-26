@@ -45,8 +45,7 @@ class ExchangeController {
 
   get testing(): boolean {
     if (this.activeExchange != null && this.activeExchange.status == 'GENERATING') {
-      const lastStage = this.activeExchange.stages.at(-1)
-      return lastStage !== undefined && lastStage.type == 'TEST' && lastStage.status == 'GENERATING'
+      return this.activeExchange.tasks.some(t => t.status == 'TESTING') && this.activeExchange.testPageId !== undefined
     } else {
       return false
     }
@@ -74,7 +73,7 @@ class ExchangeController {
         appId: appListController.selectedApp?.id || '',
         attachmentUrls,
         status: 'PLANNING',
-        stages: [],
+        tasks: [],
         errorMessage: null,
         productURL: null,
         managementURL: null,
@@ -216,8 +215,8 @@ class ExchangeController {
       sessionStorage.getItem('newAppId') === appListController.selectedApp?.id
     ) {
       if (
-        exchangeData.stages.some(
-          s => s.type === 'BACKEND' && s.status === 'GENERATING'
+        exchangeData.tasks.some(
+          t => t.status === 'GENERATING'
         )
       ) {
         const updatedApp = await getApplication(exchangeData.appId)
@@ -233,8 +232,7 @@ class ExchangeController {
       : exchangeData
     runInAction(() => (this.activeExchange = finalExchangeData))
 
-    if (finalExchangeData.status == "GENERATING" && finalExchangeData.stages.at(-1)?.type == "TEST" 
-        && finalExchangeData.stages.at(-1)?.status == "GENERATING") {
+    if (finalExchangeData.status == "GENERATING" && finalExchangeData.tasks.some(t => t.status == "TESTING")) {
         this.testTabId =finalExchangeData.testPageId!!
     }
 
@@ -275,14 +273,6 @@ class ExchangeController {
     this.isGenerating = false
     this.abortController?.abort()
     this.abortController = null
-    if (exchangeData?.status == 'SUCCESSFUL') {
-      const lastStage = exchangeData.stages.at(-1)
-      if (lastStage?.type == 'TEST' 
-        && (lastStage.status == "REJECTED" || lastStage.status == "SUCCESSFUL" && exchangeData.chainDepth > 0)) {
-        // Wait for one second to handle search sync delay 
-        setTimeout(() => this.fetchExchangeHistory(), 1000)
-      }
-    }
   }
 
   reset() {

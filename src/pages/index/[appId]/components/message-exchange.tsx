@@ -74,7 +74,7 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
   const { t } = useTranslation()
   // const isMobile = useIsMobile()
 
-  const hasStages = !!exchange.stages?.length
+  const hasTasks = !!exchange.tasks?.length
 
   const statusLabel = useCreation(() => {
     if (exchange.status === 'SUCCESSFUL') {
@@ -99,12 +99,12 @@ const KiwiResponseView = memo(({ exchange }: ExchangeProps) => {
       <KiwiResponseStatus exchange={exchange} />
 
       <ul>
-        {exchange.stages?.map(stage => (
-          <KiwiResponseStage key={stage.id} stage={stage} />
+        {exchange.tasks?.map(task => (
+          <KiwiResponseStage key={task.id} task={task} />
         ))}
       </ul>
 
-      {!hasStages && <div className="border h-4 w-0 ml-12" />}
+      {!hasTasks && <div className="border h-4 w-0 ml-12" />}
 
       <div className="flex justify-between items-center gap-4 border bg-card rounded-md px-4 py-3">
         <p className="font-medium">{statusLabel}</p>
@@ -231,16 +231,16 @@ const KiwiResponseStatus = observer(({ exchange }: ExchangeProps) => {
   )
 })
 
-const KiwiResponseStage = memo(({ stage }: { stage: Stage }) => {
+const KiwiResponseStage = memo(({ task }: { task: ExchangeTask }) => {
   const { t } = useTranslation()
   let icon = <ClockFading size={14} />
 
-  switch (stage.status) {
-    case 'COMMITTING':
-      icon = <PencilRuler size={14} />
-      break
+  switch (task.status) {
     case 'SUCCESSFUL':
       icon = <CircleCheckBig size={14} />
+      break
+    case 'TESTING':
+      icon = <BugOff size={14} />
       break
     case 'FAILED':
       icon = <CircleXIcon size={14} />
@@ -255,10 +255,10 @@ const KiwiResponseStage = memo(({ stage }: { stage: Stage }) => {
         </span>
         <p className="flex-1 w-0 flex justify-between pr-4">
           <span>
-            {t('exchange.stageLabel')}
-            {t(`enums.stageType.${stage.type}`, stage.type)}
+            {t('exchange.moduleLabel')}
+            {task.moduleName}
           </span>
-          <span>{t(`enums.stageStatus.${stage.status}`, stage.status)}</span>
+          <span>{t(`enums.stageStatus.${task.status}`, task.status)}</span>
         </p>
       </div>
     </li>

@@ -62,6 +62,14 @@ interface Stage {
   status: 'GENERATING' | 'COMMITTING' | 'SUCCESSFUL' | 'FAILED' | 'REJECTED'
 }
 
+interface ExchangeTask {
+  id: string,
+  moduleId: string,
+  moduleName: string,
+  status: 'GENERATING' | 'TESTING' | 'SUCCESSFUL' | 'FAILED' | 'REJECTED'
+}
+
+
 // Represents a single, complete AI generation interaction.
 interface Exchange {
   id: string
@@ -76,7 +84,7 @@ interface Exchange {
     | 'FAILED'
     | 'CANCELLED'
     | 'REVERTED'
-  stages: Stage[]
+  tasks: ExchangeTask[]
   errorMessage: string | null
   productURL: string | null
   managementURL: string | null
