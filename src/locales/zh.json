@@ -66,7 +66,7 @@
   },
   "exchange": {
     "statusLabel": "总体状态：",
-    "stageLabel": "阶段：",
+    "moduleLabel": "模块：",
     "attemptLabel": "尝试",
     "processing": "处理中...",
     "processComplete": "处理完成！",
@@ -88,7 +88,8 @@
       "REVERTED": "已撤回"
     },
     "stageStatus": {
-      "GENERATING": "执行中",
+      "GENERATING": "生成中",
+      "TESTING": "测试中",
       "SUCCESSFUL": "成功",
       "FAILED": "失败",
       "REJECTED": "拒绝"

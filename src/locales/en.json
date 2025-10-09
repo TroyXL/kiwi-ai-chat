@@ -67,7 +67,7 @@
   },
   "exchange": {
     "statusLabel": "Overall Status: ",
-    "stageLabel": "Stage: ",
+    "moduleLabel": "Module: ",
     "attemptLabel": "Attempt",
     "processing": "Processing",
     "processComplete": "Process complete!",
@@ -93,7 +93,8 @@
       "REVERTED": "Reverted"
     },
     "stageStatus": {
-      "GENERATING": "Running",
+      "GENERATING": "Generating",
+      "TESTING": "Testing",
       "SUCCESSFUL": "Successful",
       "FAILED": "Failed",
       "REJECTED": "Rejected"
