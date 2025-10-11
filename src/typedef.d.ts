@@ -66,6 +66,7 @@ interface ExchangeTask {
   id: string,
   moduleId: string,
   moduleName: string,
+  type: 'GENERATION' | 'TEST' | 'DATA'
   status: 'GENERATING' | 'TESTING' | 'SUCCESSFUL' | 'FAILED' | 'REJECTED'
 }
 

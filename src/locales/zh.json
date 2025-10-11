@@ -98,6 +98,11 @@
       "BACKEND": "后端",
       "FRONTEND": "前端",
       "TEST": "测试"
+    },
+    "taskType": {
+      "GENERATION": "生成",
+      "TEST": "测试",
+      "DATA": "数据"
     }
   }
 }

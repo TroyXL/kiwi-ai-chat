@@ -103,6 +103,11 @@
       "BACKEND": "Backend",
       "FRONTEND": "Frontend",
       "TEST": "Test"
+    },
+    "taskType": {
+      "GENERATION": "Generation",
+      "TEST": "Test",
+      "DATA": "Data"
     }
   }
 }

@@ -255,8 +255,9 @@ const KiwiResponseStage = memo(({ task }: { task: ExchangeTask }) => {
         </span>
         <p className="flex-1 w-0 flex justify-between pr-4">
           <span>
-            {t('exchange.moduleLabel')}
             {task.moduleName}
+            :
+            {t(`enums.taskType.${task.type}`)}
           </span>
           <span>{t(`enums.stageStatus.${task.status}`, task.status)}</span>
         </p>
